@@ -1,3 +1,4 @@
+//original version from https://github.com/evanw/esbuild/blob/plugins/docs/plugin-examples.md
 let svelte = require('svelte/compiler')
 let path = require('path')
 let util = require('util')
