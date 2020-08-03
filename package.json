@@ -1,6 +1,6 @@
 {
   "name": "esbuild-svelte",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "esbuild plugin to resolve .svelte files",
   "repository": "https://github.com/EMH333/esbuild-svelte",
   "main": "index.js",
@@ -15,7 +15,9 @@
   "author": "Ethan Hampton",
   "license": "MIT",
   "dependencies": {
-    "esbuild": "0.6.x",
     "svelte": "^3.24.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.6.x"
   }
 }
