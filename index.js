@@ -17,7 +17,7 @@ let convertMessage = ({ message, start, end }) => ({
 
 
 let sveltePlugin = plugin => {
-    plugin.setName('svelte');
+    plugin.setName('esbuild-svelte');
     plugin.addLoader({ filter: /\.svelte$/ }, async (args) => {
         let source = await util.promisify(fs.readFile)(args.path, 'utf8')
         let filename = path.relative(process.cwd(), args.path)
@@ -31,4 +31,4 @@ let sveltePlugin = plugin => {
     })
 }
 
-module.exports.default = sveltePlugin;
+module.exports = sveltePlugin;
