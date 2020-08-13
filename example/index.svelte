@@ -1,5 +1,5 @@
 <script>
-import second from 'second.svelte';
+import second from './second.svelte';
 let lol;
 
 

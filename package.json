@@ -15,7 +15,7 @@
   "author": "Ethan Hampton",
   "license": "MIT",
   "dependencies": {
-    "svelte": "^3.24.0"
+    "svelte": "^3.24.1"
   },
   "devDependencies": {
     "esbuild": "0.6.x"

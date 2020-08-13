@@ -1,4 +1,4 @@
-const esbuild_svelte = require("esbuild-svelte");
+const esbuild_svelte = require("../index");
 const esbuild = require("esbuild");
 
 esbuild.build({
@@ -8,5 +8,8 @@ esbuild.build({
     minify: true,
     bundle: true,
     splitting: true,
-    plugins: [esbuild_svelte]
-  }).catch(() => process.exit(1))
+    plugins: [esbuild_svelte,]
+  }).catch((err) => {
+    console.error(err)
+    process.exit(1)
+  })
