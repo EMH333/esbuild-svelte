@@ -2,15 +2,13 @@
 
 [![npm version](https://badge.fury.io/js/esbuild-svelte.svg)](https://badge.fury.io/js/esbuild-svelte)
 
-With the introduction of plugins coming to esbuild soon, there will be demand for a svelte plugin to automaticly resolve .svelte files. This plugin will be updated once plugin support is officially announced for esbuild. 
-
-This original version is copied directly from Evan Wallace's example but will be modified to work in more circumstances in the future
+Plugin to compile svelte modules for esbuild.
 
 ## Install
 
-Install both this plugin and versions of [esbuild](https://github.com/evanw/esbuild) above 0.8.1. 
+Install both this plugin and [esbuild](https://github.com/evanw/esbuild) (esbuild must be above 0.8.1). 
 
-An example build script looks like
+An super simple build script looks like
 ```javascript
 require('esbuild').build({
   entryPoints: ['app.js'],

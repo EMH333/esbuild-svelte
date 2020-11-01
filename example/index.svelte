@@ -1,24 +1,20 @@
 <script>
-import Second from './second.svelte';
-let lol;
+  import Second from "./second.svelte";
+  let lol;
 
-
-function change(){
-    lol.value = "testing" + Math.random()
-}
+  function change() {
+    lol.value = "testing" + Math.random();
+  }
 </script>
 
 <style>
-.test{
+  .test {
     background-color: black;
-}
+  }
 </style>
 
+<div class="test"><input type="text" this:bind={lol} /></div>
 
-<div class="test" >
-    <input type="text" this:bind={lol}>
-</div>
+<Second />
 
-<Second/>
-
-<button on:click={change}></button>
+<button on:click={change} />

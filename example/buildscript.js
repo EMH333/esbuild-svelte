@@ -2,14 +2,14 @@ const esbuild_svelte = require("../index");
 const esbuild = require("esbuild");
 
 esbuild.build({
-    entryPoints: ['./entry.js'],
-    outdir: './dist',
-    format: "esm",
-    minify: true,
-    bundle: true,
-    splitting: true,
-    plugins: [esbuild_svelte,]
-  }).catch((err) => {
-    console.error(err)
-    process.exit(1)
-  })
+  entryPoints: ['./entry.js'],
+  outdir: './dist',
+  format: "esm",
+  minify: true,
+  bundle: true,
+  splitting: true,
+  plugins: [esbuild_svelte,]
+}).catch((err) => {
+  console.error(err)
+  process.exit(1)
+})
