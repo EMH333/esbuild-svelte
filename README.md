@@ -8,7 +8,7 @@ This original version is copied directly from Evan Wallace's example but will be
 
 ## Install
 
-Right now (as of esbuild version 0.6.22), esbuild doesn't offically support plugins. This means you need to reinstall the esbuild package with plugin support. To do this:
+Right now (as of esbuild version 0.8.0), esbuild doesn't offically support plugins. This means you need to reinstall the esbuild package with plugin support. To do this:
 
 - Clone the [esbuild repo](https://github.com/evanw/esbuild)
 - Check out the `plugins` branch
