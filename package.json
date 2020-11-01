@@ -21,6 +21,6 @@
     "svelte": "^3.29.4"
   },
   "devDependencies": {
-    "esbuild": "^0.8.0"
+    "esbuild": "^0.8.1"
   }
 }

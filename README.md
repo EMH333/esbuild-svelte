@@ -8,19 +8,26 @@ This original version is copied directly from Evan Wallace's example but will be
 
 ## Install
 
-Right now (as of esbuild version 0.8.0), esbuild doesn't offically support plugins. This means you need to reinstall the esbuild package with plugin support. To do this:
+Install both this plugin and versions of [esbuild](https://github.com/evanw/esbuild) above 0.8.1. 
 
-- Clone the [esbuild repo](https://github.com/evanw/esbuild)
-- Check out the `plugins` branch
-- Run `make platform-neutral platform-<your_platform>`
-- Copy all files from esbuild's `npm/esbuild` folder to the esbuild folder of your `node_modules`
-- Copy the binary from esbuild's `npm/esbuild-<your_platform>/bin` folder to your `node_modules/esbuild/bin` folder replacing the existing JS file
-- Run your script!
+An example build script looks like
+```javascript
+require('esbuild').build({
+  entryPoints: ['app.js'],
+  bundle: true,
+  outfile: 'out.js',
+  plugins: [require('esbuild-svelte')],
+  logLevel: 'info',
+}).catch(() => process.exit(1))
+```
 
-Note that updating esbuild will require you to repeat these steps until plugin support is offical. The examples folder of this repository is a great starting off point as long as you change the `require('../index')` in the buildscript to `require('esbuild-svelte')`.
+The examples folder of this repository is a great starting off point as well if you change the `require('../index')` in the buildscript to `require('esbuild-svelte')`.
+
+## Advanced
+
+If it is desired to change Svelte compiler options, simply import `esbuild-svelte/configurable` instead of `esbuild-svelte` and call it as a function. For example, to enable dev mode in Svelte instead of `require('esbuild-svelte')`, use `require('esbuild-svelte/configurable')({dev: true})`. This API may change in the future
 
 ## TODO
 - Figure out CSS support
-- Expose Svelte options
 - Add more functionality
 - Add Svelte pre-processor support

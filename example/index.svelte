@@ -1,5 +1,5 @@
 <script>
-import second from './second.svelte';
+import Second from './second.svelte';
 let lol;
 
 
@@ -19,6 +19,6 @@ function change(){
     <input type="text" this:bind={lol}>
 </div>
 
-<second/>
+<Second/>
 
 <button on:click={change}></button>

@@ -4,8 +4,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "esbuild": "^0.6.22",
-    "esbuild-svelte": "0.0.2"
+    "esbuild": "^0.8.1",
+    "esbuild-svelte": "0.0.4"
   },
   "private": true
 }
