@@ -5,7 +5,10 @@
   "repository": "https://github.com/EMH333/esbuild-svelte",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postpublish": "git push origin --all; git push origin --tags",
+    "postversion": "npm publish",
+    "preversion": "npm test",
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "keywords": [
     "svelte",
