@@ -8,7 +8,7 @@
     "postpublish": "git push origin --all; git push origin --tags",
     "postversion": "npm publish",
     "preversion": "npm test",
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "node test/simpleTest.js"
   },
   "keywords": [
     "svelte",

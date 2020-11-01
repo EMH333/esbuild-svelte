@@ -1,3 +1,7 @@
+# Unreleased
+
+- Add a simple smoke test
+
 # 0.1.1
 
 - Format some files
