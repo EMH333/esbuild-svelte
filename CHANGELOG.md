@@ -1,6 +1,8 @@
 # Unreleased
 
 - Add a simple smoke test
+- Add Github CI
+- Add Dependabot
 
 # 0.1.1
 
