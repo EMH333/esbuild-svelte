@@ -23,7 +23,7 @@ The examples folder of this repository is a great starting off point as well if 
 
 ## Advanced
 
-If it is desired to change Svelte compiler options, simply import `esbuild-svelte/configurable` instead of `esbuild-svelte` and call it as a function. For example, to enable dev mode in Svelte instead of `require('esbuild-svelte')`, use `require('esbuild-svelte/configurable')({dev: true})`. This API may change in the future
+If it is desired to change Svelte compiler options, simply import `esbuild-svelte/configurable` instead of `esbuild-svelte` and call it as a function. For example, to enable dev mode in Svelte instead of `require('esbuild-svelte')`, use `require('esbuild-svelte/configurable')({compileOptions: {dev: true}})`. `compileOptions` represents Svelte compile options. More properties will be added to support preprocessing in the future.
 
 ## TODO
 - Figure out CSS support

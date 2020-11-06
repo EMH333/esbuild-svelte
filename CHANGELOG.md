@@ -3,6 +3,7 @@
 - Add a simple smoke test
 - Add Github CI
 - Add Dependabot
+- Make configurable work
 
 # 0.1.1
 

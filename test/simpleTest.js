@@ -5,7 +5,7 @@ Perhaps at some point I will come back and fix this but for now it serves as a s
 
 If you really care, you are welcome to create a PR to actually test it!
 */
-
+const esbuild = require("esbuild");
 
 
 
@@ -41,7 +41,6 @@ require("../index").setup(build);
 
 //Try a simple esbuild build
 const esbuild_svelte = require("../index");
-const esbuild = require("esbuild");
 
 esbuild.build({
     entryPoints: ['./example/entry.js'],
@@ -57,3 +56,22 @@ esbuild.build({
     console.error(err)
     process.exit(1)
 }).then(() => console.log("Test 2 Passed"))
+
+
+//configurable
+const configurable = require("../configurable/index");
+
+esbuild.build({
+    entryPoints: ['./example/entry.js'],
+    outdir: '../example/dist',
+    format: "esm",
+    minify: true,
+    bundle: true,
+    splitting: true,
+    write: false, //Don't write anywhere
+    plugins: [configurable({compileOptions:{dev:true}}),]
+}).catch((err) => {
+    console.error("Test 3 Failed")
+    console.error(err)
+    process.exit(1)
+}).then(() => console.log("Test 3 Passed"))
