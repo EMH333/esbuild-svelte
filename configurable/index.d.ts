@@ -1,10 +1,12 @@
 import { Plugin } from 'esbuild';
 import { CompileOptions } from 'svelte/types/compiler/interfaces';
+import { PreprocessorGroup, Preprocessor } from 'svelte/types/compiler/preprocess'
 
 interface esbuildSvelteOptions {
-    compileOptions: CompileOptions
+    compileOptions?: CompileOptions
+    preprocessor?: PreprocessorGroup | PreprocessorGroup[]
 }
 
-declare function configurable(options?:esbuildSvelteOptions): Plugin;
+declare function configurable(options?: esbuildSvelteOptions): Plugin;
 
 export default configurable;

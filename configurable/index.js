@@ -24,13 +24,13 @@ let sveltePlugin = options => {
                 let filename = path.relative(process.cwd(), args.path)
                 try {
                     //do preprocessor stuff if it exists
-                    if (options && options.preprocessor){
-                        source = svelte.preprocess(source, options.preprocessor)
+                    if (options && options.preprocessor) {
+                        source = (await svelte.preprocess(source, options.preprocessor, { filename })).code;
                     }
-                    
-                    let compileOptions = { css: true ,...(options && options.compileOptions)};
 
-                    let { js, warnings } = svelte.compile(source, { filename, ...compileOptions })
+                    let compileOptions = { css: true, ...(options && options.compileOptions) };
+
+                    let { js, warnings } = svelte.compile(source, { ...compileOptions, filename })
                     let contents = js.code + `//# sourceMappingURL=` + js.map.toUrl()
                     return { contents, warnings: warnings.map(convertMessage) };
                 } catch (e) {
