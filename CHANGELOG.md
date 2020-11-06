@@ -1,10 +1,10 @@
 # Unreleased
 
-- Add a simple smoke test
+- Add some simple smoke tests
 - Add Github CI
 - Add Dependabot
-- Make configurable work (oops)
-- Add typescript types to configurable preping for eventual conversion to typescript for development
+- Fix `configurable` so it actually works now (also add *a bit* of test coverage so it won't happen again)
+- Add typescript types to `configurable` preping for eventual conversion to typescript for development
 - Add .npmignore
 
 # 0.1.1
