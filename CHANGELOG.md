@@ -1,4 +1,4 @@
-# Unreleased
+# 0.2.0
 
 - Add some simple smoke tests
 - Add Github CI
