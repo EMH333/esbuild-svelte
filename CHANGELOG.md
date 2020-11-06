@@ -4,6 +4,7 @@
 - Add Github CI
 - Add Dependabot
 - Make configurable work
+- Add typescript types to configurable preping for eventual conversion to typescript for development
 
 # 0.1.1
 
