@@ -12,7 +12,12 @@ const esbuild = require("esbuild");
 
 let build = {};
 //should have no errors or warnings
-build.onLoad = async function onLoad(filter, processor) {
+build.onLoad = async function onLoad(selection, processor) {
+    //ignore the css loader for now
+    if(selection.filter.test("test.esbuild-svelte-fake-css")){
+        return;
+    }
+
     let failed = false;
     let out = await processor({ path: require.resolve("../example/index.svelte") });
 

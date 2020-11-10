@@ -1,3 +1,8 @@
+# 0.3.0
+
+- Support seperate css output stream
+    No more CSS in JS, yay!
+
 # 0.2.1
 
 - Fix preprocessor support, currently considered unstable until I test it with some of my personal projects
