@@ -1,7 +1,8 @@
-# 0.3.0
+# 0.3.0 
 
-- Support seperate css output stream
-    No more CSS in JS, yay!
+- **(Breaking)** Support separate CSS output stream
+
+    No more CSS in JS, yay! If for whatever reason this doesn't work, then just set the `css` compilerOption to true and it will revert to the previous behavior.
 
 # 0.2.1
 
