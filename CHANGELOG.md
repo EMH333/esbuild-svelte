@@ -2,7 +2,9 @@
 
 - **(Breaking)** Support separate CSS output stream
 
-    No more CSS in JS, yay! If for whatever reason this doesn't work, then just set the `css` compilerOption to true and it will revert to the previous behavior.
+    No more CSS in JS, yay! If for whatever reason this doesn't work, then just set the `css` compilerOption to `true` and it will revert to the previous behavior. 
+    
+    In order to implement this, I created a fake file extension loader then set those files to be imported from the js code emited. A map acts as storage between the loaders. I'm not 100% happy with this system because it feels brittle and incomplete but it will work for now. If you have suggestions for how I could do this better, I am all ears!
 
 # 0.2.1
 
