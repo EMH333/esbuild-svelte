@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/esbuild-svelte.svg)](https://badge.fury.io/js/esbuild-svelte)
 
-Plugin to compile svelte modules for esbuild.
+Plugin to compile svelte components for bundling with esbuild.
 
 ## Install
 
@@ -32,4 +32,4 @@ If it is desired to change Svelte compiler options, simply import `esbuild-svelt
 You can see the full API [here](https://github.com/EMH333/esbuild-svelte/blob/main/configurable/index.d.ts), which also includes support for Svelte's preprocessing API.
 
 ## TODO
-- Add more functionality
+- Unifiy APIs for 1.0.0 release
