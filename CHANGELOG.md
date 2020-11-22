@@ -1,3 +1,12 @@
+# 0.3.1
+
+- Fix path resolution for Windows when exporting css to external files
+
+    This is already covered by tests (when running on Windows) but I'm not going to run CI on Windows. If it continues to be a problem, I will add explict tests but I don't see that becoming the case.
+
+- Add esbuild as peer dependency
+- Update Svelte to 3.29.7
+
 # 0.3.0 
 
 - **(Breaking)** Support separate CSS output stream
