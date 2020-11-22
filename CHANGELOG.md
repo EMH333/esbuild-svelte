@@ -1,6 +1,6 @@
 # 0.3.1
 
-- Fix path resolution for Windows when exporting css to external files
+- Fix path resolution for Windows when exporting css to external files (Thanks [@markoboy](https://github.com/EMH333/esbuild-svelte/pull/8))
 
     This is already covered by tests (when running on Windows) but I'm not going to run CI on Windows. If it continues to be a problem, I will add explict tests but I don't see that becoming the case.
 
