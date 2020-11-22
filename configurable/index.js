@@ -39,7 +39,7 @@ const sveltePlugin = options => {
 
                     //if svelte emits css seperately, then store it in a map and import it from the js
                     if (!compileOptions.css && css.code) {
-                        let cssPath = args.path.replace(".svelte", ".esbuild-svelte-fake-css")
+                        let cssPath = args.path.replace(".svelte", ".esbuild-svelte-fake-css").replace(/\\/g, "/");
                         cssCode.set(cssPath, css.code + `/*# sourceMappingURL=${css.map.toUrl()}*/`);
                         contents = `import "${cssPath}";\n` + contents;
                     }
