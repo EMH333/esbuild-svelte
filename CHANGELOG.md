@@ -1,3 +1,8 @@
+# 0.3.2
+
+- Fix sourcemap generation when exporting external css ([#13](https://github.com/EMH333/esbuild-svelte/issues/13))
+- Update Svelte to 3.31.0
+
 # 0.3.1
 
 - Fix path resolution for Windows when exporting css to external files (Thanks [@markoboy](https://github.com/EMH333/esbuild-svelte/pull/8))
