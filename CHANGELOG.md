@@ -1,3 +1,7 @@
+# Unreleased
+
+- Fix example
+
 # 0.3.2
 
 - Fix sourcemap generation when exporting external css ([#13](https://github.com/EMH333/esbuild-svelte/issues/13))

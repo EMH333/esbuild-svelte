@@ -19,7 +19,7 @@ require('esbuild').build({
 }).catch(() => process.exit(1))
 ```
 
-The examples folder of this repository is a great starting off point as well if you change the `require('../index')` in the buildscript to `require('esbuild-svelte')`.
+The examples folder of this repository is a great starting off point for a "complete" project.
 
 ### CSS Output
 

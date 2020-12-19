@@ -1,4 +1,4 @@
-const esbuild_svelte = require("../index");
+const esbuild_svelte = require("esbuild-svelte");
 const esbuild = require("esbuild");
 
 esbuild.build({
