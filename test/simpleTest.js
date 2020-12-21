@@ -9,7 +9,7 @@ If you really care, you are welcome to create a PR to actually test it!
 TODO https://github.com/lukeed/uvu
 */
 const esbuild = require("esbuild");
-const sveltePlugin = require("esbuild-svelte");
+const sveltePlugin = require("../dist/index");
 
 let build = {};
 //should have no errors or warnings
