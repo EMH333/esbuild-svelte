@@ -1,5 +1,5 @@
-const esbuild_svelte = require("esbuild-svelte");
 const esbuild = require("esbuild");
+const sveltePlugin = require("esbuild-svelte");
 
 esbuild.build({
   entryPoints: ['./entry.js'],
@@ -8,7 +8,7 @@ esbuild.build({
   minify: true,
   bundle: true,
   splitting: true,
-  plugins: [esbuild_svelte,]
+  plugins: [sveltePlugin(),]
 }).catch((err) => {
   console.error(err)
   process.exit(1)

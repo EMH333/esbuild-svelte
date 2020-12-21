@@ -1,2 +1,11 @@
-node_modules
-dist
+# duh
+**node_modules/
+
+#should be built by running `node build.js` fresh every time
+dist/index.mjs
+dist/index.js
+
+# from example
+example/dist/
+example/package-lock.json
+

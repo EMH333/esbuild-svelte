@@ -1,10 +1,19 @@
 //original version from https://github.com/evanw/esbuild/blob/plugins/docs/plugin-examples.md
-const svelte = require('svelte/compiler')
-const path = require('path')
-const util = require('util')
-const fs = require('fs')
+import { preprocess, compile } from 'svelte/compiler';
+import { relative } from 'path';
+import { promisify } from 'util';
+import { readFile } from 'fs';
 
-const convertMessage = ({ message, start, end, filename, frame }) => ({
+import type { CompileOptions, Warning } from 'svelte/types/compiler/interfaces';
+import type { PreprocessorGroup } from 'svelte/types/compiler/preprocess';
+import type { Plugin } from 'esbuild';
+
+interface esbuildSvelteOptions {
+    compileOptions?: CompileOptions
+    preprocessor?: PreprocessorGroup | PreprocessorGroup[]
+}
+
+const convertMessage = ({ message, start, end, filename, frame }: Warning) => ({
     text: message,
     location: start && end && {
         file: filename,
@@ -15,7 +24,7 @@ const convertMessage = ({ message, start, end, filename, frame }) => ({
     },
 })
 
-const sveltePlugin = options => {
+export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
     return {
         name: 'esbuild-svelte',
         setup(build) {
@@ -24,17 +33,17 @@ const sveltePlugin = options => {
 
             //main loader
             build.onLoad({ filter: /\.svelte$/ }, async (args) => {
-                let source = await util.promisify(fs.readFile)(args.path, 'utf8')
-                let filename = path.relative(process.cwd(), args.path)
+                let source = await promisify(readFile)(args.path, 'utf8')
+                let filename = relative(process.cwd(), args.path)
                 try {
                     //do preprocessor stuff if it exists
                     if (options && options.preprocessor) {
-                        source = (await svelte.preprocess(source, options.preprocessor, { filename })).code;
+                        source = (await preprocess(source, options.preprocessor, { filename })).code;
                     }
 
                     let compileOptions = { css: false, ...(options && options.compileOptions) };
 
-                    let { js, css, warnings } = svelte.compile(source, { ...compileOptions, filename })
+                    let { js, css, warnings } = compile(source, { ...compileOptions, filename })
                     let contents = js.code + `\n//# sourceMappingURL=` + js.map.toUrl()
 
                     //if svelte emits css seperately, then store it in a map and import it from the js
@@ -58,6 +67,3 @@ const sveltePlugin = options => {
         },
     }
 }
-
-
-module.exports = sveltePlugin;

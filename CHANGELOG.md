@@ -1,6 +1,13 @@
-# Unreleased
+# 0.4.0 (**Breaking**)
 
-- Fix example
+- **Breaking** Combine `esbuild-svelte/configurable` and `esbuild-svelte` into one API
+
+    Instead whatever you were importing before, now just import `esbuild-svelte` and call it as a function to get the plugin.
+
+    I've been wanting to do this for a long time (especially since [#12](https://github.com/EMH333/esbuild-svelte/issues/12)) and it seemed like a decent time to sneak this in. I know this breaks builds (sorry about that), I'd rather get it over with now instead of down the line (once this hits `v1.0`). The author of esbuild has some significant code spliting changes incoming in the beginning of 2021, I'll likely bump this to `v1.0` after that.
+
+- Use TypeScript for development
+- Fix example to use `esbuild-svelte` import (`npm link` is a useful command...)
 
 # 0.3.2
 

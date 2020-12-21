@@ -6,5 +6,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
+    "skipLibCheck": true
   },
+  "files": ["index.ts"]
 }

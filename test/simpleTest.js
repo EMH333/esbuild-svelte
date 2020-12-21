@@ -5,10 +5,11 @@ It doesn't even test that much :(
 Perhaps at some point I will come back and fix this but for now it serves as a simple smoke test
 
 If you really care, you are welcome to create a PR to actually test it!
+
+TODO https://github.com/lukeed/uvu
 */
 const esbuild = require("esbuild");
-
-
+const sveltePlugin = require("esbuild-svelte");
 
 let build = {};
 //should have no errors or warnings
@@ -41,13 +42,11 @@ build.onLoad = async function onLoad(selection, processor) {
         console.log("Test 1 passed");
     }
 };
-require("../index").setup(build);
+sveltePlugin().setup(build);
 
 
 
 //Try a simple esbuild build
-const esbuild_svelte = require("../index");
-
 esbuild.build({
     entryPoints: ['./example/entry.js'],
     outdir: '../example/dist',
@@ -56,7 +55,7 @@ esbuild.build({
     bundle: true,
     splitting: true,
     write: false, //Don't write anywhere
-    plugins: [esbuild_svelte,]
+    plugins: [sveltePlugin(),]
 }).catch((err) => {
     console.error("Test 2 Failed")
     console.error(err)
@@ -64,9 +63,7 @@ esbuild.build({
 }).then(() => console.log("Test 2 Passed"))
 
 
-//configurable
-const configurable = require("../configurable/index");
-
+//more advanced
 esbuild.build({
     entryPoints: ['./example/entry.js'],
     outdir: '../example/dist',
@@ -75,7 +72,7 @@ esbuild.build({
     bundle: true,
     splitting: true,
     write: false, //Don't write anywhere
-    plugins: [configurable({compileOptions:{dev:true}}),]
+    plugins: [sveltePlugin({compileOptions:{dev:true}}),]
 }).catch((err) => {
     console.error("Test 3 Failed")
     console.error(err)

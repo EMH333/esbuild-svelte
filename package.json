@@ -3,19 +3,26 @@
   "version": "0.3.2",
   "description": "esbuild plugin to resolve .svelte files",
   "repository": "https://github.com/EMH333/esbuild-svelte",
-  "main": "index.js",
+  "module": "dist/index.mjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "git push origin --follow-tags",
     "postversion": "npm publish",
-    "preversion": "npm test",
-    "test": "node test/simpleTest.js"
+    "preversion": "npm run build && npm test",
+    "pretest": "npx tsc -p tsconfig.json --noEmit",
+    "test": "node test/simpleTest.js",
+    "build": "node build.js"
   },
   "keywords": [
     "svelte",
     "esbuild",
     "plugin"
   ],
-  "author": "Ethan Hampton",
+  "author": {
+    "name": "Ethan Hampton",
+    "url": "https://www.ethohampton.com"
+  },
   "license": "MIT",
   "dependencies": {
     "svelte": "^3.31.0"
@@ -26,6 +33,7 @@
   "devDependencies": {
     "@types/node": "^14.14.14",
     "esbuild": "^0.8.24",
+    "rewrite-imports": "^2.0.3",
     "typescript": "^4.1.3"
   }
 }
