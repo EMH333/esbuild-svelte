@@ -1,20 +1,32 @@
 <script>
   import Second from "./second.svelte";
-  let lol;
+  let inputBinding;
 
   function change() {
-    lol.value = "testing" + Math.random();
+    inputBinding.value = "testing" + Math.round(Math.random() * 100);
   }
 </script>
 
 <style>
   .test {
-    background-color: black;
+    display: inline-block;
+    background-color: #ff3e00;
+    color: white;
+  }
+
+  .secondStyle {
+    display: block;
   }
 </style>
 
-<div class="test"><input type="text" this:bind={lol} /></div>
+<div class="test">
+  <label for="testingInput">This gets changed when you press the button:
+  </label>
+  <input type="text" name="testingInput" bind:this={inputBinding} />
+</div>
 
-<Second />
+<div class="secondStyle">
+  <button on:click={change}>Click this button!</button>
 
-<button on:click={change} />
+  <Second />
+</div>

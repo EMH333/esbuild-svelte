@@ -1,3 +1,7 @@
+# Unreleased
+
+- Update and fix example
+
 # 0.4.0 (**Breaking**)
 
 - **Breaking** Combine `esbuild-svelte/configurable` and `esbuild-svelte` into one API
