@@ -138,6 +138,8 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 const dependencyModifcationTimes = new Map<string, Date>();
                 dependencyModifcationTimes.set(args.path, statSync(args.path).mtime); // add the target file
 
+                let compileOptions = { css: false, ...options?.compileOptions };
+
                 //actually compile file
                 try {
                     //do preprocessor stuff if it exists
@@ -145,6 +147,9 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         let preprocessResult = await preprocess(source, options.preprocess, {
                             filename,
                         });
+                        if (preprocessResult.map) {
+                            compileOptions.sourcemap = preprocessResult.map;
+                        }
                         source = preprocessResult.code;
 
                         // if caching then we need to store the modifcation times for all dependencies
@@ -155,9 +160,12 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         }
                     }
 
-                    let compileOptions = { css: false, ...options?.compileOptions };
-
                     let { js, css, warnings } = compile(source, { ...compileOptions, filename });
+
+                    // a terrible solution if there ever was one, but grab the orignal file to prepopulate sourcesContent for the source map
+                    // TODO insure the source map works if importing files as a part of pre-processing, right now it assumes only one file is outputed in the sources from pre-processing and compiling which might be broken with SASS and others
+                    js.map.sourcesContent = [await promisify(readFile)(args.path, 'utf8')]
+
                     let contents = js.code + `\n//# sourceMappingURL=` + js.map.toUrl();
 
                     //if svelte emits css seperately, then store it in a map and import it from the js
