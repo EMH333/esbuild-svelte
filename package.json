@@ -11,7 +11,7 @@
     "postversion": "npm publish",
     "preversion": "npm run build && npm test",
     "pretest": "npx tsc -p tsconfig.json --noEmit",
-    "test": "node test/simpleTest.js",
+    "test": "node test/simpleTest.js && node test/sourcemapsTest.js",
     "build": "node build.js"
   },
   "keywords": [
@@ -34,6 +34,7 @@
     "@types/node": "^14.14.14",
     "esbuild": "^0.8.26",
     "rewrite-imports": "^2.0.3",
+    "svelte-preprocess": "^4.6.1",
     "typescript": "^4.1.3"
   }
 }

@@ -33,22 +33,33 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
             //main loader
             build.onLoad({ filter: /\.svelte$/ }, async (args) => {
-                let source = await promisify(readFile)(args.path, 'utf8')
-                let filename = relative(process.cwd(), args.path)
+                let source = await promisify(readFile)(args.path, 'utf8');
+                const filename = relative(process.cwd(), args.path);
+
+                let compileOptions = { css: false, ...(options && options.compileOptions) };
+
                 try {
                     //do preprocessor stuff if it exists
                     if (options && options.preprocessor) {
-                        source = (await preprocess(source, options.preprocessor, { filename })).code;
+                        const processed = await preprocess(source, options.preprocessor, { filename });
+                        source = processed.code;
+                        if (processed.map) {
+                            compileOptions.sourcemap = processed.map;
+                        }
                     }
 
-                    let compileOptions = { css: false, ...(options && options.compileOptions) };
+                    const { js, css, warnings } = compile(source, { ...compileOptions, filename });
 
-                    let { js, css, warnings } = compile(source, { ...compileOptions, filename })
+                    // a terrible solution if there ever was one, but grab the orignal file to prepopulate sourcesContent for the source map
+                    // TODO insure the source map works if importing files as a part of pre-processing, right now it assumes only one file is outputed in the sources from pre-processing and compiling which might be broken with SASS and others
+                    js.map.sourcesContent = [await promisify(readFile)(args.path, 'utf8')]
+
+                    // add sourcemap
                     let contents = js.code + `\n//# sourceMappingURL=` + js.map.toUrl()
 
                     //if svelte emits css seperately, then store it in a map and import it from the js
                     if (!compileOptions.css && css.code) {
-                        let cssPath = args.path.replace(".svelte", ".esbuild-svelte-fake-css").replace(/\\/g, "/");
+                        const cssPath = args.path.replace(".svelte", ".esbuild-svelte-fake-css").replace(/\\/g, "/");
                         cssCode.set(cssPath, css.code + `/*# sourceMappingURL=${css.map.toUrl()}*/`);
                         contents = contents + `\nimport "${cssPath}";`;
                     }
