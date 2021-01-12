@@ -14,19 +14,23 @@ esbuild.build({
     write: false, //Don't write anywhere
     sourcemap: 'external',
     outdir: 'out',
-    plugins: [sveltePlugin({preprocessor: preprocess({
-        typescript: { compilerOptions: { sourceMap: true, inlineSources: true } }, sourceMap: true
-    })}),]
+    plugins: [sveltePlugin({ preprocessor: preprocess() }),]
 }).catch((err) => {
     console.error("Preprocessor Sourcemap Test Failed")
     console.error(err)
     process.exit(1)
 }).then((result) => {
     for (let out of result.outputFiles) {
-        if(path.relative(process.cwd(), out.path) === "out/pp-sourcemaps.js.map") {
-            if(out.text.includes("<script lang=\\\"ts\\\">") && out.text.includes("interface Test")){
+        if (path.relative(process.cwd(), out.path) === "out/pp-sourcemaps.js.map") {
+            const json = JSON.parse(out.text);
+            if (out.text.includes("<script lang=\\\"ts\\\">")
+                && out.text.includes("interface Test")
+                && json.sources.length == 3
+                && !json.sourcesContent.includes(null)) {
                 console.log("Preprocessor Sourcemap Test Passed");
                 return; //test passed
+            } else {
+                console.error(out.text); //test didn't pass so print why
             }
         }
     }
