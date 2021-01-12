@@ -1,5 +1,11 @@
 # Unreleased
 
+- Add support for preprocessor sourcemaps
+
+    Should work with no modification on common setups like `svelte-preprocess` with TypeScript and the like.
+
+    This was more complicated than I anticipated because of how Svelte generates sourcemaps and esbuild deals with them. The only case I haven't come across is where the preprocessing spits out sourcemaps for multiple files. An error has been added so hopefully if it happens in the wild, I can get bug reports.
+
 - Update and fix example
 - Update Svelte to 3.31.2
 

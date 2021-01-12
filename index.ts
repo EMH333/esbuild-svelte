@@ -33,26 +33,40 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
             //main loader
             build.onLoad({ filter: /\.svelte$/ }, async (args) => {
-                let source = await promisify(readFile)(args.path, 'utf8');
+                const originalSource = await promisify(readFile)(args.path, 'utf8');
                 const filename = relative(process.cwd(), args.path);
 
                 let compileOptions = { css: false, ...(options && options.compileOptions) };
 
                 try {
+                    let source = originalSource;
+
                     //do preprocessor stuff if it exists
                     if (options && options.preprocessor) {
-                        const processed = await preprocess(source, options.preprocessor, { filename });
-                        source = processed.code;
+                        const processed = await preprocess(originalSource, options.preprocessor, { filename });
                         if (processed.map) {
                             compileOptions.sourcemap = processed.map;
                         }
+                        source = processed.code;
                     }
 
+                    //actually compile the file
                     const { js, css, warnings } = compile(source, { ...compileOptions, filename });
 
-                    // a terrible solution if there ever was one, but grab the orignal file to prepopulate sourcesContent for the source map
-                    // TODO insure the source map works if importing files as a part of pre-processing, right now it assumes only one file is outputed in the sources from pre-processing and compiling which might be broken with SASS and others
-                    js.map.sourcesContent = [await promisify(readFile)(args.path, 'utf8')]
+                    //esbuild doesn't seem to like sourcemaps without "sourcesContent" which Svelte doesn't provide
+                    //so attempt to populate that array if the only source is the original file.
+                    //Otherwise leave it the way it is and give an error.
+                    if (compileOptions.sourcemap) {
+                        if (js.map.sources.length === 1) {
+                            js.map.sourcesContent = [originalSource];
+                        } else {
+                            warnings.push({
+                                message: "There was an error while dealing with the preprocessor sourcemap in the esbuild-svelte plugin. " +
+                                    "Please file a bug at https://github.com/EMH333/esbuild-svelte/issues detailing your use case " +
+                                    "(types of content being preprocessed and preprocessors used) so the issue can be fixed promptly", code: ""
+                            });
+                        }
+                    }
 
                     // add sourcemap
                     let contents = js.code + `\n//# sourceMappingURL=` + js.map.toUrl()
