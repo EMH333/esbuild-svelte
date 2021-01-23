@@ -5,10 +5,17 @@
 
     function event() {
         tryThisThing({ yellThisThing: "something!" });
+        change();
     }
 
     function tryThisThing(input: Test) {
         console.log(input.yellThisThing.toUpperCase());
+    }
+
+    let inputBinding: HTMLInputElement;
+
+    function change() {
+        inputBinding.value = "testing" + Math.round(Math.random() * 100);
     }
 </script>
 
@@ -23,3 +30,4 @@
 </style>
 
 <button on:click={event} class="sourcemap">Yell "something"</button>
+<input type="text" name="testingInput" bind:this={inputBinding} />
