@@ -26,7 +26,10 @@ esbuild.build({
             if (out.text.includes("<script lang=\\\"ts\\\">")
                 && out.text.includes("interface Test")
                 && json.sources.length == 3
-                && !json.sourcesContent.includes(null)) {
+                && !json.sourcesContent.includes(null)
+                //note this is kind of an random number, but failing this should prompt
+                //more investigation into why it suddenly got shorter
+                && json.mappings.length > 3900) {
                 console.log("Preprocessor Sourcemap Test Passed");
                 return; //test passed
             } else {
