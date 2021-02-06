@@ -11,7 +11,7 @@
     "postversion": "npm publish",
     "preversion": "npm run build && npm test",
     "pretest": "npx tsc -p tsconfig.json --noEmit",
-    "test": "node test/simpleTest.js",
+    "test": "node test/simpleTest.js && node test/cacheTest.js",
     "build": "node build.js"
   },
   "keywords": [

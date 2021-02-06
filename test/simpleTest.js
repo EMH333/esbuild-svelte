@@ -15,7 +15,7 @@ let build = {};
 //should have no errors or warnings
 build.onLoad = async function onLoad(selection, processor) {
     //ignore the css loader for now
-    if(selection.filter.test("test.esbuild-svelte-fake-css")){
+    if (selection.filter.test("test.esbuild-svelte-fake-css")) {
         return;
     }
 
@@ -30,7 +30,7 @@ build.onLoad = async function onLoad(selection, processor) {
         console.error(out.errors)
         failed = true;
     }
-    if(out.contents.length < 5){
+    if (out.contents.length < 5) {
         console.error("Not the expected length")
         failed = true;
     }
@@ -72,7 +72,7 @@ esbuild.build({
     bundle: true,
     splitting: true,
     write: false, //Don't write anywhere
-    plugins: [sveltePlugin({compileOptions:{dev:true}}),]
+    plugins: [sveltePlugin({ compileOptions: { dev: true } }),]
 }).catch((err) => {
     console.error("Test 3 Failed")
     console.error(err)

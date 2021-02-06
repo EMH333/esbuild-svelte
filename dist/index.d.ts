@@ -4,6 +4,7 @@ import type { Plugin } from 'esbuild';
 interface esbuildSvelteOptions {
     compileOptions?: CompileOptions;
     preprocessor?: PreprocessorGroup | PreprocessorGroup[];
+    cache?: boolean;
 }
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin;
 export {};

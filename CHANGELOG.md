@@ -1,5 +1,8 @@
 # Unreleased
 
+- Add a cache for incremential and watch builds
+
+    This should speed up building large projects that use incremental builds or use the new `--watch` flag for esbuild. To enable this, simply set the `cache` option to `true`.
 - Update and fix example
 - Update Svelte to 3.32.1
 
