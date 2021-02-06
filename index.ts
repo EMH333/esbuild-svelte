@@ -29,7 +29,7 @@ const convertMessage = ({ message, start, end, filename, frame }: Warning) => ({
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
     //convert old option "preprocessor" to "preprocess"
-    if (options && options.preprocessor) {
+    if (options?.preprocessor) {
         options.preprocess = options.preprocessor;
     }
 
@@ -46,7 +46,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 // if told to use the cache, check if it contains the file,
                 // and if the modified time is not greater than the time when it was cached
                 // if so, return the cached data
-                if (options && options.cache === true && fileCache.has(args.path)) {
+                if (options?.cache === true && fileCache.has(args.path)) {
                     const cachedFile = fileCache.get(args.path);
                     if (cachedFile && statSync(args.path).mtime < cachedFile.time) {
                         return cachedFile.data
@@ -57,11 +57,11 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 let filename = relative(process.cwd(), args.path)
                 try {
                     //do preprocessor stuff if it exists
-                    if (options && options.preprocess) {
+                    if (options?.preprocess) {
                         source = (await preprocess(source, options.preprocess, { filename })).code;
                     }
 
-                    let compileOptions = { css: false, ...(options && options.compileOptions) };
+                    let compileOptions = { css: false, ...(options?.compileOptions) };
 
                     let { js, css, warnings } = compile(source, { ...compileOptions, filename })
                     let contents = js.code + `\n//# sourceMappingURL=` + js.map.toUrl()
@@ -74,14 +74,14 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     }
 
                     //add warning for deprecated option 'preprocessor'
-                    if (options && options.preprocessor) {
+                    if (options?.preprocessor) {
                         warnings.push({ message: "The 'preprocessor' option for esbuild-svelte is deprecated, please use 'preprocess' instead", code: "" })
                     }
 
                     const result = { contents, warnings: warnings.map(convertMessage) };
 
                     // if we are told to cache, then cache
-                    if (options && options.cache === true) {
+                    if (options?.cache === true) {
                         fileCache.set(args.path, { data: result, time: new Date() });
                     }
 
