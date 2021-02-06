@@ -1,6 +1,7 @@
 # Unreleased
 
 - Update and fix example
+- Update Svelte to 3.32.1
 
 # 0.4.0 (**Breaking**)
 
