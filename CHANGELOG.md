@@ -1,8 +1,12 @@
 # Unreleased
 
-- Add a cache for incremential and watch builds
+- Deprecate `preprocessor` option in favor of `preprocess`
 
-    This should speed up building large projects that use incremental builds or use the new `--watch` flag for esbuild. To enable this, simply set the `cache` option to `true`.
+    This is more in line with other bundler plugins which only use the `preprocess` option. This allows common `svelte.config.js` configurations to be used without modification. The `preprocessor` option is now deprecated, and will be removed with the next breaking release.
+
+- (unstable) Add a cache for incremential and watch builds
+
+    This should speed up building large projects that use incremental esbuild builds or use the new `--watch` flag for esbuild. It is not required (or recommended) on normal `build` or `transform` calls. To enable this feature, simply set the `cache` option to `true`. This feature should be considered unstable until I get better test coverage.
 - Update and fix example
 - Update Svelte to 3.32.1
 

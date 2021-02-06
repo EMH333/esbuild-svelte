@@ -11,6 +11,7 @@ import type { OnLoadResult, Plugin } from 'esbuild';
 interface esbuildSvelteOptions {
     compileOptions?: CompileOptions
     preprocessor?: PreprocessorGroup | PreprocessorGroup[]
+    preprocess?: PreprocessorGroup | PreprocessorGroup[]
     cache?: boolean
 }
 
@@ -26,6 +27,12 @@ const convertMessage = ({ message, start, end, filename, frame }: Warning) => ({
 })
 
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
+
+    //convert old option "preprocessor" to "preprocess"
+    if (options && options.preprocessor) {
+        options.preprocess = options.preprocessor;
+    }
+
     return {
         name: 'esbuild-svelte',
         setup(build) {
@@ -50,8 +57,8 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 let filename = relative(process.cwd(), args.path)
                 try {
                     //do preprocessor stuff if it exists
-                    if (options && options.preprocessor) {
-                        source = (await preprocess(source, options.preprocessor, { filename })).code;
+                    if (options && options.preprocess) {
+                        source = (await preprocess(source, options.preprocess, { filename })).code;
                     }
 
                     let compileOptions = { css: false, ...(options && options.compileOptions) };
@@ -64,6 +71,11 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         let cssPath = args.path.replace(".svelte", ".esbuild-svelte-fake-css").replace(/\\/g, "/");
                         cssCode.set(cssPath, css.code + `/*# sourceMappingURL=${css.map.toUrl()}*/`);
                         contents = contents + `\nimport "${cssPath}";`;
+                    }
+
+                    //add warning for deprecated option 'preprocessor'
+                    if (options && options.preprocessor) {
+                        warnings.push({ message: "The 'preprocessor' option for esbuild-svelte is deprecated, please use 'preprocess' instead", code: "" })
                     }
 
                     const result = { contents, warnings: warnings.map(convertMessage) };
