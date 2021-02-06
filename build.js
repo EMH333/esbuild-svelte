@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 const { readFile, writeFile } = require('fs');
 const { promisify } = require('util');
-const esbuild = require("esbuild");
-const ts = require("typescript");
+const esbuild = require('esbuild');
+const ts = require('typescript');
 const imports = require('rewrite-imports');
 
 const read = promisify(readFile);
@@ -10,14 +10,15 @@ const write = promisify(writeFile);
 
 const esbuildCommon = {
     entryPoints: ['./index.ts'],
-    platform: "node",
+    platform: 'node',
+    target: ['node12.20.1']
 };
 
 
 (async function () {
     await esbuild.build({
-        format: "esm",
-        outfile: "./dist/index.mjs",
+        format: 'esm',
+        outfile: './dist/index.mjs',
         ...esbuildCommon
     })
 
@@ -36,10 +37,10 @@ const esbuildCommon = {
         .replace(/export {.*sveltePlugin as default.*};/s,
             'module.exports = sveltePlugin;'));
 
-    const program = ts.createProgram(["index.ts"], {
+    const program = ts.createProgram(['index.ts'], {
         declaration: true,
         emitDeclarationOnly: true,
-        outDir: "./dist"
+        outDir: './dist'
     });
     program.emit();
 
