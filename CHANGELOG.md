@@ -1,5 +1,7 @@
 # Unreleased
 
+- Add JSDoc deprecation comment to `preprocessor` and add comments for other options
+
 # 0.4.1
 
 - Deprecate `preprocessor` option in favor of `preprocess`
