@@ -28,9 +28,28 @@ The `example` folder of this repository is a great starting off point for a "com
 
 By default, `esbuild-svelte` emits external css files from Svelte for `esbuild` to process. If this isn't desired, use a configuration that turns off external css output and instead includes it in the javascript output. For example: `sveltePlugin({compileOptions: {css: true}})`
 
+### Typescript and Other Svelte Preprocessing
+
+In order to support Typescript and other languages that require preprocessing before being fed into the Svelte compiler, simply add the preprocessor to the `preprocess` option (which accepts both a single preprocessor or an array of them). The example script below is a great place to start. **NOTE: This will break sourcemaps as of the current release, fixes are in progress**
+
+```javascript
+const sveltePreprocess = require('svelte-preprocess');
+const esbuildSvelte = require('esbuild-svelte');
+const esbuild = require('esbuild');
+
+esbuild.build({
+  entryPoints: ['index.js'],
+  bundle: true,
+  outdir: './dist',
+  plugins: [esbuildSvelte({
+    preprocess: sveltePreprocess()
+  })],
+}).catch(() => process.exit(1));
+```
+
 ## Advanced
 
-You can see the full API [here](https://github.com/EMH333/esbuild-svelte/blob/main/dist/index.d.ts), which also includes support for Svelte's compiler options and preprocessing API.
+You can see the full API for this plugin [here](https://github.com/EMH333/esbuild-svelte/blob/main/dist/index.d.ts), which includes support for Svelte's compiler options, preprocessing API, and more.
 
 ## Developing
 
