@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.4.1
+
 - Deprecate `preprocessor` option in favor of `preprocess`
 
     This is more in line with other bundler plugins which only use the `preprocess` option. This allows common `svelte.config.js` configurations to be used without modification. The `preprocessor` option is now deprecated, and will be removed with the next breaking release.
