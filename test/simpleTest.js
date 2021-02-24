@@ -42,6 +42,10 @@ build.onLoad = async function onLoad(selection, processor) {
         console.log("Test 1 passed");
     }
 };
+
+build.onResolve =  async function(selection, processor){
+    
+}
 sveltePlugin().setup(build);
 
 
