@@ -106,10 +106,15 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     return { errors: [convertMessage(e)] }
                 }
             })
-
+            
+            
             //if the css exists in our map, then output it with the css loader
-            build.onLoad({ filter: /\.esbuild-svelte-fake-css$/ }, (args) => {
-                const css = cssCode.get(args.path);
+            build.onResolve({filter: /\.esbuild-svelte-fake-css$/}, ({path}) => {
+                return { path, namespace: 'fakecss' }
+            })
+            
+            build.onLoad({ filter: /\.esbuild-svelte-fake-css$/, namespace: 'fakecss' }, ({path}) => {
+                const css = cssCode.get(path);
                 return css ? { contents: css, loader: "css" } : null;
             })
         },
