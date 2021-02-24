@@ -1,6 +1,10 @@
 # Unreleased
 
+# 0.4.2
+
 - Add JSDoc deprecation comment to `preprocessor` and add comments for other options
+- Fix error arising from esbuid release 0.8.51 and changes to import resolution (Thanks [@AlexxNB](https://github.com/EMH333/esbuild-svelte/pull/34)!)
+- Update dependencies
 
 # 0.4.1
 
