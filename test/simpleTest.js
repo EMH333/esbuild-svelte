@@ -30,7 +30,7 @@ build.onLoad = async function onLoad(selection, processor) {
         console.error(out.errors)
         failed = true;
     }
-    if (out.contents.length < 5) {
+    if (out && out.contents.length < 5) {
         console.error("Not the expected length")
         failed = true;
     }

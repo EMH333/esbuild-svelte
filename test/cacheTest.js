@@ -32,7 +32,7 @@ async function incrementalTest() {
 
     // Call "rebuild" as many times as you want
     for (let i = 0; i < 5; i++) {
-        let result2 = await result.rebuild()
+        await result.rebuild();
     }
 
     // Call "dispose" when you're done to free up resources.
