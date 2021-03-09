@@ -1,5 +1,10 @@
 # Unreleased
 
+# 0.4.3
+
+- Update Svelte to 3.35.0
+- Update esbuild peer dependency to allow for 0.9.0 version
+
 # 0.4.2
 
 - Add JSDoc deprecation comment to `preprocessor` and add comments for other options
