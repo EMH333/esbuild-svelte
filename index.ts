@@ -52,6 +52,15 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
     return {
         name: 'esbuild-svelte',
         setup(build) {
+            // see if we are incrementally building or watching for changes and enable the cache
+            // also checks if it has already been defined and ignores this if it has
+            if (options?.cache == undefined && (build.initialOptions.incremental || build.initialOptions.watch)) {
+                if (!options) {
+                    options = {};
+                }
+                options.cache = true;
+            }
+
             //Store generated css code for use in fake import
             const cssCode = new Map<string, string>();
             const fileCache = new Map<string, { data: OnLoadResult, time: Date }>();
@@ -106,14 +115,14 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     return { errors: [convertMessage(e)] }
                 }
             })
-            
-            
+
+
             //if the css exists in our map, then output it with the css loader
-            build.onResolve({filter: /\.esbuild-svelte-fake-css$/}, ({path}) => {
+            build.onResolve({ filter: /\.esbuild-svelte-fake-css$/ }, ({ path }) => {
                 return { path, namespace: 'fakecss' }
             })
-            
-            build.onLoad({ filter: /\.esbuild-svelte-fake-css$/, namespace: 'fakecss' }, ({path}) => {
+
+            build.onLoad({ filter: /\.esbuild-svelte-fake-css$/, namespace: 'fakecss' }, ({ path }) => {
                 const css = cssCode.get(path);
                 return css ? { contents: css, loader: "css" } : null;
             })

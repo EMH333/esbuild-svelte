@@ -28,7 +28,7 @@
     "svelte": "^3.35.0"
   },
   "peerDependencies": {
-    "esbuild": ">=0.8.1"
+    "esbuild": ">=0.9.6"
   },
   "devDependencies": {
     "@types/node": "^14.14.35",
