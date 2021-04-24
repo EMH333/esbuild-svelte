@@ -15,11 +15,6 @@ interface esbuildSvelteOptions {
     compileOptions?: CompileOptions
 
     /**
-    * @deprecated Replaced by `preprocess`, will be removed in next breaking release
-    */
-    preprocessor?: PreprocessorGroup | PreprocessorGroup[]
-
-    /**
      * The preprocessor(s) to run the Svelte code through before compiling
      */
     preprocess?: PreprocessorGroup | PreprocessorGroup[]
@@ -43,12 +38,6 @@ const convertMessage = ({ message, start, end, filename, frame }: Warning) => ({
 })
 
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
-
-    //convert old option "preprocessor" to "preprocess"
-    if (options?.preprocessor) {
-        options.preprocess = options.preprocessor;
-    }
-
     return {
         name: 'esbuild-svelte',
         setup(build) {
@@ -96,11 +85,6 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         let cssPath = args.path.replace(".svelte", ".esbuild-svelte-fake-css").replace(/\\/g, "/");
                         cssCode.set(cssPath, css.code + `/*# sourceMappingURL=${css.map.toUrl()}*/`);
                         contents = contents + `\nimport "${cssPath}";`;
-                    }
-
-                    //add warning for deprecated option 'preprocessor'
-                    if (options?.preprocessor) {
-                        warnings.push({ message: "The 'preprocessor' option for esbuild-svelte is deprecated, please use 'preprocess' instead", code: "" })
                     }
 
                     const result = { contents, warnings: warnings.map(convertMessage) };

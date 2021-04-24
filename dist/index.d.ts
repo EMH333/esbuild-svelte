@@ -7,10 +7,6 @@ interface esbuildSvelteOptions {
      */
     compileOptions?: CompileOptions;
     /**
-    * @deprecated Replaced by `preprocess`, will be removed in next breaking release
-    */
-    preprocessor?: PreprocessorGroup | PreprocessorGroup[];
-    /**
      * The preprocessor(s) to run the Svelte code through before compiling
      */
     preprocess?: PreprocessorGroup | PreprocessorGroup[];

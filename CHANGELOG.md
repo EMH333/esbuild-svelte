@@ -1,7 +1,8 @@
 # Unreleased
 
-- **Breaking**: Require esbuild 0.9.6 or greater to support 'initialOptions' property
+- **Breaking**: Require esbuild 0.9.6 or greater to support `initialOptions` property
 - **Potentially Breaking**: Auto-enable cache when build is in incremental mode or in watch mode
+- **Breaking**: Remove `preprocessor` option, use `preprocess` instead
 
 # 0.4.3
 
