@@ -43,9 +43,10 @@ build.onLoad = async function onLoad(selection, processor) {
     }
 };
 
-build.onResolve =  async function(selection, processor){
-    
+build.onResolve = async function (selection, processor) {
+
 }
+build.initialOptions = { incremental: false, watch: false };
 sveltePlugin().setup(build);
 
 
