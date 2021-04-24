@@ -6,12 +6,12 @@ Plugin to compile svelte components for bundling with esbuild.
 
 ## Install
 
-Install both this plugin and [esbuild](https://github.com/evanw/esbuild) (esbuild must be above 0.8.1). 
+Install both this plugin and [esbuild](https://github.com/evanw/esbuild) (esbuild must be above 0.9.6). 
 
 A simple build script looks like
 ```javascript
-const esbuild = require('esbuild');
-const sveltePlugin = require('esbuild-svelte');
+import esbuild from 'esbuild';
+import sveltePlugin from 'esbuild-svelte';
 
 esbuild.build({
   entryPoints: ['app.js'],
@@ -30,12 +30,12 @@ By default, `esbuild-svelte` emits external css files from Svelte for `esbuild` 
 
 ### Typescript and Other Svelte Preprocessing
 
-In order to support Typescript and other languages that require preprocessing before being fed into the Svelte compiler, simply add the preprocessor to the `preprocess` option (which accepts both a single preprocessor or an array of them). The example script below is a great place to start. **NOTE: This will break sourcemaps as of the current release, fixes are in progress**
+In order to support Typescript and other languages that require preprocessing before being fed into the Svelte compiler, simply add the preprocessor to the `preprocess` option (which accepts both a single preprocessor or an array of them). The example script below is a great place to start. **NOTE: Currently passes through sourcemaps after the code has been preprocessed, fixes are in progress**
 
 ```javascript
-const sveltePreprocess = require('svelte-preprocess');
-const esbuildSvelte = require('esbuild-svelte');
-const esbuild = require('esbuild');
+import esbuild from 'esbuild';
+import esbuildSvelte from 'esbuild-svelte';
+import sveltePreprocess from 'svelte-preprocess';
 
 esbuild.build({
   entryPoints: ['index.js'],
@@ -48,6 +48,11 @@ esbuild.build({
 ```
 
 ## Advanced
+
+### Cache
+
+For incremental or watch build modes, it makes sense to cache files if they haven't changed. Setting `cache: true` will enable this file level cache, which checks the files modification time before returning the cached file or compiling it fresh.
+
 
 You can see the full API for this plugin [here](https://github.com/EMH333/esbuild-svelte/blob/main/dist/index.d.ts), which includes support for Svelte's compiler options, preprocessing API, and more.
 
