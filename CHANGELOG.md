@@ -1,8 +1,11 @@
 # Unreleased
 
+# 0.5.0
+
 - **Breaking**: Require esbuild 0.9.6 or greater to support `initialOptions` property
 - **Potentially Breaking**: Auto-enable cache when build is in incremental mode or in watch mode
 - **Breaking**: Remove `preprocessor` option, use `preprocess` instead
+- Update Svelte to 3.38.0
 
 # 0.4.3
 
