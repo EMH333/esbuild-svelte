@@ -1,5 +1,9 @@
 # Unreleased
 
+# 0.5.1
+
+- Update Svelte to 3.38.2 because of bugs in SSR updates
+
 # 0.5.0
 
 - **Breaking**: Require esbuild 0.9.6 or greater to support `initialOptions` property
