@@ -3,7 +3,7 @@ const { readFile, writeFile } = require('fs');
 const { promisify } = require('util');
 const esbuild = require('esbuild');
 const ts = require('typescript');
-const imports = require('rewrite-imports');
+const { rewrite } = require('rewrite-imports');
 
 const read = promisify(readFile);
 const write = promisify(writeFile);
@@ -33,7 +33,7 @@ const esbuildCommon = {
     })*/
 
     let output = await read('./dist/index.mjs', 'utf8');
-    await write('./dist/index.js', imports(output)
+    await write('./dist/index.js', rewrite(output)
         .replace(/export {.*sveltePlugin as default.*};/s,
             'module.exports = sveltePlugin;'));
 
