@@ -1,5 +1,7 @@
 # Unreleased
 
+- Update Svelte to 3.38.3
+
 # 0.5.1
 
 - Update Svelte to 3.38.2 because of bugs in SSR updates
