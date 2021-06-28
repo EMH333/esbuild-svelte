@@ -43,7 +43,9 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
         setup(build) {
             // see if we are incrementally building or watching for changes and enable the cache
             // also checks if it has already been defined and ignores this if it has
-            if (options?.cache == undefined && (build.initialOptions.incremental || build.initialOptions.watch)) {
+            // Disable auto-cache enabling if there are preprocessors. Detailed in https://github.com/EMH333/esbuild-svelte/issues/59
+            // TODO: There is a better way to do this, but requires more complex cache invalidation
+            if (options?.cache == undefined && !options?.preprocess && (build.initialOptions.incremental || build.initialOptions.watch)) {
                 if (!options) {
                     options = {};
                 }

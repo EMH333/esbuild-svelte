@@ -1,5 +1,6 @@
 # Unreleased
 
+- Disabled cache auto-enabling when using a preprocessor (better fix incoming)
 - Update Svelte to 3.38.3
 
 # 0.5.1
