@@ -89,7 +89,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         contents = contents + `\nimport "${cssPath}";`;
                     }
 
-                    const result = { contents, warnings: warnings.map(convertMessage) };
+                    const result: OnLoadResult = { contents, warnings: warnings.map(convertMessage) };
 
                     // if we are told to cache, then cache
                     if (options?.cache === true) {
