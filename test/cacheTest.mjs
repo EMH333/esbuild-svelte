@@ -1,9 +1,14 @@
 import { test } from 'uvu';
+import * as assert from 'uvu/assert';
 import { build } from "esbuild";
+import { mkdirSync, writeFileSync } from "fs";
+import { sass } from "svelte-preprocess-sass";
 import sveltePlugin from "../dist/index.mjs";
+import { tmpdir } from 'os';
+import { join } from 'path';
 
 //with cache enabled
-test("Basic cache", async ()  => {
+test("Basic cache", async () => {
     await build({
         entryPoints: ['./example/entry.js'],
         outdir: '../example/dist',
@@ -41,6 +46,39 @@ async function incrementalTest() {
 
 test("Cache w/ rebuild", async () => {
     await incrementalTest();
-})
+});
+
+test("Preprocess w/ deps", (async () => {
+    const dirname = join(tmpdir(), "esbuild-svelte");
+    mkdirSync(dirname, {recursive: true});
+    writeFileSync(join(dirname, '/app.js'), 'import x from "./foo.svelte"\nconsole.log(x)');
+    writeFileSync(join(dirname, '/foo.svelte'), '<style lang="sass">@import "./xyz.sass"</style><div class="xyz">foo</div>');
+
+    // Set color to red
+    writeFileSync(join(dirname, '/xyz.sass'), '.xyz\n  color: red');
+    const result = await build({
+        entryPoints: [join(dirname, '/app.js')],
+        bundle: true,
+        incremental: true,
+        write: false,
+        outfile: 'out.js',
+        external: ["svelte/internal"],
+        plugins: [sveltePlugin({
+            preprocess: {
+                style: sass(),
+            },
+        })],
+        logLevel: 'info',
+    });
+    assert.match(result.outputFiles[1].text, new RegExp(".*red.*"));
+
+    // Set color to green
+    writeFileSync(join(dirname, '/xyz.sass'), '.xyz\n  color: green');
+    const result2 = await result.rebuild();
+    assert.match(result2.outputFiles[1].text, new RegExp(".*green.*"));
+
+    result.rebuild.dispose();
+}));
+
 
 test.run();
