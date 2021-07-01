@@ -3,8 +3,8 @@ import { build } from "esbuild";
 import sveltePlugin from "../dist/index.mjs";
 
 //with cache enabled
-test("Basic cache", () => {
-    build({
+test("Basic cache", async ()  => {
+    await build({
         entryPoints: ['./example/entry.js'],
         outdir: '../example/dist',
         format: "esm",
@@ -39,8 +39,8 @@ async function incrementalTest() {
     result.rebuild.dispose()
 }
 
-test("Cache w/ rebuild", () => {
-    incrementalTest();
+test("Cache w/ rebuild", async () => {
+    await incrementalTest();
 })
 
 test.run();
