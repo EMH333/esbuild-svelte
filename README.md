@@ -1,6 +1,6 @@
 # esbuild-svelte
 
-[![npm version](https://badge.fury.io/js/esbuild-svelte.svg)](https://badge.fury.io/js/esbuild-svelte) [![npm downloads](http://img.shields.io/npm/dm/esbuild-svelte.svg)](https://www.npmjs.org/package/esbuild-svelte) [![DeepScan grade](https://deepscan.io/api/teams/13110/projects/16122/branches/339411/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=13110&pid=16122&bid=339411)
+[![npm version](https://badge.fury.io/js/esbuild-svelte.svg)](https://badge.fury.io/js/esbuild-svelte) [![npm downloads](http://img.shields.io/npm/dm/esbuild-svelte.svg)](https://www.npmjs.org/package/esbuild-svelte)
 
 Plugin to compile svelte components for bundling with esbuild.
 
@@ -49,10 +49,7 @@ esbuild.build({
 
 ## Advanced
 
-### Cache
-
-For incremental or watch build modes, it makes sense to cache files if they haven't changed. Setting `cache: true` will enable this file level cache, which checks the files modification time before returning the cached file or compiling it fresh.
-
+For incremental or watch build modes, esbuild-svelte will automatically cache files if they haven't changed. This allows esbuild to skip the Svelte compiler for those files altogether, saving time. Setting `cache: false` will disable this file level cache if an issue arises (please report).
 
 You can see the full API for this plugin [here](https://github.com/EMH333/esbuild-svelte/blob/main/dist/index.d.ts), which includes support for Svelte's compiler options, preprocessing API, and more.
 
