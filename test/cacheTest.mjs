@@ -70,12 +70,12 @@ test("Preprocess w/ deps", (async () => {
         })],
         logLevel: 'info',
     });
-    assert.match(result.outputFiles[1].text, new RegExp(".*red.*"));
+    assert.match(result.outputFiles[1].text, "red");
 
     // Set color to green
     writeFileSync(join(dirname, '/xyz.sass'), '.xyz\n  color: green');
     const result2 = await result.rebuild();
-    assert.match(result2.outputFiles[1].text, new RegExp(".*green.*"));
+    assert.match(result2.outputFiles[1].text, "green");
 
     result.rebuild.dispose();
 }));
