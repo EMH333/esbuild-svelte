@@ -11,7 +11,7 @@
     "postversion": "npm publish",
     "preversion": "npm run build && npm test",
     "pretest": "tsc -p tsconfig.json --noEmit",
-    "test": "node test/simpleTest.js && node test/cacheTest.mjs",
+    "test": "uvu test/",
     "build": "node build.js"
   },
   "keywords": [
