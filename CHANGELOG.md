@@ -1,6 +1,14 @@
 # Unreleased
 
+# 0.5.2
+
 - Disabled cache auto-enabling when using a preprocessor (better fix incoming)
+
+    This is pretty embarrassing and something I should have caught earlier (especially because the esbuild website specifically calls it out). I have a good idea about how to properly fix the issue ([#59](https://github.com/EMH333/esbuild-svelte/issues/59)) but wanted to get a quick and dirty fix out there before others ran into it. This does affect rebuild performance if using preprocessors.
+
+    I don't consider disabling the auto-cache in certain scenarios to be a breaking change. The auto-enable cache feature is a progressive enhancement anyway so worst case performance degrades a bit while I get this fixed.
+
+- Improve testing (switched to `uvu`)
 - Update Svelte to 3.38.3
 
 # 0.5.1
