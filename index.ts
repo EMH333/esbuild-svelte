@@ -26,6 +26,12 @@ interface esbuildSvelteOptions {
     cache?: boolean
 }
 
+interface CacheData {
+    data: OnLoadResult
+    // path, last modified time
+    dependencies: Map<string, Date>
+}
+
 const convertMessage = ({ message, start, end, filename, frame }: Warning) => ({
     text: message,
     location: start && end && {
@@ -43,9 +49,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
         setup(build) {
             // see if we are incrementally building or watching for changes and enable the cache
             // also checks if it has already been defined and ignores this if it has
-            // Disable auto-cache enabling if there are preprocessors. Detailed in https://github.com/EMH333/esbuild-svelte/issues/59
-            // TODO: There is a better way to do this, but requires more complex cache invalidation
-            if (options?.cache == undefined && !options?.preprocess && (build.initialOptions.incremental || build.initialOptions.watch)) {
+            if (options?.cache == undefined && (build.initialOptions.incremental || build.initialOptions.watch)) {
                 if (!options) {
                     options = {};
                 }
@@ -54,7 +58,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
             //Store generated css code for use in fake import
             const cssCode = new Map<string, string>();
-            const fileCache = new Map<string, { data: OnLoadResult, time: Date }>();
+            const fileCache = new Map<string, CacheData>();
 
             //main loader
             build.onLoad({ filter: /\.svelte$/ }, async (args) => {
@@ -63,18 +67,50 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 // and if the modified time is not greater than the time when it was cached
                 // if so, return the cached data
                 if (options?.cache === true && fileCache.has(args.path)) {
-                    const cachedFile = fileCache.get(args.path);
-                    if (cachedFile && statSync(args.path).mtime < cachedFile.time) {
-                        return cachedFile.data
+                    const cachedFile = fileCache.get(args.path) || { dependencies: new Map(), data: null }; // should never hit the null b/c of has check
+                    let cacheValid = true;
+
+                    //for each dependency check if the mtime is still valid
+                    //if an exception is generated (file was deleted or something) then cache isn't valid
+                    try {
+                        cachedFile.dependencies.forEach((time, path) => {
+                            if (statSync(path).mtime > time) {
+                                cacheValid = false;
+                            }
+                        });
+                    } catch {
+                        cacheValid = false;
+                    }
+
+
+                    if (cacheValid) {
+                        return cachedFile.data;
+                    } else {
+                        fileCache.delete(args.path); //can remove from cache if no longer valid
                     }
                 }
 
+                //reading files
                 let source = await promisify(readFile)(args.path, 'utf8')
                 let filename = relative(process.cwd(), args.path)
+
+                //file modification time storage
+                const dependencyModifcationTimes = new Map<string, Date>();
+                dependencyModifcationTimes.set(args.path, statSync(args.path).mtime); // add the target file
+
+                //actually compile file
                 try {
                     //do preprocessor stuff if it exists
                     if (options?.preprocess) {
-                        source = (await preprocess(source, options.preprocess, { filename })).code;
+                        let preprocessResult = (await preprocess(source, options.preprocess, { filename }));
+                        source = preprocessResult.code;
+
+                        // if caching then we need to store the modifcation times for all dependencies
+                        if (options?.cache === true) {
+                            preprocessResult.dependencies?.forEach((entry) => {
+                                dependencyModifcationTimes.set(entry, statSync(entry).mtime);
+                            });
+                        }
                     }
 
                     let compileOptions = { css: false, ...(options?.compileOptions) };
@@ -93,7 +129,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                     // if we are told to cache, then cache
                     if (options?.cache === true) {
-                        fileCache.set(args.path, { data: result, time: new Date() });
+                        fileCache.set(args.path, { data: result, dependencies: dependencyModifcationTimes });
                     }
 
                     return result;

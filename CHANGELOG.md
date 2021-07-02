@@ -1,5 +1,7 @@
 # Unreleased
 
+- Add dependency-aware caching for incremental builds that use a preprocessor ([#59](https://github.com/EMH333/esbuild-svelte/issues/59))
+
 # 0.5.2
 
 - Disabled cache auto-enabling when using a preprocessor (better fix incoming)
