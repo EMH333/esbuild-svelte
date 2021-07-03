@@ -132,6 +132,12 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         fileCache.set(args.path, { data: result, dependencies: dependencyModifcationTimes });
                     }
 
+                    // make sure to tell esbuild to watch any additional files used if supported
+                    if (build.initialOptions.watch) {
+                        // this array does include the orignal file, but esbuild should be smart enough to ignore it
+                        result.watchFiles = Array.from(dependencyModifcationTimes.keys());
+                    }
+
                     return result;
                 } catch (e) {
                     return { errors: [convertMessage(e)] }

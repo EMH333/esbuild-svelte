@@ -1,6 +1,9 @@
 # Unreleased
 
 - Add dependency-aware caching for incremental builds that use a preprocessor ([#59](https://github.com/EMH333/esbuild-svelte/issues/59))
+- Report file dependencies to esbuild when using watch mode
+
+    Likely not something very many people ran into but svelte-esbuild now notifies esbuild of all preprocessor dependecies when watch mode is enabled. This means changes to one of those files will now trigger esbuild to rebuild, improving developer experience.
 
 # 0.5.2
 
