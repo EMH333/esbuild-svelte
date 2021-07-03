@@ -6,20 +6,23 @@ Plugin to compile svelte components for bundling with esbuild.
 
 ## Install
 
-Install both this plugin and [esbuild](https://github.com/evanw/esbuild) (esbuild must be above 0.9.6). 
+Install both this plugin and [esbuild](https://github.com/evanw/esbuild) (esbuild must be above 0.9.6).
 
 A simple build script looks like
-```javascript
-import esbuild from 'esbuild';
-import sveltePlugin from 'esbuild-svelte';
 
-esbuild.build({
-  entryPoints: ['app.js'],
-  bundle: true,
-  outfile: 'out.js',
-  plugins: [sveltePlugin()],
-  logLevel: 'info',
-}).catch(() => process.exit(1))
+```javascript
+import esbuild from "esbuild";
+import sveltePlugin from "esbuild-svelte";
+
+esbuild
+  .build({
+    entryPoints: ["app.js"],
+    bundle: true,
+    outfile: "out.js",
+    plugins: [sveltePlugin()],
+    logLevel: "info",
+  })
+  .catch(() => process.exit(1));
 ```
 
 The `example` folder of this repository is a great starting off point for a "complete" project.
@@ -33,18 +36,22 @@ By default, `esbuild-svelte` emits external css files from Svelte for `esbuild` 
 In order to support Typescript and other languages that require preprocessing before being fed into the Svelte compiler, simply add the preprocessor to the `preprocess` option (which accepts both a single preprocessor or an array of them). The example script below is a great place to start. **NOTE: Currently passes through sourcemaps after the code has been preprocessed, fixes are in progress**
 
 ```javascript
-import esbuild from 'esbuild';
-import esbuildSvelte from 'esbuild-svelte';
-import sveltePreprocess from 'svelte-preprocess';
+import esbuild from "esbuild";
+import esbuildSvelte from "esbuild-svelte";
+import sveltePreprocess from "svelte-preprocess";
 
-esbuild.build({
-  entryPoints: ['index.js'],
-  bundle: true,
-  outdir: './dist',
-  plugins: [esbuildSvelte({
-    preprocess: sveltePreprocess()
-  })],
-}).catch(() => process.exit(1));
+esbuild
+  .build({
+    entryPoints: ["index.js"],
+    bundle: true,
+    outdir: "./dist",
+    plugins: [
+      esbuildSvelte({
+        preprocess: sveltePreprocess(),
+      }),
+    ],
+  })
+  .catch(() => process.exit(1));
 ```
 
 ## Advanced

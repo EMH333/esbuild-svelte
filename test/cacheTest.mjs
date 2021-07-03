@@ -1,39 +1,38 @@
-import { test } from 'uvu';
-import * as assert from 'uvu/assert';
+import { test } from "uvu";
+import * as assert from "uvu/assert";
 import { build } from "esbuild";
 import { mkdirSync, unlinkSync, writeFileSync } from "fs";
 import { sass } from "svelte-preprocess-sass";
 import sveltePlugin from "../dist/index.mjs";
-import { tmpdir } from 'os';
-import { join } from 'path';
+import { tmpdir } from "os";
+import { join } from "path";
 
 //with cache enabled
 test("Basic cache", async () => {
     await build({
-        entryPoints: ['./example/entry.js'],
-        outdir: '../example/dist',
+        entryPoints: ["./example/entry.js"],
+        outdir: "../example/dist",
         format: "esm",
         minify: true,
         bundle: true,
         splitting: true,
         write: false, //Don't write anywhere
-        plugins: [sveltePlugin({ cache: true }),]
-    })
-})
-
+        plugins: [sveltePlugin({ cache: true })],
+    });
+});
 
 async function incrementalTest() {
     let result = await build({
-        entryPoints: ['./example/entry.js'],
-        outdir: '../example/dist',
+        entryPoints: ["./example/entry.js"],
+        outdir: "../example/dist",
         format: "esm",
         minify: true,
         bundle: true,
         splitting: true,
         write: false, //Don't write anywhere
-        plugins: [sveltePlugin({ cache: true }),],
-        incremental: true
-    })
+        plugins: [sveltePlugin({ cache: true })],
+        incremental: true,
+    });
 
     // Call "rebuild" as many times as you want
     for (let i = 0; i < 5; i++) {
@@ -41,7 +40,7 @@ async function incrementalTest() {
     }
 
     // Call "dispose" when you're done to free up resources.
-    result.rebuild.dispose()
+    result.rebuild.dispose();
 }
 
 test("Cache w/ rebuild", async () => {
@@ -52,84 +51,90 @@ test("Cache w/ rebuild", async () => {
 async function depsSetup() {
     const dirname = join(tmpdir(), "esbuild-svelte");
     mkdirSync(dirname, { recursive: true });
-    writeFileSync(join(dirname, '/app.js'), 'import x from "./foo.svelte"\nconsole.log(x)');
-    writeFileSync(join(dirname, '/foo.svelte'), '<style lang="sass">@import "./xyz.sass"</style><div class="xyz">foo</div>');
+    writeFileSync(join(dirname, "/app.js"), 'import x from "./foo.svelte"\nconsole.log(x)');
+    writeFileSync(
+        join(dirname, "/foo.svelte"),
+        '<style lang="sass">@import "./xyz.sass"</style><div class="xyz">foo</div>'
+    );
 
     // Set color to red
-    writeFileSync(join(dirname, '/xyz.sass'), '.xyz\n  color: red');
+    writeFileSync(join(dirname, "/xyz.sass"), ".xyz\n  color: red");
     const result = await build({
-        entryPoints: [join(dirname, '/app.js')],
+        entryPoints: [join(dirname, "/app.js")],
         bundle: true,
         incremental: true,
         write: false,
-        outfile: 'out.js',
+        outfile: "out.js",
         external: ["svelte/internal"],
-        plugins: [sveltePlugin({
-            preprocess: {
-                style: sass(),
-            },
-        })],
-        logLevel: 'silent',
+        plugins: [
+            sveltePlugin({
+                preprocess: {
+                    style: sass(),
+                },
+            }),
+        ],
+        logLevel: "silent",
     });
     return { result, dirname };
 }
 
-test("Preprocess w/ deps basic", (async () => {
+test("Preprocess w/ deps basic", async () => {
     let { result, dirname } = await depsSetup();
 
     // Set color to green
-    writeFileSync(join(dirname, '/xyz.sass'), '.xyz\n  color: green');
+    writeFileSync(join(dirname, "/xyz.sass"), ".xyz\n  color: green");
     const result2 = await result.rebuild();
 
     result.rebuild.dispose();
 
-
     assert.match(result.outputFiles[1].text, "red");
     assert.match(result2.outputFiles[1].text, "green");
-}));
+});
 
-test("Preprocess w/ deps delete", (async () => {
+test("Preprocess w/ deps delete", async () => {
     let { result, dirname } = await depsSetup();
 
     // remove file
-    unlinkSync(join(dirname, '/xyz.sass'));
+    unlinkSync(join(dirname, "/xyz.sass"));
     try {
         await result.rebuild();
         assert.not.ok(true);
     } catch (err) {
-        assert.ok(err.errors, "Rebuild should generate an exception when file deleted")
-        assert.not.match(err.errors[0].text, "stat", "`stat` shouldn't be generating the error message")
+        assert.ok(err.errors, "Rebuild should generate an exception when file deleted");
+        assert.not.match(
+            err.errors[0].text,
+            "stat",
+            "`stat` shouldn't be generating the error message"
+        );
         assert.ok(err.errors.length == 1, "There should be one error");
     } finally {
         result.rebuild.dispose();
     }
-}));
+});
 
-test("Don't cache errors", (async () => {
+test("Don't cache errors", async () => {
     let { result, dirname } = await depsSetup();
 
     // remove file
-    unlinkSync(join(dirname, '/xyz.sass'));
+    unlinkSync(join(dirname, "/xyz.sass"));
     try {
         await result.rebuild();
         assert.not.ok(true);
     } catch (err) {
-        assert.ok(err.errors);//expect to throw from rebuild
+        assert.ok(err.errors); //expect to throw from rebuild
     }
-    
+
     // bring it back
     // the previous error should go away
-    writeFileSync(join(dirname, '/xyz.sass'), '.xyz\n  color: green');
+    writeFileSync(join(dirname, "/xyz.sass"), ".xyz\n  color: green");
     try {
         await result.rebuild();
         assert.ok(true);
     } catch (err) {
-        assert.not.ok(true);//expect to not to
-    } 
-    finally {
+        assert.not.ok(true); //expect to not to
+    } finally {
         result.rebuild.dispose();
     }
-}));
-
+});
 
 test.run();

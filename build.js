@@ -1,26 +1,25 @@
 #!/usr/bin/env node
-const { readFile, writeFile } = require('fs');
-const { promisify } = require('util');
-const esbuild = require('esbuild');
-const ts = require('typescript');
-const { rewrite } = require('rewrite-imports');
+const { readFile, writeFile } = require("fs");
+const { promisify } = require("util");
+const esbuild = require("esbuild");
+const ts = require("typescript");
+const { rewrite } = require("rewrite-imports");
 
 const read = promisify(readFile);
 const write = promisify(writeFile);
 
 const esbuildCommon = {
-    entryPoints: ['./index.ts'],
-    platform: 'node',
-    target: ['node12.20.1']
+    entryPoints: ["./index.ts"],
+    platform: "node",
+    target: ["node12.20.1"],
 };
-
 
 (async function () {
     await esbuild.build({
-        format: 'esm',
-        outfile: './dist/index.mjs',
-        ...esbuildCommon
-    })
+        format: "esm",
+        outfile: "./dist/index.mjs",
+        ...esbuildCommon,
+    });
 
     //doesn't do default exports well
     /*esbuild.build({
@@ -32,19 +31,22 @@ const esbuildCommon = {
         process.exit(1)
     })*/
 
-    let output = await read('./dist/index.mjs', 'utf8');
-    await write('./dist/index.js', rewrite(output)
-        .replace(/export {.*sveltePlugin as default.*};/s,
-            'module.exports = sveltePlugin;'));
+    let output = await read("./dist/index.mjs", "utf8");
+    await write(
+        "./dist/index.js",
+        rewrite(output).replace(
+            /export {.*sveltePlugin as default.*};/s,
+            "module.exports = sveltePlugin;"
+        )
+    );
 
-    const program = ts.createProgram(['index.ts'], {
+    const program = ts.createProgram(["index.ts"], {
         declaration: true,
         emitDeclarationOnly: true,
-        outDir: './dist'
+        outDir: "./dist",
     });
     program.emit();
-
-})().catch(err => {
-    console.error('ERROR', err.stack || err);
+})().catch((err) => {
+    console.error("ERROR", err.stack || err);
     process.exit(1);
 });
