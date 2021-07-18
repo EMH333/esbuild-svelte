@@ -1,6 +1,6 @@
-import type { CompileOptions } from 'svelte/types/compiler/interfaces';
-import type { PreprocessorGroup } from 'svelte/types/compiler/preprocess/types';
-import type { Plugin } from 'esbuild';
+import type { CompileOptions } from "svelte/types/compiler/interfaces";
+import type { PreprocessorGroup } from "svelte/types/compiler/preprocess/types";
+import type { Plugin } from "esbuild";
 interface esbuildSvelteOptions {
     /**
      * Svelte compiler options
