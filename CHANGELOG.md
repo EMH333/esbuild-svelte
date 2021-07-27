@@ -1,5 +1,7 @@
 # Unreleased
 
+- Update Svelte to 3.41.0
+
 # 0.5.3
 
 - Add dependency-aware caching for incremental builds that use a preprocessor ([#59](https://github.com/EMH333/esbuild-svelte/issues/59))
