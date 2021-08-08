@@ -16,6 +16,7 @@ esbuild
         minify: false, //so the resulting code is easier to understand
         bundle: true,
         splitting: true,
+        sourcemap: "inline",
         plugins: [sveltePlugin()],
     })
     .catch((err) => {

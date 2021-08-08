@@ -132,7 +132,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                             .replace(/\\/g, "/");
                         cssCode.set(
                             cssPath,
-                            css.code + `/*# sourceMappingURL=${css.map.toUrl()}*/`
+                            css.code + `/*# sourceMappingURL=${css.map.toUrl()} */`
                         );
                         contents = contents + `\nimport "${cssPath}";`;
                     }

@@ -1,7 +1,7 @@
 import { test } from "uvu";
+import * as assert from "uvu/assert";
 import { build as _build } from "esbuild";
 import sveltePlugin from "../dist/index.mjs";
-import { assert } from "console";
 
 test("Without esbuild", async () => {
     let build = {};
@@ -28,7 +28,7 @@ test("Without esbuild", async () => {
             failed = true;
         }
 
-        assert(!failed);
+        assert.not.ok(failed);
     };
 
     build.onResolve = async function (selection, processor) {};
@@ -38,7 +38,7 @@ test("Without esbuild", async () => {
 
 test("Simple build", async () => {
     //Try a simple esbuild build
-    await _build({
+    const results = await _build({
         entryPoints: ["./example/entry.js"],
         outdir: "../example/dist",
         format: "esm",
@@ -48,11 +48,15 @@ test("Simple build", async () => {
         write: false, //Don't write anywhere
         plugins: [sveltePlugin()],
     });
+
+    assert.ok(results.errors.length === 0, "Non-zero number of errors");
+    assert.ok(results.warnings.length === 0, "Non-zero number of warnings");
+    assert.ok(results.outputFiles.length === 2, "Non-expected number of output files");
 });
 
 test("More advanced build", async () => {
     //more advanced
-    await _build({
+    const results = await _build({
         entryPoints: ["./example/entry.js"],
         outdir: "../example/dist",
         format: "esm",
@@ -60,8 +64,13 @@ test("More advanced build", async () => {
         bundle: true,
         splitting: true,
         write: false, //Don't write anywhere
+        sourcemap: "inline",
         plugins: [sveltePlugin({ compileOptions: { dev: true } })],
     });
+
+    assert.ok(results.errors.length === 0, "Non-zero number of errors");
+    assert.ok(results.warnings.length === 0, "Non-zero number of warnings");
+    assert.ok(results.outputFiles.length === 2, "Non-expected number of output files");
 });
 
 test.run();
