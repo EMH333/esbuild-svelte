@@ -1,6 +1,8 @@
 # Unreleased
 
-- Fix CSS sourcemaps which are now supported with esbuild 0.12.19
+# 0.5.4
+
+- Fix CSS sourcemaps which are now supported with esbuild v0.12.19
 - Update Svelte to 3.42.1
 
 # 0.5.3
