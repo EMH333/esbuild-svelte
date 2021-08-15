@@ -1,5 +1,5 @@
-import Test from './pp-sourcemaps.svelte';
+import Test from "./pp-sourcemaps.svelte";
 
 new Test({
-    target: document.body
+    target: document.body,
 });

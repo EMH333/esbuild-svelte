@@ -146,9 +146,13 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                     //do preprocessor stuff if it exists
                     if (options?.preprocess) {
-                        let preprocessResult = await preprocess(originalSource, options.preprocess, {
-                            filename,
-                        });
+                        let preprocessResult = await preprocess(
+                            originalSource,
+                            options.preprocess,
+                            {
+                                filename,
+                            }
+                        );
                         if (preprocessResult.map) {
                             compileOptions.sourcemap = preprocessResult.map;
                         }
@@ -172,9 +176,11 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                             js.map.sourcesContent = [originalSource];
                         } else {
                             warnings.push({
-                                message: "There was an error while dealing with the preprocessor sourcemap in the esbuild-svelte plugin. " +
+                                message:
+                                    "There was an error while dealing with the preprocessor sourcemap in the esbuild-svelte plugin. " +
                                     "Please file a bug at https://github.com/EMH333/esbuild-svelte/issues detailing your use case " +
-                                    "(types of content being preprocessed and preprocessors used) so the issue can be fixed promptly", code: ""
+                                    "(types of content being preprocessed and preprocessors used) so the issue can be fixed promptly",
+                                code: "",
                             });
                         }
                     }
