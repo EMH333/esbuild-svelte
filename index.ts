@@ -1,6 +1,6 @@
 //original version from https://github.com/evanw/esbuild/blob/plugins/docs/plugin-examples.md
 import { preprocess, compile } from "svelte/compiler";
-import { relative } from "path";
+import { dirname, relative } from "path";
 import { promisify } from "util";
 import { readFile, statSync } from "fs";
 
@@ -157,7 +157,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     }
 
                     return result;
-                } catch (e) {
+                } catch (e: any) {
                     return { errors: [convertMessage(e)] };
                 }
             });
@@ -171,7 +171,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 { filter: /\.esbuild-svelte-fake-css$/, namespace: "fakecss" },
                 ({ path }) => {
                     const css = cssCode.get(path);
-                    return css ? { contents: css, loader: "css" } : null;
+                    return css ? { contents: css, loader: "css", resolveDir: dirname(path) } : null;
                 }
             );
         },

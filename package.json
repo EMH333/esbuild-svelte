@@ -11,7 +11,7 @@
     "postversion": "npm publish",
     "preversion": "npm run build && npm test",
     "pretest": "tsc -p tsconfig.json --noEmit && prettier --check .",
-    "test": "uvu test/",
+    "test": "uvu test/ .*\\.mjs",
     "build": "node build.js",
     "lint": "prettier --write ."
   },
