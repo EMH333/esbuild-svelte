@@ -9,11 +9,12 @@
   "scripts": {
     "prepublishOnly": "git push origin --follow-tags",
     "postversion": "npm publish",
-    "preversion": "npm run build && npm test",
-    "pretest": "tsc -p tsconfig.json --noEmit && prettier --check .",
+    "preversion": "npm run lint && npm run build && npm test",
+    "pretest": "tsc -p tsconfig.json --noEmit",
     "test": "uvu test/ .*\\.mjs",
     "build": "node build.js",
-    "lint": "prettier --write ."
+    "lint": "prettier --check .",
+    "fix": "prettier --write ."
   },
   "keywords": [
     "svelte",
