@@ -1,7 +1,7 @@
 # Unreleased
 
 - Return `resolveDir` for created css files so they can import content ([#69](https://github.com/EMH333/esbuild-svelte/issues/69))
-- Update Svelte to 3.42.4
+- Update Svelte to 3.42.5
 
 # 0.5.4
 
