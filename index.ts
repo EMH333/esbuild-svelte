@@ -24,6 +24,12 @@ interface esbuildSvelteOptions {
      * Only works with incremental or watch mode builds
      */
     cache?: boolean;
+
+    /**
+     * Should esbuild-svelte create a binding to an html element for components given in the entryPoints list
+     * Defaults to `false` for now until support is added
+     */
+    fromEntryFile?: boolean;
 }
 
 interface CacheData {
@@ -44,28 +50,57 @@ const convertMessage = ({ message, start, end, filename, frame }: Warning) => ({
         },
 });
 
+const SVELTE_FILTER = /\.svelte$/;
+const FAKE_CSS_FILTER = /\.esbuild-svelte-fake-css$/;
+
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
     return {
         name: "esbuild-svelte",
         setup(build) {
+            if (!options) {
+                options = {};
+            }
             // see if we are incrementally building or watching for changes and enable the cache
             // also checks if it has already been defined and ignores this if it has
             if (
-                options?.cache == undefined &&
+                options.cache == undefined &&
                 (build.initialOptions.incremental || build.initialOptions.watch)
             ) {
-                if (!options) {
-                    options = {};
-                }
                 options.cache = true;
+            }
+
+            // disable entry file generation by default
+            if (options.fromEntryFile == undefined) {
+                options.fromEntryFile = false;
             }
 
             //Store generated css code for use in fake import
             const cssCode = new Map<string, string>();
             const fileCache = new Map<string, CacheData>();
 
+            //check and see if trying to load svelte files directly
+            build.onResolve({ filter: SVELTE_FILTER }, ({ path, kind }) => {
+                if (kind === "entry-point" && options?.fromEntryFile) {
+                    return { path, namespace: "esbuild-svelte-direct-import" };
+                }
+            });
+
             //main loader
-            build.onLoad({ filter: /\.svelte$/ }, async (args) => {
+            build.onLoad(
+                { filter: SVELTE_FILTER, namespace: "esbuild-svelte-direct-import" },
+                async (args) => {
+                    return {
+                        errors: [
+                            {
+                                text: "esbuild-svelte doesn't support creating entry files yet",
+                            },
+                        ],
+                    };
+                }
+            );
+
+            //main loader
+            build.onLoad({ filter: SVELTE_FILTER }, async (args) => {
                 // if told to use the cache, check if it contains the file,
                 // and if the modified time is not greater than the time when it was cached
                 // if so, return the cached data
@@ -163,17 +198,14 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
             });
 
             //if the css exists in our map, then output it with the css loader
-            build.onResolve({ filter: /\.esbuild-svelte-fake-css$/ }, ({ path }) => {
+            build.onResolve({ filter: FAKE_CSS_FILTER }, ({ path }) => {
                 return { path, namespace: "fakecss" };
             });
 
-            build.onLoad(
-                { filter: /\.esbuild-svelte-fake-css$/, namespace: "fakecss" },
-                ({ path }) => {
-                    const css = cssCode.get(path);
-                    return css ? { contents: css, loader: "css", resolveDir: dirname(path) } : null;
-                }
-            );
+            build.onLoad({ filter: FAKE_CSS_FILTER, namespace: "fakecss" }, ({ path }) => {
+                const css = cssCode.get(path);
+                return css ? { contents: css, loader: "css", resolveDir: dirname(path) } : null;
+            });
         },
     };
 }

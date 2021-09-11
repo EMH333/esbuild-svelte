@@ -15,6 +15,11 @@ interface esbuildSvelteOptions {
      * Only works with incremental or watch mode builds
      */
     cache?: boolean;
+    /**
+     * Should esbuild-svelte create a binding to an html element for components given in the entryPoints list
+     * Defaults to false for now until support is added
+     */
+    fromEntryFile?: boolean;
 }
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin;
 export {};

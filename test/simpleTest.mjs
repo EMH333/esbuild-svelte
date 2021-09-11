@@ -7,8 +7,11 @@ test("Without esbuild", async () => {
     let build = {};
     //should have no errors or warnings
     build.onLoad = async function onLoad(selection, processor) {
-        //ignore the css loader for now
-        if (selection.filter.test("test.esbuild-svelte-fake-css")) {
+        //ignore the css and direct import loaders for now
+        if (
+            selection.filter.test("test.esbuild-svelte-fake-css") ||
+            selection.namespace === "esbuild-svelte-direct-import"
+        ) {
             return;
         }
 
