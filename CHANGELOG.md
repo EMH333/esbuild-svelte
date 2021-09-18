@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.5.5
+
 - Return `resolveDir` for created css files so they can import content ([#69](https://github.com/EMH333/esbuild-svelte/issues/69))
 - Update Svelte to 3.42.6
 - Add filtering to determine if the file to be processed is directly from esbuild `entryPoints`.
