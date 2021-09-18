@@ -1,7 +1,7 @@
 # Unreleased
 
 - Return `resolveDir` for created css files so they can import content ([#69](https://github.com/EMH333/esbuild-svelte/issues/69))
-- Update Svelte to 3.42.5
+- Update Svelte to 3.42.6
 - Add filtering to determine if the file to be processed is directly from esbuild `entryPoints`.
 
   This is in preparation for a feature that allows a binding to be automatically generated if a .svelte file is set as an entry point. The current configuration defaults to `false` in order to preserve current behavior, however the code is included for future expansion. Most all of my (and others) projects could be simplified once this is added, though I will preserve the current behavior for those that simply want to compile Svelte components using esbuild.
