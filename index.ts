@@ -78,6 +78,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
             const cssCode = new Map<string, string>();
             const fileCache = new Map<string, CacheData>();
 
+            /*
             //check and see if trying to load svelte files directly
             build.onResolve({ filter: SVELTE_FILTER }, ({ path, kind }) => {
                 if (kind === "entry-point" && options?.fromEntryFile) {
@@ -97,7 +98,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         ],
                     };
                 }
-            );
+            );*/
 
             //main loader
             build.onLoad({ filter: SVELTE_FILTER }, async (args) => {

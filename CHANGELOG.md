@@ -1,5 +1,9 @@
 # Unreleased
 
+# 0.5.6
+
+- Emergency release to fix errors in distributed files
+
 # 0.5.5
 
 - Return `resolveDir` for created css files so they can import content ([#69](https://github.com/EMH333/esbuild-svelte/issues/69))
