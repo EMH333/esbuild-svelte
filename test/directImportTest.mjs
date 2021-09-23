@@ -3,8 +3,6 @@ import * as assert from "uvu/assert";
 import { build as _build } from "esbuild";
 import sveltePlugin from "../dist/index.mjs";
 
-//TODO disable till problem can be resolved
-/*
 test("Can handle direct svelte files", async () => {
     try {
         const results = await _build({
@@ -24,7 +22,7 @@ test("Can handle direct svelte files", async () => {
         assert.ok(err.errors, "Should error as direct imports aren't supported yet");
         assert.match(
             err.errors[0].text,
-            "doesn't support creating entry files yet",
+            "does not support creating entry files yet",
             "Should be my error message"
         );
         assert.ok(err.errors.length == 1, "There should be one error");
@@ -32,4 +30,4 @@ test("Can handle direct svelte files", async () => {
 });
 
 
-test.run();*/
+test.run();
