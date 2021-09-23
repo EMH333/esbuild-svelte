@@ -2,6 +2,7 @@ import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { build as _build } from "esbuild";
 import sveltePlugin from "../dist/index.mjs";
+import sveltePluginCJS from "../dist/index.js";
 
 test("Without esbuild", async () => {
     let build = {};
@@ -50,6 +51,24 @@ test("Simple build", async () => {
         splitting: true,
         write: false, //Don't write anywhere
         plugins: [sveltePlugin()],
+    });
+
+    assert.ok(results.errors.length === 0, "Non-zero number of errors");
+    assert.ok(results.warnings.length === 0, "Non-zero number of warnings");
+    assert.ok(results.outputFiles.length === 2, "Non-expected number of output files");
+});
+
+test("Simple CommonJS build", async () => {
+    //Try a simple esbuild build
+    const results = await _build({
+        entryPoints: ["./example/entry.js"],
+        outdir: "../example/dist",
+        format: "esm",
+        minify: true,
+        bundle: true,
+        splitting: true,
+        write: false, //Don't write anywhere
+        plugins: [sveltePluginCJS()],
     });
 
     assert.ok(results.errors.length === 0, "Non-zero number of errors");
