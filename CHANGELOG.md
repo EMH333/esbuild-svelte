@@ -1,5 +1,7 @@
 # Unreleased
 
+- Update Svelte to 4.43.0
+
 # 0.5.6
 
 - Emergency release to fix errors in distributed files
