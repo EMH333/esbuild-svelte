@@ -1,6 +1,6 @@
 # Unreleased
 
-- Update Svelte to 4.43.0
+- Update Svelte to 4.43.1
 
 # 0.5.6
 
