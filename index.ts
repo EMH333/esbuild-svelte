@@ -1,6 +1,6 @@
 //original version from https://github.com/evanw/esbuild/blob/plugins/docs/plugin-examples.md
 import { preprocess, compile } from "svelte/compiler";
-import { dirname, relative } from "path";
+import { dirname, basename, relative } from "path";
 import { promisify } from "util";
 import { readFile, statSync } from "fs";
 
@@ -154,7 +154,15 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                             }
                         );
                         if (preprocessResult.map) {
-                            compileOptions.sourcemap = preprocessResult.map;
+                            // normalize the sourcemap 'source' entrys to all match if they are the same file
+                            // needed because of differing handling of file names in preprocessors
+                            let fixedMap = preprocessResult.map as { sources: Array<string> };
+                            for (let index = 0; index < fixedMap?.sources.length; index++) {
+                                if (fixedMap.sources[index] == filename) {
+                                    fixedMap.sources[index] = basename(filename);
+                                }
+                            }
+                            compileOptions.sourcemap = fixedMap;
                         }
                         source = preprocessResult.code;
 
