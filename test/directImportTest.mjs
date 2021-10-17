@@ -29,5 +29,4 @@ test("Can handle direct svelte files", async () => {
     }
 });
 
-
 test.run();
