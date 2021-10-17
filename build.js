@@ -21,16 +21,6 @@ const esbuildCommon = {
         ...esbuildCommon,
     });
 
-    //doesn't do default exports well
-    /*esbuild.build({
-        format: "cjs",
-        outfile: "./dist/index.js",
-        ...esbuildCommon
-    }).catch((err) => {
-        console.error(err)
-        process.exit(1)
-    })*/
-
     let output = await read("./dist/index.mjs", "utf8");
     await write(
         "./dist/index.js",
