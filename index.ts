@@ -1,6 +1,6 @@
 //original version from https://github.com/evanw/esbuild/blob/plugins/docs/plugin-examples.md
 import { preprocess, compile } from "svelte/compiler";
-import { dirname, relative } from "path";
+import { dirname, basename, relative } from "path";
 import { promisify } from "util";
 import { readFile, statSync } from "fs";
 
@@ -131,20 +131,39 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 }
 
                 //reading files
-                let source = await promisify(readFile)(args.path, "utf8");
+                let originalSource = await promisify(readFile)(args.path, "utf8");
                 let filename = relative(process.cwd(), args.path);
 
                 //file modification time storage
                 const dependencyModifcationTimes = new Map<string, Date>();
                 dependencyModifcationTimes.set(args.path, statSync(args.path).mtime); // add the target file
 
+                let compileOptions = { css: false, ...options?.compileOptions };
+
                 //actually compile file
                 try {
+                    let source = originalSource;
+
                     //do preprocessor stuff if it exists
                     if (options?.preprocess) {
-                        let preprocessResult = await preprocess(source, options.preprocess, {
-                            filename,
-                        });
+                        let preprocessResult = await preprocess(
+                            originalSource,
+                            options.preprocess,
+                            {
+                                filename,
+                            }
+                        );
+                        if (preprocessResult.map) {
+                            // normalize the sourcemap 'source' entrys to all match if they are the same file
+                            // needed because of differing handling of file names in preprocessors
+                            let fixedMap = preprocessResult.map as { sources: Array<string> };
+                            for (let index = 0; index < fixedMap?.sources.length; index++) {
+                                if (fixedMap.sources[index] == filename) {
+                                    fixedMap.sources[index] = basename(filename);
+                                }
+                            }
+                            compileOptions.sourcemap = fixedMap;
+                        }
                         source = preprocessResult.code;
 
                         // if caching then we need to store the modifcation times for all dependencies
@@ -155,9 +174,24 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         }
                     }
 
-                    let compileOptions = { css: false, ...options?.compileOptions };
-
                     let { js, css, warnings } = compile(source, { ...compileOptions, filename });
+
+                    //esbuild doesn't seem to like sourcemaps without "sourcesContent" which Svelte doesn't provide
+                    //so attempt to populate that array if we can find filename in sources
+                    if (compileOptions.sourcemap) {
+                        if (js.map.sourcesContent == undefined) {
+                            js.map.sourcesContent = [];
+                        }
+
+                        for (let index = 0; index < js.map.sources.length; index++) {
+                            const element = js.map.sources[index];
+                            if (element == basename(filename)) {
+                                js.map.sourcesContent[index] = originalSource;
+                                index = Infinity; //can break out of loop
+                            }
+                        }
+                    }
+
                     let contents = js.code + `\n//# sourceMappingURL=` + js.map.toUrl();
 
                     //if svelte emits css seperately, then store it in a map and import it from the js
