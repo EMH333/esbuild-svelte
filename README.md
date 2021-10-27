@@ -33,7 +33,7 @@ By default, `esbuild-svelte` emits external css files from Svelte for `esbuild` 
 
 ### Typescript and Other Svelte Preprocessing
 
-In order to support Typescript and other languages that require preprocessing before being fed into the Svelte compiler, simply add the preprocessor to the `preprocess` option (which accepts both a single preprocessor or an array of them). The example script below is a great place to start. **NOTE: Currently passes through sourcemaps after the code has been preprocessed, fixes are in progress**
+In order to support Typescript and other languages that require preprocessing before being fed into the Svelte compiler, simply add the preprocessor to the `preprocess` option (which accepts both a single preprocessor or an array of them). The example script below is a great place to start.
 
 ```javascript
 import esbuild from "esbuild";
