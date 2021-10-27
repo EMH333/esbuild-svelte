@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.5.7
+
 - Handle preprocessors when dealing with sourcemaps
 
   This should result in more accurate sourcemaps when dealing with one or more preprocessors. Though this was already handled from a purely sourcemap symbols perspective, the sourceContents is now included which should make it easier to understand how the Svelte file was transformed.
