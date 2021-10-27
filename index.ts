@@ -177,19 +177,18 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     let { js, css, warnings } = compile(source, { ...compileOptions, filename });
 
                     //esbuild doesn't seem to like sourcemaps without "sourcesContent" which Svelte doesn't provide
-                    //so attempt to populate that array if the only source is the original file.
-                    //Otherwise leave it the way it is and give an error.
+                    //so attempt to populate that array if we can find filename in sources
                     if (compileOptions.sourcemap) {
-                        if (js.map.sources.length === 1) {
-                            js.map.sourcesContent = [originalSource];
-                        } else {
-                            warnings.push({
-                                message:
-                                    "There was an error while dealing with the preprocessor sourcemap in the esbuild-svelte plugin. " +
-                                    "Please file a bug at https://github.com/EMH333/esbuild-svelte/issues detailing your use case " +
-                                    "(types of content being preprocessed and preprocessors used) so the issue can be fixed promptly",
-                                code: "",
-                            });
+                        if (js.map.sourcesContent == undefined) {
+                            js.map.sourcesContent = [];
+                        }
+
+                        for (let index = 0; index < js.map.sources.length; index++) {
+                            const element = js.map.sources[index];
+                            if (element == basename(filename)) {
+                                js.map.sourcesContent[index] = originalSource;
+                                index = Infinity; //can break out of loop
+                            }
                         }
                     }
 
