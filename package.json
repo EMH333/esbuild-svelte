@@ -27,14 +27,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "svelte": "^3.44.0"
+    "svelte": "^3.44.1"
   },
   "peerDependencies": {
     "esbuild": ">=0.9.6"
   },
   "devDependencies": {
     "@types/node": "^16.11.6",
-    "esbuild": "^0.13.9",
+    "esbuild": "^0.13.13",
     "prettier": "^2.4.1",
     "rewrite-imports": "^3.0.0",
     "sass": "^1.43.4",
