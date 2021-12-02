@@ -5,6 +5,7 @@ interface esbuildSvelteOptions {
     /**
      * Svelte compiler options
      */
+    compilerOptions?: CompileOptions;
     compileOptions?: CompileOptions;
     /**
      * The preprocessor(s) to run the Svelte code through before compiling
@@ -20,6 +21,7 @@ interface esbuildSvelteOptions {
      * Defaults to `false` for now until support is added
      */
     fromEntryFile?: boolean;
+    include?: RegExp;
 }
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin;
 export {};
