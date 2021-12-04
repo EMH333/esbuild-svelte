@@ -1,7 +1,7 @@
-<script>
+<script lang="typescript">
     // your script goes here©↡
     let x = 5;
-    let y = "↡";
+    let y:string = "↡";
     //let sfd😃 = "↡";
 </script>
 
@@ -15,5 +15,5 @@
 </style>
 
 <div>
-    <h1>Hello World ©↡漢 2021</h1>
+    <h1>Hello World ©↡漢 2021 {y}</h1>
 </div>
