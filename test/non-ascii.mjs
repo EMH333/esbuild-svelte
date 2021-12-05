@@ -15,7 +15,7 @@ test("Can handle special characters in files", async () => {
             plugins: [
                 sveltePlugin({
                     preprocess: typescript(),
-                    compileOptions: { dev: true },
+                    compilerOptions: { dev: true },
                 }),
             ],
             logLevel: "silent",

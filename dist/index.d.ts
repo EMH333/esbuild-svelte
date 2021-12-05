@@ -21,6 +21,10 @@ interface esbuildSvelteOptions {
      * Defaults to `false` for now until support is added
      */
     fromEntryFile?: boolean;
+    /**
+     * The regex filter to use when filtering files to compile
+     * Defaults to `/\.svelte$/`
+     */
     include?: RegExp;
 }
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin;

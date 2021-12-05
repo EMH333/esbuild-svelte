@@ -29,7 +29,7 @@ The `example` folder of this repository is a great starting off point for a "com
 
 ### CSS Output
 
-By default, `esbuild-svelte` emits external css files from Svelte for `esbuild` to process. If this isn't desired, use a configuration that turns off external css output and instead includes it in the javascript output. For example: `sveltePlugin({compileOptions: {css: true}})`
+By default, `esbuild-svelte` emits external css files from Svelte for `esbuild` to process. If this isn't desired, use a configuration that turns off external css output and instead includes it in the javascript output. For example: `sveltePlugin({compilerOptions: {css: true}})`
 
 ### Typescript and Other Svelte Preprocessing
 

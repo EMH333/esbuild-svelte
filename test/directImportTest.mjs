@@ -14,7 +14,7 @@ test("Can handle direct svelte files", async () => {
             splitting: true,
             write: false, //Don't write anywhere
             sourcemap: "inline",
-            plugins: [sveltePlugin({ compileOptions: { dev: true }, fromEntryFile: true })],
+            plugins: [sveltePlugin({ compilerOptions: { dev: true }, fromEntryFile: true })],
             logLevel: "silent",
         });
         assert.not.ok(true, "Should have errored");

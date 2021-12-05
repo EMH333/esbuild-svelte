@@ -32,6 +32,10 @@ interface esbuildSvelteOptions {
      */
     fromEntryFile?: boolean;
 
+    /**
+     * The regex filter to use when filtering files to compile
+     * Defaults to `/\.svelte$/`
+     */
     include?: RegExp;
 }
 
@@ -54,7 +58,9 @@ const convertMessage = ({ message, start, end, filename, frame }: Warning) => ({
 });
 
 // TODO: Hot fix to replace broken e64enc function in svelte on node 16
-const b64enc = (b: string) => Buffer.from(b).toString("base64");
+const b64enc = Buffer
+    ? (b: string) => Buffer.from(b).toString("base64")
+    : (b: string) => btoa(encodeURIComponent(b));
 function toUrl(data: string) {
     return "data:application/json;charset=utf-8;base64," + b64enc(data);
 }
@@ -63,6 +69,13 @@ const SVELTE_FILTER = /\.svelte$/;
 const FAKE_CSS_FILTER = /\.esbuild-svelte-fake-css$/;
 
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
+    // TODO: Remove on next breaking release
+    if (options?.compileOptions) {
+        console.warn(
+            "esbuild-svelte: compileOptions is deprecated, please rename to compilerOptions instead"
+        );
+    }
+
     const svelteFilter = options?.include ?? SVELTE_FILTER;
     return {
         name: "esbuild-svelte",

@@ -87,7 +87,7 @@ test("More advanced build", async () => {
         splitting: true,
         write: false, //Don't write anywhere
         sourcemap: "inline",
-        plugins: [sveltePlugin({ compileOptions: { dev: true } })],
+        plugins: [sveltePlugin({ compilerOptions: { dev: true } })],
     });
 
     assert.ok(results.errors.length === 0, "Non-zero number of errors");

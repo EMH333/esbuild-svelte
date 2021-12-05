@@ -1,6 +1,8 @@
 # Unreleased
 
-- Fix "invalid character" error when using preprocessors and non-ASCII characters on NodeJS 15+. Upstream fix in progress
+- **Breaking**: Switch `compileOptions` to `compilerOptions` to better reflect other bundler plugins (Thanks [@tyler-boyd](https://github.com/EMH333/esbuild-svelte/pull/86))
+- Add `include` option so the regex filter that selects compiled files can be changed (Thanks [@tyler-boyd](https://github.com/EMH333/esbuild-svelte/pull/86))
+- Fix "invalid character" error when using preprocessors and non-ASCII characters on NodeJS 15+. Upstream fix in progress (fixes [#84](https://github.com/EMH333/esbuild-svelte/issues/84))
 
 # 0.5.7
 
