@@ -1,5 +1,7 @@
 # Unreleased
 
+- Fix "invalid character" error when using preprocessors and non-ASCII characters on NodeJS 15+. Upstream fix in progress
+
 # 0.5.7
 
 - Handle preprocessors when dealing with sourcemaps
