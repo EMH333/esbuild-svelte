@@ -12,10 +12,12 @@ test("Can handle special characters in files", async () => {
             bundle: true,
             write: false, //Don't write anywhere
             sourcemap: true,
-            plugins: [sveltePlugin({ 
-                preprocess: typescript(),
-                compileOptions: { dev: true } 
-            })],
+            plugins: [
+                sveltePlugin({
+                    preprocess: typescript(),
+                    compileOptions: { dev: true },
+                }),
+            ],
             logLevel: "silent",
         });
         assert.ok(true, "Should not have triggered exception");

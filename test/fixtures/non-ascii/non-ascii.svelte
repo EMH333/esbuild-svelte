@@ -1,19 +1,14 @@
-<script lang="typescript">
-    // your script goes here©↡
-    let x = 5;
-    let y:string = "↡";
-    //let sfd😃 = "↡";
+<script>
+    let y = "↡";
 </script>
 
 <style>
     div {
-        /**Testing ©↡*/
+        /**Testing ©*/
         background-color: green;
-        /* ↓ For high contrast mode */
-        outline: var(--border-thin) solid;
     }
 </style>
 
 <div>
-    <h1>Hello World ©↡漢 2021 {y}</h1>
+    <h1>Hello World © 2021 {y}</h1>
 </div>
