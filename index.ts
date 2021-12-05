@@ -12,6 +12,7 @@ interface esbuildSvelteOptions {
     /**
      * Svelte compiler options
      */
+    compilerOptions?: CompileOptions;
     compileOptions?: CompileOptions;
 
     /**
@@ -30,6 +31,8 @@ interface esbuildSvelteOptions {
      * Defaults to `false` for now until support is added
      */
     fromEntryFile?: boolean;
+
+    include?: RegExp;
 }
 
 interface CacheData {
@@ -60,6 +63,7 @@ const SVELTE_FILTER = /\.svelte$/;
 const FAKE_CSS_FILTER = /\.esbuild-svelte-fake-css$/;
 
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
+    const svelteFilter = options?.include ?? SVELTE_FILTER;
     return {
         name: "esbuild-svelte",
         setup(build) {
@@ -85,7 +89,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
             const fileCache = new Map<string, CacheData>();
 
             //check and see if trying to load svelte files directly
-            build.onResolve({ filter: SVELTE_FILTER }, ({ path, kind }) => {
+            build.onResolve({ filter: svelteFilter }, ({ path, kind }) => {
                 if (kind === "entry-point" && options?.fromEntryFile) {
                     return { path, namespace: "esbuild-svelte-direct-import" };
                 }
@@ -93,7 +97,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
             //main loader
             build.onLoad(
-                { filter: SVELTE_FILTER, namespace: "esbuild-svelte-direct-import" },
+                { filter: svelteFilter, namespace: "esbuild-svelte-direct-import" },
                 async (args) => {
                     return {
                         errors: [
@@ -106,7 +110,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
             );
 
             //main loader
-            build.onLoad({ filter: SVELTE_FILTER }, async (args) => {
+            build.onLoad({ filter: svelteFilter }, async (args) => {
                 // if told to use the cache, check if it contains the file,
                 // and if the modified time is not greater than the time when it was cached
                 // if so, return the cached data
@@ -144,7 +148,11 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 const dependencyModifcationTimes = new Map<string, Date>();
                 dependencyModifcationTimes.set(args.path, statSync(args.path).mtime); // add the target file
 
-                let compileOptions = { css: false, ...options?.compileOptions };
+                let compilerOptions = {
+                    css: false,
+                    ...options?.compileOptions,
+                    ...options?.compilerOptions,
+                };
 
                 //actually compile file
                 try {
@@ -168,7 +176,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                                     fixedMap.sources[index] = basename(filename);
                                 }
                             }
-                            compileOptions.sourcemap = fixedMap;
+                            compilerOptions.sourcemap = fixedMap;
                         }
                         source = preprocessResult.code;
 
@@ -180,11 +188,11 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         }
                     }
 
-                    let { js, css, warnings } = compile(source, { ...compileOptions, filename });
+                    let { js, css, warnings } = compile(source, { ...compilerOptions, filename });
 
                     //esbuild doesn't seem to like sourcemaps without "sourcesContent" which Svelte doesn't provide
                     //so attempt to populate that array if we can find filename in sources
-                    if (compileOptions.sourcemap) {
+                    if (compilerOptions.sourcemap) {
                         if (js.map.sourcesContent == undefined) {
                             js.map.sourcesContent = [];
                         }
@@ -201,7 +209,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     let contents = js.code + `\n//# sourceMappingURL=` + toUrl(js.map.toString());
 
                     //if svelte emits css seperately, then store it in a map and import it from the js
-                    if (!compileOptions.css && css.code) {
+                    if (!compilerOptions.css && css.code) {
                         let cssPath = args.path
                             .replace(".svelte", ".esbuild-svelte-fake-css")
                             .replace(/\\/g, "/");
