@@ -15,12 +15,23 @@ const esbuildCommon = {
 };
 
 (async function () {
-    await esbuild.build({
+    //start esbuild process
+    let result = esbuild.build({
         format: "esm",
         outfile: "./dist/index.mjs",
         ...esbuildCommon,
     });
 
+    // run .d.ts generation now since it takes a while
+    const program = ts.createProgram(["index.ts"], {
+        declaration: true,
+        emitDeclarationOnly: true,
+        outDir: "./dist",
+    });
+    program.emit();
+
+    //wait for esbuild to finish then rewrite imports for cjs version
+    await result;
     let output = await read("./dist/index.mjs", "utf8");
     await write(
         "./dist/index.js",
@@ -29,13 +40,6 @@ const esbuildCommon = {
             "module.exports = sveltePlugin;"
         )
     );
-
-    const program = ts.createProgram(["index.ts"], {
-        declaration: true,
-        emitDeclarationOnly: true,
-        outDir: "./dist",
-    });
-    program.emit();
 })().catch((err) => {
     console.error("ERROR", err.stack || err);
     process.exit(1);
