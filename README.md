@@ -1,6 +1,6 @@
 # esbuild-svelte
 
-[![npm version](https://badge.fury.io/js/esbuild-svelte.svg)](https://badge.fury.io/js/esbuild-svelte) [![npm downloads](http://img.shields.io/npm/dm/esbuild-svelte.svg)](https://www.npmjs.org/package/esbuild-svelte)
+[![npm version](https://badge.fury.io/js/esbuild-svelte.svg)](https://badge.fury.io/js/esbuild-svelte) [![npm downloads](http://img.shields.io/npm/dm/esbuild-svelte.svg)](https://www.npmjs.org/package/esbuild-svelte) [![CI](https://github.com/EMH333/esbuild-svelte/actions/workflows/ci.yml/badge.svg)](https://github.com/EMH333/esbuild-svelte/actions/workflows/ci.yml)
 
 Plugin to compile svelte components for bundling with esbuild.
 
