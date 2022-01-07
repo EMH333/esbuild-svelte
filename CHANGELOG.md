@@ -1,24 +1,30 @@
-# Unreleased
+# Changelog
 
-# 0.6.0
+## 0.6.1
+
+- Update Svelte to 3.45.0
+- Auto create releases
+- Rework and improve CI process
+
+## 0.6.0
 
 - **Breaking**: Switch `compileOptions` to `compilerOptions` to better reflect other bundler plugins (Thanks [@tyler-boyd](https://github.com/EMH333/esbuild-svelte/pull/86))
 - Add `include` option so the regex filter that selects compiled files can be changed (Thanks [@tyler-boyd](https://github.com/EMH333/esbuild-svelte/pull/86))
 - Fix "invalid character" error when using preprocessors and non-ASCII characters on NodeJS 15+. Upstream fix in progress (fixes [#84](https://github.com/EMH333/esbuild-svelte/issues/84))
 
-# 0.5.7
+## 0.5.7
 
 - Handle preprocessors when dealing with sourcemaps
 
   This should result in more accurate sourcemaps when dealing with one or more preprocessors. Though this was already handled from a purely sourcemap symbols perspective, the sourceContents is now included which should make it easier to understand how the Svelte file was transformed.
 
-- Update Svelte to 4.44.0
+- Update Svelte to 3.44.0
 
-# 0.5.6
+## 0.5.6
 
 - Emergency release to fix errors in distributed files
 
-# 0.5.5
+## 0.5.5
 
 - Return `resolveDir` for created css files so they can import content ([#69](https://github.com/EMH333/esbuild-svelte/issues/69))
 - Update Svelte to 3.42.6
@@ -26,20 +32,20 @@
 
   This is in preparation for a feature that allows a binding to be automatically generated if a .svelte file is set as an entry point. The current configuration defaults to `false` in order to preserve current behavior, however the code is included for future expansion. Most all of my (and others) projects could be simplified once this is added, though I will preserve the current behavior for those that simply want to compile Svelte components using esbuild.
 
-# 0.5.4
+## 0.5.4
 
 - Fix CSS sourcemaps which are now supported with esbuild v0.12.19 ([#63](https://github.com/EMH333/esbuild-svelte/issues/63))
 - Update Svelte to 3.42.1
 - Reduce number of development dependencies
 
-# 0.5.3
+## 0.5.3
 
 - Add dependency-aware caching for incremental builds that use a preprocessor ([#59](https://github.com/EMH333/esbuild-svelte/issues/59))
 - Report file dependencies to esbuild when using watch mode
 
   Likely not something very many people ran into but svelte-esbuild now notifies esbuild of all preprocessor dependecies when watch mode is enabled. This means changes to one of those files will now trigger esbuild to rebuild, improving developer experience.
 
-# 0.5.2
+## 0.5.2
 
 - Disabled cache auto-enabling when using a preprocessor (better fix incoming)
 
@@ -50,29 +56,29 @@
 - Improve testing (switched to `uvu`)
 - Update Svelte to 3.38.3
 
-# 0.5.1
+## 0.5.1
 
 - Update Svelte to 3.38.2 because of bugs in SSR updates
 
-# 0.5.0
+## 0.5.0
 
 - **Breaking**: Require esbuild 0.9.6 or greater to support `initialOptions` property
 - **Potentially Breaking**: Auto-enable cache when build is in incremental mode or in watch mode
 - **Breaking**: Remove `preprocessor` option, use `preprocess` instead
 - Update Svelte to 3.38.0
 
-# 0.4.3
+## 0.4.3
 
 - Update Svelte to 3.35.0
 - Update esbuild peer dependency to allow for 0.9.0 version
 
-# 0.4.2
+## 0.4.2
 
 - Add JSDoc deprecation comment to `preprocessor` and add comments for other options
 - Fix error arising from esbuid release 0.8.51 and changes to import resolution (Thanks [@AlexxNB](https://github.com/EMH333/esbuild-svelte/pull/34)!)
 - Update dependencies
 
-# 0.4.1
+## 0.4.1
 
 - Deprecate `preprocessor` option in favor of `preprocess`
 
@@ -86,7 +92,7 @@
 - Update and add more detail to README
 - Update Svelte to 3.32.1
 
-# 0.4.0 (**Breaking**)
+## 0.4.0 (**Breaking**)
 
 - **Breaking** Combine `esbuild-svelte/configurable` and `esbuild-svelte` into one API
 
@@ -97,12 +103,12 @@
 - Use TypeScript for development
 - Fix example to use `esbuild-svelte` import (`npm link` is a useful command...)
 
-# 0.3.2
+## 0.3.2
 
 - Fix sourcemap generation when exporting external css ([#13](https://github.com/EMH333/esbuild-svelte/issues/13))
 - Update Svelte to 3.31.0
 
-# 0.3.1
+## 0.3.1
 
 - Fix path resolution for Windows when exporting css to external files (Thanks [@markoboy](https://github.com/EMH333/esbuild-svelte/pull/8))
 
@@ -111,7 +117,7 @@
 - Add esbuild as peer dependency
 - Update Svelte to 3.29.7
 
-# 0.3.0
+## 0.3.0
 
 - **(Breaking)** Support separate CSS output stream
 
@@ -119,12 +125,12 @@
 
   In order to implement this, I created a fake file extension loader then set those files to be imported from the js code emited. A map acts as storage between the loaders. I'm not 100% happy with this system because it feels brittle and incomplete but it will work for now. If you have suggestions for how I could do this better, I am all ears!
 
-# 0.2.1
+## 0.2.1
 
 - Fix preprocessor support, currently considered unstable until I test it with some of my personal projects
 - Update README because I forgot that I added preprocessor support
 
-# 0.2.0
+## 0.2.0
 
 - Add some simple smoke tests
 - Add Github CI
@@ -133,27 +139,27 @@
 - Add typescript types to `configurable` preping for eventual conversion to typescript for development
 - Add .npmignore
 
-# 0.1.1
+## 0.1.1
 
 - Format some files
 - Update README to reflect the release of the plugin API
 
-# 0.1.0
+## 0.1.0
 
 - Update to esbuild API version 0.8.1
 - Add Svelte compiler configuration options
 - Fix error/warning reporting from Svelte
 
-# 0.0.4
+## 0.0.4
 
 - Add publishing workflow to reduce mistakes in the future
 
-# 0.0.3
+## 0.0.3
 
 - Update example
 - Correct module export
 - Update README
 
-# 0.0.2
+## 0.0.2
 
 - Actually export the plugin for use :)

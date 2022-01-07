@@ -14,12 +14,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      #- name: Extract changelog
-      #  run: |
-      #    CHANGELOG=$(awk -v ver=$(cat version.txt) '/^## / { if (p) { exit }; if ($2 == ver) { p=1; next} } p' CHANGELOG.md)
-      #    echo "CHANGELOG<<EOF" >> $GITHUB_ENV
-      #    echo "$CHANGELOG" >> $GITHUB_ENV
-      #    echo "EOF" >> $GITHUB_ENV
+      - name: Extract changelog
+        run: |
+          CHANGELOG=$(awk -v ver=$(cat version.txt) '/^## / { if (p) { exit }; if ($2 == ver) { p=1; next} } p' CHANGELOG.md)
+          echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+          echo "$CHANGELOG" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
@@ -28,6 +28,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          body: "" #${{ env.CHANGELOG }}
+          body: ${{ env.CHANGELOG }}
           draft: false
           prerelease: false
