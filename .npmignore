@@ -4,3 +4,6 @@ example/
 tsconfig.json
 build.js
 index.ts
+version.txt
+.prettierrc
+.prittierignore
