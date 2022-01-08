@@ -42,5 +42,8 @@
     "svelte-preprocess-sass": "^2.0.1",
     "typescript": "^4.5.4",
     "uvu": "^0.5.3"
+  },
+  "engines": {
+    "node": ">=12"
   }
 }
