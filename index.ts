@@ -6,7 +6,7 @@ import { readFile, statSync } from "fs";
 
 import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
 import type { PreprocessorGroup } from "svelte/types/compiler/preprocess/types";
-import type { OnLoadResult, Plugin } from "esbuild";
+import type { OnLoadResult, Plugin, PluginBuild } from "esbuild";
 
 interface esbuildSvelteOptions {
     /**
@@ -23,8 +23,10 @@ interface esbuildSvelteOptions {
     /**
      * Attempts to cache compiled files if the mtime of the file hasn't changed since last run.
      * Only works with incremental or watch mode builds
+     *
+     * "overzealous" - be agressive about which files trigger a cache expiration
      */
-    cache?: boolean;
+    cache?: boolean | "overzealous";
 
     /**
      * Should esbuild-svelte create a binding to an html element for components given in the entryPoints list
@@ -57,6 +59,9 @@ const convertMessage = ({ message, start, end, filename, frame }: Warning) => ({
         },
 });
 
+const shouldCache = (build: PluginBuild) =>
+    build.initialOptions.incremental || build.initialOptions.watch;
+
 // TODO: Hot fix to replace broken e64enc function in svelte on node 16
 const b64enc = Buffer
     ? (b: string) => Buffer.from(b).toString("base64")
@@ -85,10 +90,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
             }
             // see if we are incrementally building or watching for changes and enable the cache
             // also checks if it has already been defined and ignores this if it has
-            if (
-                options.cache == undefined &&
-                (build.initialOptions.incremental || build.initialOptions.watch)
-            ) {
+            if (options.cache == undefined && shouldCache(build)) {
                 options.cache = true;
             }
 
@@ -224,7 +226,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     //if svelte emits css seperately, then store it in a map and import it from the js
                     if (!compilerOptions.css && css.code) {
                         let cssPath = args.path
-                            .replace(".svelte", ".esbuild-svelte-fake-css")
+                            .replace(".svelte", ".esbuild-svelte-fake-css") //TODO append instead of replace to support different svelte filters
                             .replace(/\\/g, "/");
                         cssCode.set(
                             cssPath,
@@ -267,6 +269,40 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 const css = cssCode.get(path);
                 return css ? { contents: css, loader: "css", resolveDir: dirname(path) } : null;
             });
+
+            //TODO write test for this section
+            // code in this section can use esbuild features <= 0.11.15 because of `onEnd` check
+            if (
+                shouldCache(build) &&
+                options?.cache == "overzealous" &&
+                typeof build.onEnd === "function"
+            ) {
+                build.initialOptions.metafile = true; // enable the metafile to get the required information
+
+                build.onEnd((result) => {
+                    for (let fileName in result.metafile?.inputs) {
+                        if (SVELTE_FILTER.test(fileName)) {
+                            // only run on svelte files
+                            let file = result.metafile?.inputs[fileName];
+                            file?.imports?.forEach((i) => {
+                                // for each import from a svelte file
+                                // if import is a svelte file then we make note of it
+                                if (SVELTE_FILTER.test(i.path)) {
+                                    // update file cache with the new dependency
+                                    let fileCacheEntry = fileCache.get(fileName);
+                                    if (fileCacheEntry != undefined) {
+                                        fileCacheEntry?.dependencies.set(
+                                            i.path,
+                                            statSync(i.path).mtime
+                                        );
+                                        fileCache.set(fileName, fileCacheEntry);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
         },
     };
 }
