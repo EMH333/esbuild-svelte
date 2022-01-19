@@ -270,7 +270,6 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 return css ? { contents: css, loader: "css", resolveDir: dirname(path) } : null;
             });
 
-            //TODO write test for this section
             // code in this section can use esbuild features <= 0.11.15 because of `onEnd` check
             if (
                 shouldCache(build) &&

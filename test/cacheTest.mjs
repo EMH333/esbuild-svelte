@@ -137,4 +137,17 @@ test("Don't cache errors", async () => {
     }
 });
 
+test("Overzealous cache should still allow building", async () => {
+    await build({
+        entryPoints: ["./example/entry.js"],
+        outdir: "../example/dist",
+        format: "esm",
+        minify: true,
+        bundle: true,
+        splitting: true,
+        write: false, //Don't write anywhere
+        plugins: [sveltePlugin({ cache: "overzealous" })],
+    });
+});
+
 test.run();
