@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.2
+
+- Update Svelte to 3.46.2
+- (Unstable) Add "overzealous" cache mode that invalidates the cached version of a file if an imported Svelte component has changed ([#102](https://github.com/EMH333/esbuild-svelte/issues/102))
+
+  As with the standard caching system, this only applies in incremental or watch modes. This shouldn't be used in most situations, but if files aren't rebuilding when they are expected to, then this can be a helpful step before disabling the cache outright. I'm considering this an unstable feature because I'm not set on this way of doing it. This option may change in implementation, name and/or be removed at any time.
+
 ## 0.6.1
 
 - Update Svelte to 3.45.0
