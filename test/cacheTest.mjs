@@ -48,7 +48,11 @@ test("Cache w/ rebuild", async () => {
 });
 
 //set up a basic incremental build for use in other tests
-async function depsSetup() {
+async function depsSetup(cacheType) {
+    if (cacheType == undefined) {
+        cacheType = true;
+    }
+
     const dirname = join(tmpdir(), "esbuild-svelte");
     mkdirSync(dirname, { recursive: true });
     writeFileSync(join(dirname, "/app.js"), 'import x from "./foo.svelte"\nconsole.log(x)');
@@ -71,6 +75,7 @@ async function depsSetup() {
                 preprocess: {
                     style: sass(),
                 },
+                cache: cacheType,
             }),
         ],
         logLevel: "silent",
@@ -135,6 +140,41 @@ test("Don't cache errors", async () => {
     } finally {
         result.rebuild.dispose();
     }
+});
+
+test("Overzealous cache with preprocessor", async () => {
+    let { result, dirname } = await depsSetup("overzealous");
+
+    // Set color to green
+    writeFileSync(join(dirname, "/xyz.sass"), ".xyz\n  color: green");
+    const result2 = await result.rebuild();
+
+    result.rebuild.dispose();
+
+    assert.match(result.outputFiles[1].text, "red");
+    assert.match(result2.outputFiles[1].text, "green");
+});
+
+test("Overzealous cache should still build", async () => {
+    let result = await build({
+        entryPoints: ["./example/entry.js"],
+        outdir: "../example/dist",
+        format: "esm",
+        minify: true,
+        bundle: true,
+        splitting: true,
+        write: false, //Don't write anywhere
+        plugins: [sveltePlugin({ cache: "overzealous" })],
+        incremental: true,
+    });
+
+    // Call "rebuild" as many times as you want
+    for (let i = 0; i < 5; i++) {
+        await result.rebuild();
+    }
+
+    // Call "dispose" when you're done to free up resources.
+    result.rebuild.dispose();
 });
 
 test.run();

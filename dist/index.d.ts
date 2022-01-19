@@ -14,8 +14,10 @@ interface esbuildSvelteOptions {
     /**
      * Attempts to cache compiled files if the mtime of the file hasn't changed since last run.
      * Only works with incremental or watch mode builds
+     *
+     * "overzealous" - be agressive about which files trigger a cache expiration
      */
-    cache?: boolean;
+    cache?: boolean | "overzealous";
     /**
      * Should esbuild-svelte create a binding to an html element for components given in the entryPoints list
      * Defaults to `false` for now until support is added
