@@ -28,6 +28,11 @@ interface esbuildSvelteOptions {
      * Defaults to `/\.svelte$/`
      */
     include?: RegExp;
+    /**
+     * A function to filter out warnings
+     * Defaults to a constant function that returns `true`
+     */
+    filterWarnings?: Function;
 }
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin;
 export {};
