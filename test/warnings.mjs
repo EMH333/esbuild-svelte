@@ -31,20 +31,29 @@ test("Can filter out warnings", async () => {
                 preprocess: typescript(),
                 compilerOptions: { dev: true },
                 filterWarnings: (warning) => {
-                    if (warning.code !== "missing-declaration") {
-                        return true;
+                    // Ignore warning about the missing MY_GLOBAL.
+                    if (
+                        warning.code === "missing-declaration" &&
+                        warning.message.startsWith("'MY_GLOBAL' is not defined")
+                    ) {
+                        return false;
                     }
 
-                    return !warning.message.startsWith("'MY_GLOBAL' is not defined");
+                    return true;
                 },
             }),
         ],
         logLevel: "silent",
     });
 
-    assert.equal(resultsWithoutFilter.warnings.length, 1, "Should have one warning");
+    assert.equal(resultsWithoutFilter.warnings.length, 2, "Should have two warnings");
     assert.equal(resultsWithoutFilter.errors.length, 0, "Should not have errors");
-    assert.equal(resultsWithFilter.warnings.length, 0, "Should not have a warning");
+    assert.equal(resultsWithFilter.warnings.length, 1, "Should have one warning");
+    assert.equal(
+        resultsWithFilter.warnings[0].text,
+        "A11y: <img> element should have an alt attribute",
+        "The not filtered warning is still there"
+    );
     assert.equal(resultsWithFilter.errors.length, 0, "Should not have errors");
 });
 
