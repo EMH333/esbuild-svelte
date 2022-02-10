@@ -44,7 +44,7 @@ interface esbuildSvelteOptions {
      * A function to filter out warnings
      * Defaults to a constant function that returns `true`
      */
-    filterWarnings?: Function;
+    filterWarnings?: (warning: Warning, index: number, warnings: Warning[]) => boolean;
 }
 
 interface CacheData {
@@ -246,9 +246,13 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         contents = contents + `\nimport "${cssPath}";`;
                     }
 
+                    if (options?.filterWarnings) {
+                        warnings = warnings.filter(options.filterWarnings);
+                    }
+
                     const result: OnLoadResult = {
                         contents,
-                        warnings: warnings.filter(options?.filterWarnings).map(convertMessage),
+                        warnings: warnings.map(convertMessage),
                     };
 
                     // if we are told to cache, then cache
