@@ -32,7 +32,7 @@ interface esbuildSvelteOptions {
      * A function to filter out warnings
      * Defaults to a constant function that returns `true`
      */
-    filterWarnings?: (warning: Warning, index: number, warnings: Warning[]) => boolean;
+    filterWarnings?: (warning: Warning) => boolean;
 }
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin;
 export {};
