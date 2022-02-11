@@ -29,6 +29,12 @@ interface esbuildSvelteOptions {
     cache?: boolean | "overzealous";
 
     /**
+     * Skip including and bundling an external CSS file.
+     * By default css is processed according to compilerOptions.css
+     */
+    skipCss?: boolean;
+
+    /**
      * Should esbuild-svelte create a binding to an html element for components given in the entryPoints list
      * Defaults to `false` for now until support is added
      */
@@ -92,6 +98,11 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
             // also checks if it has already been defined and ignores this if it has
             if (options.cache == undefined && shouldCache(build)) {
                 options.cache = true;
+            }
+
+            // process css by default
+            if (options.skipCss == undefined) {
+                options.skipCss = false;
             }
 
             // disable entry file generation by default
@@ -223,8 +234,9 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                     let contents = js.code + `\n//# sourceMappingURL=` + toUrl(js.map.toString());
 
-                    //if svelte emits css seperately, then store it in a map and import it from the js
-                    if (!compilerOptions.css && css.code) {
+                    // if svelte emits css seperately, then store it in a map and import it from the js
+                    // unless we want to skip css entirely
+                    if (!compilerOptions.css && css.code && !options?.skipCss) {
                         let cssPath = args.path
                             .replace(".svelte", ".esbuild-svelte-fake-css") //TODO append instead of replace to support different svelte filters
                             .replace(/\\/g, "/");
