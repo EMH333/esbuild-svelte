@@ -39,6 +39,12 @@ interface esbuildSvelteOptions {
      * Defaults to `/\.svelte$/`
      */
     include?: RegExp;
+
+    /**
+     * A function to filter out warnings
+     * Defaults to a constant function that returns `true`
+     */
+    filterWarnings?: (warning: Warning) => boolean;
 }
 
 interface CacheData {
@@ -97,6 +103,11 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
             // disable entry file generation by default
             if (options.fromEntryFile == undefined) {
                 options.fromEntryFile = false;
+            }
+
+            // by default all warnings are enabled
+            if (options.filterWarnings == undefined) {
+                options.filterWarnings = () => true;
             }
 
             //Store generated css code for use in fake import
@@ -233,6 +244,10 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                             css.code + `/*# sourceMappingURL=${toUrl(css.map.toString())} */`
                         );
                         contents = contents + `\nimport "${cssPath}";`;
+                    }
+
+                    if (options?.filterWarnings) {
+                        warnings = warnings.filter(options.filterWarnings);
                     }
 
                     const result: OnLoadResult = {

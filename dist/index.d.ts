@@ -1,4 +1,4 @@
-import type { CompileOptions } from "svelte/types/compiler/interfaces";
+import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
 import type { PreprocessorGroup } from "svelte/types/compiler/preprocess/types";
 import type { Plugin } from "esbuild";
 interface esbuildSvelteOptions {
@@ -28,6 +28,11 @@ interface esbuildSvelteOptions {
      * Defaults to `/\.svelte$/`
      */
     include?: RegExp;
+    /**
+     * A function to filter out warnings
+     * Defaults to a constant function that returns `true`
+     */
+    filterWarnings?: (warning: Warning) => boolean;
 }
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin;
 export {};
