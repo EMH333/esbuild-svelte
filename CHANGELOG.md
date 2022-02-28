@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.3
+
+- Add `filterWarnings` option to filter the Svelte warnings that esbuild-svelte passes to esbuild (Thanks [@Prinzhorn](https://github.com/EMH333/esbuild-svelte/pull/108))
+
+  See `dist/index.d.ts` for the type definition of the new option. This hope is to replicate `onwarn` from the Svelte Rollup plugin, but in a way that is more conducive to the way esbuild handles things.
+
 ## 0.6.2
 
 - Update Svelte to 3.46.2
