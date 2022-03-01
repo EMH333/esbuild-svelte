@@ -17,6 +17,7 @@ import sveltePlugin from "esbuild-svelte";
 esbuild
   .build({
     entryPoints: ["app.js"],
+    mainFields: ["svelte", "browser", "module", "main"],
     bundle: true,
     outfile: "out.js",
     plugins: [sveltePlugin()],
@@ -43,6 +44,7 @@ import sveltePreprocess from "svelte-preprocess";
 esbuild
   .build({
     entryPoints: ["index.js"],
+    mainFields: ["svelte", "browser", "module", "main"],
     bundle: true,
     outdir: "./dist",
     plugins: [
