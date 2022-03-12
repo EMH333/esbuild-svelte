@@ -11,6 +11,7 @@ if (!fs.existsSync("./dist/")) {
 esbuild
     .build({
         entryPoints: ["./entry.js"],
+        mainFields: ["svelte", "browser", "module", "main"],
         outdir: "./dist",
         format: "esm",
         minify: false, //so the resulting code is easier to understand
