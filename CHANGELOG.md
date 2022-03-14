@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased (breaking)
+
+- **Breaking** Svelte has been switched to a `peerDepenency` which allows Svelte to be updated independently of this plugin
+
+  Migration is as simple as `npm i --save-dev svelte` if you don't have `svelte` as a dependency already.
+
 ## 0.6.3
 
 - Add `filterWarnings` option to filter the Svelte warnings that esbuild-svelte passes to esbuild (Thanks [@Prinzhorn](https://github.com/EMH333/esbuild-svelte/pull/108))
