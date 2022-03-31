@@ -6,7 +6,6 @@ interface esbuildSvelteOptions {
      * Svelte compiler options
      */
     compilerOptions?: CompileOptions;
-    compileOptions?: CompileOptions;
     /**
      * The preprocessor(s) to run the Svelte code through before compiling
      */

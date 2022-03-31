@@ -6,6 +6,8 @@
 
   Migration is as simple as `npm i --save-dev svelte` if you don't have `svelte` as a dependency already.
 
+- **Breaking** Remove `compileOptions` since it was deprecated in v0.6.0
+
 ## 0.6.3
 
 - Add `filterWarnings` option to filter the Svelte warnings that esbuild-svelte passes to esbuild (Thanks [@Prinzhorn](https://github.com/EMH333/esbuild-svelte/pull/108))

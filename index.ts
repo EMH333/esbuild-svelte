@@ -13,7 +13,6 @@ interface esbuildSvelteOptions {
      * Svelte compiler options
      */
     compilerOptions?: CompileOptions;
-    compileOptions?: CompileOptions;
 
     /**
      * The preprocessor(s) to run the Svelte code through before compiling
@@ -80,13 +79,6 @@ const SVELTE_FILTER = /\.svelte$/;
 const FAKE_CSS_FILTER = /\.esbuild-svelte-fake-css$/;
 
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
-    // TODO: Remove on next breaking release
-    if (options?.compileOptions) {
-        console.warn(
-            "esbuild-svelte: compileOptions is deprecated, please rename to compilerOptions instead"
-        );
-    }
-
     const svelteFilter = options?.include ?? SVELTE_FILTER;
     return {
         name: "esbuild-svelte",
@@ -176,7 +168,6 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                 let compilerOptions = {
                     css: false,
-                    ...options?.compileOptions,
                     ...options?.compilerOptions,
                 };
 
