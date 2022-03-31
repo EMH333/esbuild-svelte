@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased (breaking)
+## 0.7.0 (Breaking)
 
-- **Breaking** Svelte has been switched to a `peerDepenency` which allows Svelte to be updated independently of this plugin
+- **Breaking** Svelte has been switched to a peer dependency which allows Svelte to be updated independently of this plugin
 
   Migration is as simple as `npm i --save-dev svelte` if you don't have `svelte` as a dependency already.
 
