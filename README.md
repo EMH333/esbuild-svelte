@@ -6,7 +6,7 @@ Plugin to compile svelte components for bundling with esbuild.
 
 ## Install
 
-Install both this plugin and [esbuild](https://github.com/evanw/esbuild) (esbuild must be above 0.9.6).
+Install this plugin, [esbuild](https://github.com/evanw/esbuild) and [Svelte](https://github.com/sveltejs/svelte).
 
 A simple build script looks like
 

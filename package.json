@@ -26,11 +26,9 @@
     "url": "https://www.ethohampton.com"
   },
   "license": "MIT",
-  "dependencies": {
-    "svelte": "^3.46.4"
-  },
   "peerDependencies": {
-    "esbuild": ">=0.9.6"
+    "esbuild": ">=0.9.6",
+    "svelte": ">=3.43.0"
   },
   "devDependencies": {
     "@types/node": "^16.11.19",
@@ -38,6 +36,7 @@
     "prettier": "^2.5.1",
     "rewrite-imports": "^3.0.0",
     "sass": "^1.49.9",
+    "svelte": "^3.46.6",
     "svelte-preprocess-esbuild": "^2.0.0",
     "svelte-preprocess-sass": "^2.0.1",
     "typescript": "^4.5.5",
