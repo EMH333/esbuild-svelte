@@ -129,11 +129,14 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
             //main loader
             build.onLoad({ filter: svelteFilter }, async (args) => {
+                let cachedFile = null;
+                let previousWatchFiles: string[] = [];
+
                 // if told to use the cache, check if it contains the file,
                 // and if the modified time is not greater than the time when it was cached
                 // if so, return the cached data
                 if (options?.cache === true && fileCache.has(args.path)) {
-                    const cachedFile = fileCache.get(args.path) || {
+                    cachedFile = fileCache.get(args.path) || {
                         dependencies: new Map(),
                         data: null,
                     }; // should never hit the null b/c of has check
@@ -177,13 +180,26 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                     //do preprocessor stuff if it exists
                     if (options?.preprocess) {
-                        let preprocessResult = await preprocess(
-                            originalSource,
-                            options.preprocess,
-                            {
-                                filename,
+                        let preprocessResult = null;
+
+                        try {
+                            preprocessResult = await preprocess(
+                              originalSource,
+                              options.preprocess,
+                              {
+                                  filename,
+                              }
+                            );
+                        }
+                        catch(e: any) {
+                            // if preprocess failed there are chances that an external dependency caused exception
+                            // to avoid stop watching those files, we keep the previous dependencies if available
+                            if (build.initialOptions.watch && cachedFile) {
+                                previousWatchFiles = Array.from(cachedFile.dependencies.keys());
                             }
-                        );
+                            throw e;
+                        }
+
                         if (preprocessResult.map) {
                             // normalize the sourcemap 'source' entrys to all match if they are the same file
                             // needed because of differing handling of file names in preprocessors
@@ -262,7 +278,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                     return result;
                 } catch (e: any) {
-                    return { errors: [convertMessage(e)] };
+                    return { errors: [convertMessage(e)], watchFiles: previousWatchFiles };
                 }
             });
 
