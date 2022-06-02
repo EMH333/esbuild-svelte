@@ -184,14 +184,13 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                         try {
                             preprocessResult = await preprocess(
-                              originalSource,
-                              options.preprocess,
-                              {
-                                  filename,
-                              }
+                                originalSource,
+                                options.preprocess,
+                                {
+                                    filename,
+                                }
                             );
-                        }
-                        catch(e: any) {
+                        } catch (e: any) {
                             // if preprocess failed there are chances that an external dependency caused exception
                             // to avoid stop watching those files, we keep the previous dependencies if available
                             if (build.initialOptions.watch && cachedFile) {
