@@ -2,6 +2,7 @@
 
 ## 0.7.1
 
+- Fix watch mode if preprocessing failed ([#132](https://github.com/EMH333/esbuild-svelte/pull/132))
 - Remove support for Node 12
 
   This should probably be another breaking change however Node 12 has reached end of life and is no longer supported. If you are using Node 12, please upgrade to Node 14 in order to continue use of this plugin (or open an issue if you disagree).
