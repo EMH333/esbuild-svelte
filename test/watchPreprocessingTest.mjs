@@ -37,6 +37,7 @@ test("Watch and build while preprocess of external dependency succeed and fails"
         splitting: true,
         write: false, //Don't write anywhere
         sourcemap: "inline",
+        logLevel: "silent",
         plugins: [
             sveltePlugin({
                 preprocess: {
@@ -65,7 +66,7 @@ test("Watch and build while preprocess of external dependency succeed and fails"
     assert.ok(firstRebuildResult instanceof Error, "First build did not fail");
 
     // write external scss with valid syntax again
-    writeFileSync(`${__dirname}/fixtures/watch-preprocessing/external.scss`, "p { color: red; }");
+    writeFileSync(`${__dirname}/fixtures/watch-preprocessing/external.scss`, "p { color: red; }\n");
     const secondRebuildResult = await secondRebuild;
     assert.ok(secondRebuildResult.errors.length === 0, "Second build fail");
 
