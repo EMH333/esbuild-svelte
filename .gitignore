@@ -9,3 +9,4 @@ dist/index.js
 example/dist/
 example/package-lock.json
 
+/.pnpm-debug.log
