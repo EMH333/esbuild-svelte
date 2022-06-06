@@ -17,7 +17,7 @@ test("Without esbuild", async () => {
         }
 
         let failed = false;
-        let out = await processor({ path: "./example/index.svelte" });
+        let out = await processor({ path: "./example-js/index.svelte" });
 
         if (out && out.warnings && out.warnings.length != 0) {
             console.error(out.warnings);
@@ -43,8 +43,8 @@ test("Without esbuild", async () => {
 test("Simple build", async () => {
     //Try a simple esbuild build
     const results = await _build({
-        entryPoints: ["./example/entry.js"],
-        outdir: "../example/dist",
+        entryPoints: ["./example-js/entry.js"],
+        outdir: "../example-js/dist",
         format: "esm",
         minify: true,
         bundle: true,
@@ -61,8 +61,8 @@ test("Simple build", async () => {
 test("Simple CommonJS build", async () => {
     //Try a simple esbuild build
     const results = await _build({
-        entryPoints: ["./example/entry.js"],
-        outdir: "../example/dist",
+        entryPoints: ["./example-js/entry.js"],
+        outdir: "../example-js/dist",
         format: "esm",
         minify: true,
         bundle: true,
@@ -79,8 +79,8 @@ test("Simple CommonJS build", async () => {
 test("More advanced build", async () => {
     //more advanced
     const results = await _build({
-        entryPoints: ["./example/entry.js"],
-        outdir: "../example/dist",
+        entryPoints: ["./example-js/entry.js"],
+        outdir: "../example-js/dist",
         format: "esm",
         minify: true,
         bundle: true,
