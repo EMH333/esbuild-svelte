@@ -1,11 +1,12 @@
 {
   "main": "buildscript.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node buildscript.js"
   },
   "dependencies": {
-    "esbuild": "^0.12.19",
-    "esbuild-svelte": ">=0.5.4"
+    "esbuild": "^0.12.29",
+    "esbuild-svelte": "^0.7.1",
+    "svelte": "^3.48.0"
   },
   "private": true
 }

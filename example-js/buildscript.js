@@ -14,6 +14,7 @@ esbuild
         mainFields: ["svelte", "browser", "module", "main"],
         outdir: "./dist",
         format: "esm",
+        logLevel: "info",
         minify: false, //so the resulting code is easier to understand
         bundle: true,
         splitting: true,
