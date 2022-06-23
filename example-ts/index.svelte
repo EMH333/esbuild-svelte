@@ -39,6 +39,6 @@
   <button on:click={change}>Click this button!</button>
   <p>{haha()}</p>
   <p>{add(1,4)}</p>
-  <p>{jo}</p>
+  <p>{JSON.stringify(jo)}</p>
   <Second />
 </div>

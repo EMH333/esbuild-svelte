@@ -26,7 +26,7 @@ esbuild
   .catch(() => process.exit(1));
 ```
 
-The `example` folder of this repository is a great starting off point for a "complete" project.
+The `example-js` folder of this repository is a great starting off point for a "complete" project.
 
 ### CSS Output
 
@@ -34,7 +34,7 @@ By default, `esbuild-svelte` emits external css files from Svelte for `esbuild` 
 
 ### Typescript and Other Svelte Preprocessing
 
-In order to support Typescript and other languages that require preprocessing before being fed into the Svelte compiler, simply add the preprocessor to the `preprocess` option (which accepts both a single preprocessor or an array of them). The example script below is a great place to start.
+In order to support Typescript and other languages that require preprocessing before being fed into the Svelte compiler, simply add the preprocessor to the `preprocess` option (which accepts both a single preprocessor or an array of them). The example script below is a great place to start, you can also look at the `example-ts` folder for a more complete project.
 
 ```javascript
 import esbuild from "esbuild";

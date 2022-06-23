@@ -1,2 +1,3 @@
 dist
-.pnpm-debug.log
+*.log
+*lock.json
