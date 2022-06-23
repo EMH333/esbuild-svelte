@@ -10,8 +10,8 @@ import { join } from "path";
 //with cache enabled
 test("Basic cache", async () => {
     await build({
-        entryPoints: ["./example/entry.js"],
-        outdir: "../example/dist",
+        entryPoints: ["./example-js/entry.js"],
+        outdir: "../example-js/dist",
         format: "esm",
         minify: true,
         bundle: true,
@@ -23,8 +23,8 @@ test("Basic cache", async () => {
 
 async function incrementalTest() {
     let result = await build({
-        entryPoints: ["./example/entry.js"],
-        outdir: "../example/dist",
+        entryPoints: ["./example-js/entry.js"],
+        outdir: "../example-js/dist",
         format: "esm",
         minify: true,
         bundle: true,
@@ -157,8 +157,8 @@ test("Overzealous cache with preprocessor", async () => {
 
 test("Overzealous cache should still build", async () => {
     let result = await build({
-        entryPoints: ["./example/entry.js"],
-        outdir: "../example/dist",
+        entryPoints: ["./example-js/entry.js"],
+        outdir: "../example-js/dist",
         format: "esm",
         minify: true,
         bundle: true,

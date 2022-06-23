@@ -1,0 +1,18 @@
+{
+  "main": "buildscript.js",
+  "type": "module",
+  "scripts": {
+    "build": "node buildscript.js",
+    "typecheck": "svelte-check --tsconfig tsconfig.json --fail-on-warnings  --fail-on-hints"
+  },
+  "dependencies": {
+    "@tsconfig/svelte": "^3.0.0",
+    "esbuild": "^0.12.29",
+    "esbuild-svelte": "^0.7.1",
+    "svelte": "^3.48.0",
+    "svelte-check": "^2.7.2",
+    "svelte-preprocess": "^4.10.7",
+    "typescript": "^4.7.3"
+  },
+  "private": true
+}
