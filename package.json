@@ -37,7 +37,7 @@
     "rewrite-imports": "^3.0.0",
     "sass": "^1.49.9",
     "svelte": "^3.48.0",
-    "svelte-preprocess-esbuild": "^2.0.0",
+    "svelte-preprocess-esbuild": "^3.0.0",
     "svelte-preprocess-sass": "^2.0.1",
     "typescript": "^4.7.2",
     "uvu": "^0.5.3"
