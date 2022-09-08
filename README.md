@@ -26,7 +26,15 @@ esbuild
   .catch(() => process.exit(1));
 ```
 
-The `example-js` folder of this repository is a great starting off point for a "complete" project.
+The `example-js` folder of this repository is a great starting off point for a "complete" project. You can quickly get started using [degit](https://github.com/Rich-Harris/degit):
+
+```sh
+# Clone the JavaScript example to get started
+npx degit EMH333/esbuild-svelte/example-js my-svelte-app
+
+# Clone the TypeScript example to get started
+npx degit EMH333/esbuild-svelte/example-ts my-svelte-app
+```
 
 ### CSS Output
 
