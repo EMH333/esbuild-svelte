@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.3
+
+- Switch from `.npmignore` to `files` property of `package.json` to prevent accidental file inclusion
+
 ## 0.7.2
 
 - Support string values for Svelte compiler option `css` added in Svelte `v3.53.0` ([#109](https://github.com/EMH333/esbuild-svelte/pull/109), [#150](https://github.com/EMH333/esbuild-svelte/pull/150))

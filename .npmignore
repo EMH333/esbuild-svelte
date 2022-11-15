@@ -1,9 +1,0 @@
-test/
-example/
-.github/
-tsconfig.json
-build.js
-index.ts
-version.txt
-.prettierrc
-.prittierignore

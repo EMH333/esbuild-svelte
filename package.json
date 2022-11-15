@@ -6,6 +6,10 @@
   "module": "dist/index.mjs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "/dist",
+    "/CHANGELOG.md"
+  ],
   "scripts": {
     "prepublishOnly": "git push origin --follow-tags",
     "postversion": "npm publish",
