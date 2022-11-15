@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.2
+
+- Support string values for Svelte compiler option `css` added in Svelte `v3.53.0` ([#109](https://github.com/EMH333/esbuild-svelte/pull/109), [#150](https://github.com/EMH333/esbuild-svelte/pull/150))
+- Update misc dependencies
+
 ## 0.7.1
 
 - Fix watch mode if preprocessing failed ([#132](https://github.com/EMH333/esbuild-svelte/pull/132))
