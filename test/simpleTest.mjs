@@ -53,9 +53,9 @@ test("Simple build", async () => {
         plugins: [sveltePlugin()],
     });
 
-    assert.ok(results.errors.length === 0, "Non-zero number of errors");
-    assert.ok(results.warnings.length === 0, "Non-zero number of warnings");
-    assert.ok(results.outputFiles.length === 2, "Non-expected number of output files");
+    assert.equal(results.errors.length, 0, "Non-zero number of errors");
+    assert.equal(results.warnings.length, 0, "Non-zero number of warnings");
+    assert.equal(results.outputFiles.length, 2, "Non-expected number of output files");
 });
 
 test("Simple CommonJS build", async () => {
@@ -71,9 +71,9 @@ test("Simple CommonJS build", async () => {
         plugins: [sveltePluginCJS()],
     });
 
-    assert.ok(results.errors.length === 0, "Non-zero number of errors");
-    assert.ok(results.warnings.length === 0, "Non-zero number of warnings");
-    assert.ok(results.outputFiles.length === 2, "Non-expected number of output files");
+    assert.equal(results.errors.length, 0, "Non-zero number of errors");
+    assert.equal(results.warnings.length, 0, "Non-zero number of warnings");
+    assert.equal(results.outputFiles.length, 2, "Non-expected number of output files");
 });
 
 test("More advanced build", async () => {
@@ -90,9 +90,104 @@ test("More advanced build", async () => {
         plugins: [sveltePlugin({ compilerOptions: { dev: true } })],
     });
 
-    assert.ok(results.errors.length === 0, "Non-zero number of errors");
-    assert.ok(results.warnings.length === 0, "Non-zero number of warnings");
-    assert.ok(results.outputFiles.length === 2, "Non-expected number of output files");
+    assert.equal(results.errors.length, 0, "Non-zero number of errors");
+    assert.equal(results.warnings.length, 0, "Non-zero number of warnings");
+    assert.equal(results.outputFiles.length, 2, "Non-expected number of output files");
+});
+
+test("CSS external boolean", async () => {
+    //more advanced
+    const results = await _build({
+        entryPoints: ["./example-js/entry.js"],
+        outdir: "../example-js/dist",
+        format: "esm",
+        minify: true,
+        bundle: true,
+        splitting: false,
+        write: false, //Don't write anywhere
+        sourcemap: "inline",
+        plugins: [sveltePlugin({ compilerOptions: { dev: true, css: false } })],
+    });
+
+    assert.equal(results.errors.length, 0, "Non-zero number of errors");
+    assert.equal(results.warnings.length, 0, "Non-zero number of warnings");
+    assert.equal(results.outputFiles.length, 2, "Non-expected number of output files");
+});
+
+test("CSS external string", async () => {
+    //more advanced
+    const results = await _build({
+        entryPoints: ["./example-js/entry.js"],
+        outdir: "../example-js/dist",
+        format: "esm",
+        minify: true,
+        bundle: true,
+        splitting: false,
+        write: false, //Don't write anywhere
+        sourcemap: "inline",
+        plugins: [sveltePlugin({ compilerOptions: { dev: true, css: "external" } })],
+    });
+
+    assert.equal(results.errors.length, 0, "Non-zero number of errors");
+    assert.equal(results.warnings.length, 0, "Non-zero number of warnings");
+    assert.equal(results.outputFiles.length, 2, "Non-expected number of output files");
+});
+
+test("CSS injected boolean", async () => {
+    //more advanced
+    const results = await _build({
+        entryPoints: ["./example-js/entry.js"],
+        outdir: "../example-js/dist",
+        format: "esm",
+        minify: true,
+        bundle: true,
+        splitting: false,
+        write: false, //Don't write anywhere
+        sourcemap: "inline",
+        plugins: [sveltePlugin({ compilerOptions: { dev: true, css: true } })],
+    });
+
+    assert.equal(results.errors.length, 0, "Non-zero number of errors");
+    assert.equal(results.warnings.length, 0, "Non-zero number of warnings");
+    assert.equal(results.outputFiles.length, 1, "Non-expected number of output files");
+});
+
+test("CSS injected string", async () => {
+    //more advanced
+    const results = await _build({
+        entryPoints: ["./example-js/entry.js"],
+        outdir: "../example-js/dist",
+        format: "esm",
+        minify: true,
+        bundle: true,
+        splitting: false,
+        write: false, //Don't write anywhere
+        sourcemap: "inline",
+        plugins: [sveltePlugin({ compilerOptions: { dev: true, css: "injected" } })],
+    });
+
+    assert.equal(results.errors.length, 0, "Non-zero number of errors");
+    assert.equal(results.warnings.length, 0, "Non-zero number of warnings");
+    assert.equal(results.outputFiles.length, 1, "Non-expected number of output files");
+});
+
+test("CSS none", async () => {
+    //more advanced
+    const results = await _build({
+        entryPoints: ["./example-js/entry.js"],
+        outdir: "../example-js/dist",
+        format: "esm",
+        minify: true,
+        bundle: true,
+        splitting: false,
+        write: false, //Don't write anywhere
+        sourcemap: "inline",
+        plugins: [sveltePlugin({ compilerOptions: { dev: true, css: "none" } })],
+    });
+
+    assert.equal(results.errors.length, 0, "Non-zero number of errors");
+    assert.equal(results.warnings.length, 0, "Non-zero number of warnings");
+    assert.equal(results.outputFiles.length, 1, "Non-expected number of output files");
 });
 
 test.run();
