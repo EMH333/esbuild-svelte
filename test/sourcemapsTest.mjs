@@ -16,7 +16,11 @@ test("Preprocessor Sourcemap test", async () => {
         sourcemap: "external",
         outdir: "out",
         plugins: [sveltePlugin({ preprocess: [{ style: sass() }, typescript()] })],
+        logLevel: "silent",
     });
+
+    assert.equal(result.warnings.length, 1, "Should one warning"); // because of warnings tests
+    assert.equal(result.errors.length, 0, "Should not have errors");
 
     assert.equal(result.outputFiles.length, 4);
 
