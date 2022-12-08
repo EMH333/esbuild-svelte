@@ -86,7 +86,7 @@ test("Warnings are in the right spot", async () => {
     assert.match(results.warnings[0].text, /'MY_GLOBAL' is not defined/);
 });
 
-test("Preprocessor errors are as expected", async () => {
+test("Preprocessor warnings are as expected", async () => {
     const results = await _build({
         entryPoints: ["./test/fixtures/preprocessing-sourcemaps/pp-sourcemaps.js"],
         outdir: "../example/dist",
