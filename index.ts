@@ -3,10 +3,11 @@ import { preprocess, compile, VERSION } from "svelte/compiler";
 import { dirname, basename, relative } from "path";
 import { promisify } from "util";
 import { readFile, statSync } from "fs";
+import { SourceMapConsumer } from "source-map";
 
 import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
 import type { PreprocessorGroup } from "svelte/types/compiler/preprocess"
-import type { OnLoadResult, Plugin, PluginBuild, Location } from "esbuild";
+import type { OnLoadResult, Plugin, PluginBuild, Location, PartialMessage } from "esbuild";
 
 interface esbuildSvelteOptions {
     /**
@@ -52,11 +53,31 @@ interface CacheData {
     dependencies: Map<string, Date>;
 }
 
-function convertMessage({ message, start, end }: Warning, filename: string, source: string) {
+async function convertMessage(
+    { message, start, end }: Warning,
+    filename: string,
+    source: string,
+    sourcemap: any
+): Promise<PartialMessage> {
     let location: Partial<Location> | undefined;
     if (start && end) {
         let lineText = source.split(/\r\n|\r|\n/g)[start.line - 1];
         let lineEnd = start.line === end.line ? end.column : lineText.length;
+
+        // Adjust the start and end positions based on what the preprocessors did so the positions are correct
+        if (sourcemap) {
+            await SourceMapConsumer.with(sourcemap, null, (consumer) => {
+                const pos = consumer.originalPositionFor({
+                    line: start.line,
+                    column: start.column,
+                });
+                if (pos.source) {
+                    start.line = pos.line ?? start.line;
+                    start.column = pos.column ?? start.column;
+                }
+            });
+        }
+
         location = {
             file: filename,
             line: start.line,
@@ -273,7 +294,17 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                     const result: OnLoadResult = {
                         contents,
-                        warnings: warnings.map((e) => convertMessage(e, args.path, source)),
+                        warnings: await Promise.all(
+                            warnings.map(
+                                async (e) =>
+                                    await convertMessage(
+                                        e,
+                                        args.path,
+                                        source,
+                                        compilerOptions.sourcemap
+                                    )
+                            )
+                        ),
                     };
 
                     // if we are told to cache, then cache
@@ -293,7 +324,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     return result;
                 } catch (e: any) {
                     let result: OnLoadResult = {};
-                    result.errors = [convertMessage(e, args.path, originalSource)];
+                    result.errors = [await convertMessage(e, args.path, originalSource, null)];
                     // only provide if context API is supported or we are caching
                     if (build.esbuild?.context !== undefined || shouldCache(build)) {
                         result.watchFiles = previousWatchFiles;
