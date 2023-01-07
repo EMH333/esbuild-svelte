@@ -1,6 +1,6 @@
 //original version from https://github.com/evanw/esbuild/blob/plugins/docs/plugin-examples.md
-import { preprocess, compile } from "svelte/compiler";
-import { dirname, basename, relative } from "path";
+import { preprocess, compile, walk } from "svelte/compiler";
+import { dirname, basename, relative, join } from "path";
 import { promisify } from "util";
 import { readFile, statSync } from "fs";
 
@@ -27,6 +27,8 @@ interface esbuildSvelteOptions {
      */
     cache?: boolean | "overzealous";
 
+    hmr?: boolean | HMROptions;
+
     /**
      * Should esbuild-svelte create a binding to an html element for components given in the entryPoints list
      * Defaults to `false` for now until support is added
@@ -44,6 +46,18 @@ interface esbuildSvelteOptions {
      * Defaults to a constant function that returns `true`
      */
     filterWarnings?: (warning: Warning) => boolean;
+}
+
+interface HMROptions {
+    /**
+     * taken from svelte-hmr
+     **/
+    noReload?: boolean;
+    preserveLocalState?: boolean;
+    noPreserveStateKey?: string;
+    preserveAllLocalStateKey?: string;
+    preserveLocalStateKey?: string;
+    optimistic?: boolean;
 }
 
 interface CacheData {
@@ -64,7 +78,7 @@ const convertMessage = ({ message, start, end, filename, frame }: Warning) => ({
         },
 });
 
-const shouldCache = (build: PluginBuild) =>
+const incrementalBuild = (build: PluginBuild) =>
     build.initialOptions.incremental || build.initialOptions.watch;
 
 // TODO: Hot fix to replace broken e64enc function in svelte on node 16
@@ -80,6 +94,22 @@ const FAKE_CSS_FILTER = /\.esbuild-svelte-fake-css$/;
 
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
     const svelteFilter = options?.include ?? SVELTE_FILTER;
+    
+    // try to import svelte-hmr
+    let makeHot: any = null;
+    try {
+        //TODO const for now
+        //const hotApiMount = '/@@svelte-hmr/';
+        let svelteHmr = require("svelte-hmr");
+        let svelteHmrHotPath = dirname(require.resolve('svelte-hmr/runtime'));
+        makeHot = svelteHmr.createMakeHot({
+            walk,
+            hotApi: join(svelteHmrHotPath, 'hot-api-esm.js'),
+            adapter: join(svelteHmrHotPath, 'proxy-adapter-dom.js'),
+        });
+        console.log("svelte-hmr loaded");
+    } catch {} // don't do anything if it fails
+
     return {
         name: "esbuild-svelte",
         setup(build) {
@@ -88,7 +118,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
             }
             // see if we are incrementally building or watching for changes and enable the cache
             // also checks if it has already been defined and ignores this if it has
-            if (options.cache == undefined && shouldCache(build)) {
+            if (options.cache == undefined && incrementalBuild(build)) {
                 options.cache = true;
             }
 
@@ -220,7 +250,8 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         }
                     }
 
-                    let { js, css, warnings } = compile(source, { ...compilerOptions, filename });
+                    let compiled = compile(source, { ...compilerOptions, filename });
+                    let { js, css, warnings } = compiled;
 
                     //esbuild doesn't seem to like sourcemaps without "sourcesContent" which Svelte doesn't provide
                     //so attempt to populate that array if we can find filename in sources
@@ -278,6 +309,15 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         result.watchFiles = Array.from(dependencyModifcationTimes.keys());
                     }
 
+                    //TODO may not need to check for incremental build?
+                    console.log(options?.hmr == true, makeHot != null)
+                    if(options?.hmr == true && makeHot != null) {
+                        console.log("HMR enabled")
+                        //options.hmr instanceof Object ? options.hmr : {}
+                        result.contents = makeHot(filename, result.contents, {}, compiled, source, true);
+                        //result.warnings = result?.warnings?.concat([{text:"HMR enabled", location: {file: filename, line: 1, column: 1}}]);
+                    }
+
                     return result;
                 } catch (e: any) {
                     return { errors: [convertMessage(e)], watchFiles: previousWatchFiles };
@@ -296,7 +336,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
             // code in this section can use esbuild features <= 0.11.15 because of `onEnd` check
             if (
-                shouldCache(build) &&
+                incrementalBuild(build) &&
                 options?.cache == "overzealous" &&
                 typeof build.onEnd === "function"
             ) {

@@ -17,6 +17,7 @@ interface esbuildSvelteOptions {
      * "overzealous" - be agressive about which files trigger a cache expiration
      */
     cache?: boolean | "overzealous";
+    hmr?: boolean | HMROptions;
     /**
      * Should esbuild-svelte create a binding to an html element for components given in the entryPoints list
      * Defaults to `false` for now until support is added
@@ -32,6 +33,17 @@ interface esbuildSvelteOptions {
      * Defaults to a constant function that returns `true`
      */
     filterWarnings?: (warning: Warning) => boolean;
+}
+interface HMROptions {
+    /**
+     * taken from svelte-hmr
+     **/
+    noReload?: boolean;
+    preserveLocalState?: boolean;
+    noPreserveStateKey?: string;
+    preserveAllLocalStateKey?: string;
+    preserveLocalStateKey?: string;
+    optimistic?: boolean;
 }
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin;
 export {};

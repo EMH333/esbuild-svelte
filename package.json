@@ -34,6 +34,9 @@
     "esbuild": ">=0.9.6",
     "svelte": ">=3.43.0"
   },
+  "optionalDependencies": {
+    "svelte-hmr": "^0.15.1"
+  },
   "devDependencies": {
     "@types/node": "^16.11.19",
     "esbuild": "^0.16.1",
@@ -41,6 +44,7 @@
     "rewrite-imports": "^3.0.0",
     "sass": "^1.56.1",
     "svelte": "^3.54.0",
+    "svelte-hmr": "^0.15.1",
     "svelte-preprocess-esbuild": "^3.0.0",
     "svelte-preprocess-sass": "^2.0.1",
     "typescript": "^4.9.3",
