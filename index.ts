@@ -6,7 +6,7 @@ import { readFile, statSync } from "fs";
 
 import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
 import type { PreprocessorGroup } from "svelte/types/compiler/preprocess/types";
-import type { OnLoadResult, Plugin, PluginBuild } from "esbuild";
+import type { Loader, OnLoadArgs, OnLoadResult, Plugin, PluginBuild } from "esbuild";
 
 interface esbuildSvelteOptions {
     /**
@@ -44,6 +44,13 @@ interface esbuildSvelteOptions {
      * Defaults to a constant function that returns `true`
      */
     filterWarnings?: (warning: Warning) => boolean;
+
+    /**
+     * functions for pre-processing the prepared source before passing it to the appropriate esbuild loader
+     */
+    preloaders?: {
+       [key in Loader]: (content: string, opts: OnLoadArgs) => string
+    }
 }
 
 interface CacheData {
@@ -289,9 +296,12 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 return { path, namespace: "fakecss" };
             });
 
-            build.onLoad({ filter: FAKE_CSS_FILTER, namespace: "fakecss" }, ({ path }) => {
-                const css = cssCode.get(path);
-                return css ? { contents: css, loader: "css", resolveDir: dirname(path) } : null;
+            build.onLoad({ filter: FAKE_CSS_FILTER, namespace: "fakecss" }, (opts) => {
+               let css = cssCode.get(opts.path);
+               if (options?.preloaders && options.preloaders.css && css){
+                  css = options.preloaders.css(css, opts)
+               }
+               return css ? { contents: css, loader: "css", resolveDir: dirname(opts.path) } : null;
             });
 
             // code in this section can use esbuild features <= 0.11.15 because of `onEnd` check

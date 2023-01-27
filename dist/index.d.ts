@@ -1,6 +1,6 @@
 import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
 import type { PreprocessorGroup } from "svelte/types/compiler/preprocess/types";
-import type { Plugin } from "esbuild";
+import type { Loader, OnLoadArgs, Plugin } from "esbuild";
 interface esbuildSvelteOptions {
     /**
      * Svelte compiler options
@@ -32,6 +32,9 @@ interface esbuildSvelteOptions {
      * Defaults to a constant function that returns `true`
      */
     filterWarnings?: (warning: Warning) => boolean;
+    preloaders?: {
+        [key in Loader]: (content: string, opts: OnLoadArgs) => string;
+    };
 }
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin;
 export {};
