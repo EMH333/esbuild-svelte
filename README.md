@@ -18,7 +18,7 @@ esbuild
   .build({
     entryPoints: ["app.js"],
     mainFields: ["svelte", "browser", "module", "main"],
-    conditions: ["svelte"],
+    conditions: ["svelte", "browser"],
     bundle: true,
     outfile: "out.js",
     plugins: [sveltePlugin()],
@@ -54,7 +54,7 @@ esbuild
   .build({
     entryPoints: ["index.js"],
     mainFields: ["svelte", "browser", "module", "main"],
-    conditions: ["svelte"],
+    conditions: ["svelte", "browser"],
     bundle: true,
     outdir: "./dist",
     plugins: [

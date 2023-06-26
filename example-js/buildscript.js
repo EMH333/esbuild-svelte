@@ -12,7 +12,7 @@ esbuild
     .build({
         entryPoints: ["./entry.js"],
         mainFields: ["svelte", "browser", "module", "main"],
-        conditions: ["svelte"],
+        conditions: ["svelte", "browser"],
         outdir: "./dist",
         format: "esm",
         logLevel: "info",

@@ -13,7 +13,7 @@ esbuild
         bundle: true,
         outdir: `./dist`,
         mainFields: ["svelte", "browser", "module", "main"],
-        conditions: ["svelte"],
+        conditions: ["svelte", "browser"],
         // logLevel: `info`,
         minify: false, //so the resulting code is easier to understand
         sourcemap: "inline",
