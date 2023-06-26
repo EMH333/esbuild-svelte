@@ -16,6 +16,7 @@
     "preversion": "npm run lint && npm run build && npm test",
     "pretest": "tsc -p tsconfig.json --noEmit",
     "test": "uvu test/ .*\\.mjs",
+    "test:compatibility": "test/versionTests/versionTests.sh",
     "build": "node build.js",
     "lint": "prettier --check --cache .",
     "fix": "prettier --write --cache ."
