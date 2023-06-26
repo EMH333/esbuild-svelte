@@ -18,6 +18,7 @@ esbuild
   .build({
     entryPoints: ["app.js"],
     mainFields: ["svelte", "browser", "module", "main"],
+    conditions: ["svelte", "browser"],
     bundle: true,
     outfile: "out.js",
     plugins: [sveltePlugin()],
@@ -53,6 +54,7 @@ esbuild
   .build({
     entryPoints: ["index.js"],
     mainFields: ["svelte", "browser", "module", "main"],
+    conditions: ["svelte", "browser"],
     bundle: true,
     outdir: "./dist",
     plugins: [
@@ -63,6 +65,10 @@ esbuild
   })
   .catch(() => process.exit(1));
 ```
+
+### `svelte` exports condition
+
+If you are importing a svelte component library, you need to add `"svelte"` to `conditions` in esbuild build options. This lets esbuild use the `svelte` property in svelte component's `exports` conditions in `package.json` .
 
 ## Advanced
 
