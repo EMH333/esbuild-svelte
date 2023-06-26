@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.4
+
+- Lock svelte peerDependency to `>=3.43.0 <5` to protect against breaking changes in future Svelte releases
+
 ## 0.7.3
 
 - Switch from `.npmignore` to `files` property of `package.json` to prevent accidental file inclusion
