@@ -1,5 +1,5 @@
 //original version from https://github.com/evanw/esbuild/blob/plugins/docs/plugin-examples.md
-import { preprocess, compile } from "svelte/compiler";
+import { preprocess, compile, VERSION } from "svelte/compiler";
 import { dirname, basename, relative } from "path";
 import { promisify } from "util";
 import { readFile, statSync } from "fs";
@@ -80,6 +80,7 @@ const FAKE_CSS_FILTER = /\.esbuild-svelte-fake-css$/;
 
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
     const svelteFilter = options?.include ?? SVELTE_FILTER;
+    const svelteVersion = VERSION.split(".").map((v) => parseInt(v))[0];
     return {
         name: "esbuild-svelte",
         setup(build) {
@@ -170,7 +171,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 dependencyModifcationTimes.set(args.path, statSync(args.path).mtime); // add the target file
 
                 let compilerOptions = {
-                    css: false,
+                    css: (svelteVersion < 3 ? false : "external") as boolean | "external",
                     ...options?.compilerOptions,
                 };
 

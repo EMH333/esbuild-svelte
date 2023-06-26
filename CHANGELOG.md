@@ -3,6 +3,7 @@
 ## 0.7.4
 
 - Lock svelte peerDependency to `>=3.43.0 <5` to protect against breaking changes in future Svelte releases
+- Set compilerOptions.css to `external` by default if using Svelte v4 or higher ([#185](https://github.com/EMH333/esbuild-svelte/issues/185))
 
 ## 0.7.3
 
