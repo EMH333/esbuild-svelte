@@ -20,7 +20,6 @@ esbuild
         splitting: true,
         write: true,
         format: `esm`,
-        watch: process.argv.includes(`--watch`),
         plugins: [
             esbuildSvelte({
                 preprocess: sveltePreprocess(),
