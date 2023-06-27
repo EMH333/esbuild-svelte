@@ -13,7 +13,7 @@
   "scripts": {
     "prepublishOnly": "git push origin --follow-tags",
     "postversion": "npm publish",
-    "preversion": "npm run lint && npm run build && npm test",
+    "preversion": "npm run lint && npm run build && npm test && npm run test:compatibility",
     "pretest": "tsc -p tsconfig.json --noEmit",
     "test": "uvu test/ .*\\.mjs",
     "test:compatibility": "test/versionTests/versionTests.sh",
