@@ -5,7 +5,7 @@ import { promisify } from "util";
 import { readFile, statSync } from "fs";
 
 import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
-import type { PreprocessorGroup } from "svelte/types/compiler/preprocess"
+import type { PreprocessorGroup } from "svelte/types/compiler/preprocess";
 import type { OnLoadResult, Plugin, PluginBuild } from "esbuild";
 
 interface esbuildSvelteOptions {
