@@ -51,6 +51,6 @@
     "node": ">=14"
   },
   "dependencies": {
-    "source-map": "^0.7.4"
+    "@jridgewell/trace-mapping": "^0.3.18"
   }
 }

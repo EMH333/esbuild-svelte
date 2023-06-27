@@ -3,7 +3,7 @@ import { preprocess, compile, VERSION } from "svelte/compiler";
 import { dirname, basename, relative } from "path";
 import { promisify } from "util";
 import { readFile, statSync } from "fs";
-import { SourceMapConsumer } from "source-map";
+import { originalPositionFor, TraceMap } from "@jridgewell/trace-mapping";
 
 import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
 import type { PreprocessorGroup } from "svelte/types/compiler/preprocess"
@@ -66,16 +66,15 @@ async function convertMessage(
 
         // Adjust the start and end positions based on what the preprocessors did so the positions are correct
         if (sourcemap) {
-            await SourceMapConsumer.with(sourcemap, null, (consumer) => {
-                const pos = consumer.originalPositionFor({
-                    line: start.line,
-                    column: start.column,
-                });
-                if (pos.source) {
-                    start.line = pos.line ?? start.line;
-                    start.column = pos.column ?? start.column;
-                }
+            sourcemap = new TraceMap(sourcemap);
+            const pos = originalPositionFor(sourcemap, {
+                line: start.line,
+                column: start.column,
             });
+            if (pos.source) {
+                start.line = pos.line ?? start.line;
+                start.column = pos.column ?? start.column;
+            }
         }
 
         location = {
