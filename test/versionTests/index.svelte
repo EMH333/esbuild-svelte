@@ -1,4 +1,5 @@
 <script>
+  let y = "↡";
   let inputBinding;
 
   function change() {
@@ -26,4 +27,5 @@
 
 <div class="secondStyle">
   <button on:click={change}>Click this button!</button>
+  <h1>Hello World © 2021 {y}</h1>
 </div>
