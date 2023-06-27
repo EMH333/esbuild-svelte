@@ -103,6 +103,14 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 options.filterWarnings = () => true;
             }
 
+            //TODO add tests, changelog and readme
+            // if the "conditions" array doesn't contain svelte, add it
+            if (!build.initialOptions.conditions?.includes("svelte")) {
+                build.initialOptions.conditions = build.initialOptions.conditions || [];
+                build.initialOptions.conditions.push("svelte");
+            }
+            
+
             //Store generated css code for use in fake import
             const cssCode = new Map<string, string>();
             const fileCache = new Map<string, CacheData>();
