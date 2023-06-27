@@ -6,7 +6,7 @@ import { readFile, statSync } from "fs";
 import { originalPositionFor, TraceMap } from "@jridgewell/trace-mapping";
 
 import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
-import type { PreprocessorGroup } from "svelte/types/compiler/preprocess"
+import type { PreprocessorGroup } from "svelte/types/compiler/preprocess";
 import type { OnLoadResult, Plugin, PluginBuild, Location, PartialMessage } from "esbuild";
 
 interface esbuildSvelteOptions {
@@ -57,7 +57,7 @@ async function convertMessage(
     { message, start, end }: Warning,
     filename: string,
     source: string,
-    sourcemap: any
+    sourcemap: any,
 ): Promise<PartialMessage> {
     let location: Partial<Location> | undefined;
     if (start && end) {
@@ -300,9 +300,9 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                                         e,
                                         args.path,
                                         source,
-                                        compilerOptions.sourcemap
-                                    )
-                            )
+                                        compilerOptions.sourcemap,
+                                    ),
+                            ),
                         ),
                     };
 

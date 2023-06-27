@@ -29,14 +29,14 @@ test("Errors (with preprocessors) are in the right spot", async () => {
         assert.equal(
             error.location.file,
             "test/fixtures/errors/error.svelte",
-            "Should have the right file"
+            "Should have the right file",
         );
         assert.equal(error.location.line, 12, "Should have the right line");
         assert.equal(error.location.column, 31, "Should have the right column");
         assert.equal(
             error.text,
             "Expected value for the attribute",
-            "Should have the right error message"
+            "Should have the right error message",
         );
         return;
     }

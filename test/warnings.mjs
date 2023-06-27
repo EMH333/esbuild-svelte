@@ -81,7 +81,7 @@ test("Warnings are in the right spot", async () => {
     assert.equal(
         results.warnings[0].location.lineText,
         "  {#if MY_GLOBAL}",
-        "Line text is correct"
+        "Line text is correct",
     );
     assert.match(results.warnings[0].text, /'MY_GLOBAL' is not defined/);
 });
