@@ -2,17 +2,14 @@ import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { build as _build } from "esbuild";
 import sveltePlugin from "../dist/index.mjs";
+import commonOptions from "./commonOptions.js";
 
 test("Can handle direct svelte files", async () => {
     try {
         const results = await _build({
-            entryPoints: ["./example/index.svelte"],
-            outdir: "../example/dist",
-            format: "esm",
-            minify: true,
-            bundle: true,
-            splitting: true,
-            write: false, //Don't write anywhere
+            ...commonOptions,
+            entryPoints: ["./example-js/index.svelte"],
+            outdir: "../example-js/dist",
             sourcemap: "inline",
             plugins: [sveltePlugin({ compilerOptions: { dev: true }, fromEntryFile: true })],
             logLevel: "silent",

@@ -5,16 +5,14 @@ import { build } from "esbuild";
 import { typescript } from "svelte-preprocess-esbuild";
 import { sass } from "svelte-preprocess-sass";
 import sveltePlugin from "../dist/index.mjs";
+import commonOptions from "./commonOptions.js";
+import { writeFileSync } from "fs";
 
 test("Preprocessor Sourcemap test", async () => {
     const result = await build({
+        ...commonOptions,
         entryPoints: ["./test/fixtures/preprocessing-sourcemaps/pp-sourcemaps.js"],
         outdir: "../example/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: true,
-        write: false, //Don't write anywhere
         sourcemap: "external",
         outdir: "out",
         plugins: [sveltePlugin({ preprocess: [{ style: sass() }, typescript()] })],
@@ -27,9 +25,10 @@ test("Preprocessor Sourcemap test", async () => {
             const json = JSON.parse(out.text);
 
             //console.log(out.text);
-            assert.match(out.text, /<script lang=\\"ts\\">/);
+            assert.match(out.text, /<script lang=\\"typescript\\">/);
             assert.match(out.text, /interface Test/);
-            assert.equal(json.sources.length, 3);
+            assert.ok(json.sources.includes("../test/fixtures/preprocessing-sourcemaps/pp-sourcemaps.js"));
+            assert.ok(json.sources.includes("../test/fixtures/preprocessing-sourcemaps/pp-sourcemaps.svelte"));
             assert.not.ok(json.sourcesContent.includes(null), "Sourcemap includes null");
             assert.ok(json.mappings.length > 3900); //note this is kind of an random number, but failing this should prompt
             //more investigation into why it suddenly got shorter

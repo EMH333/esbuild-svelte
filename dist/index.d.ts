@@ -1,5 +1,5 @@
 import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
-import type { PreprocessorGroup } from "svelte/types/compiler/preprocess/types";
+import type { PreprocessorGroup } from "svelte/types/compiler/preprocess";
 import type { Plugin } from "esbuild";
 interface esbuildSvelteOptions {
     /**

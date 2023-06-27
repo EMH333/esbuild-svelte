@@ -3,17 +3,14 @@ import * as assert from "uvu/assert";
 import { build as _build } from "esbuild";
 import { sass } from "svelte-preprocess-sass";
 import sveltePlugin from "../dist/index.mjs";
+import commonOptions from "./commonOptions.js";
 
 test("Fake CSS returns correct resolve directory", async () => {
     //more advanced
     const results = await _build({
+        ...commonOptions,
         entryPoints: ["./test/fixtures/resolveDirectory/entry.js"],
         outdir: "../example/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: true,
-        write: false, //Don't write anywhere
         sourcemap: "inline",
         loader: {
             ".png": "file",

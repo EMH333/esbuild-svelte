@@ -3,14 +3,14 @@ import * as assert from "uvu/assert";
 import { build as _build } from "esbuild";
 import { typescript } from "svelte-preprocess-esbuild";
 import sveltePlugin from "../dist/index.mjs";
+import commonOptions from "./commonOptions.js";
 
 test("Can handle special characters in files", async () => {
     try {
         const results = await _build({
+            ...commonOptions,
             entryPoints: ["./test/fixtures/non-ascii/entry.js"],
             outdir: "../example/dist",
-            bundle: true,
-            write: false, //Don't write anywhere
             sourcemap: true,
             plugins: [
                 sveltePlugin({

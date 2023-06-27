@@ -6,6 +6,7 @@ import { dirname } from "path";
 import { build as _build } from "esbuild";
 import { sass } from "svelte-preprocess-sass";
 import sveltePlugin from "../dist/index.mjs";
+import commonOptions from "./commonOptions.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -29,13 +30,9 @@ test("Watch and build while preprocess of external dependency succeed and fails"
 
     //more advanced
     const results = await _build({
+        ...commonOptions,
         entryPoints: ["./test/fixtures/watch-preprocessing/entry.js"],
         outdir: "../example/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: true,
-        write: false, //Don't write anywhere
         sourcemap: "inline",
         logLevel: "silent",
         plugins: [

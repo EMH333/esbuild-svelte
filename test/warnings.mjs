@@ -3,13 +3,13 @@ import * as assert from "uvu/assert";
 import { build as _build } from "esbuild";
 import { typescript } from "svelte-preprocess-esbuild";
 import sveltePlugin from "../dist/index.mjs";
+import commonOptions from "./commonOptions.js";
 
 test("Can filter out warnings", async () => {
     const resultsWithoutFilter = await _build({
+        ...commonOptions,
         entryPoints: ["./test/fixtures/warnings/entry.js"],
         outdir: "../example/dist",
-        bundle: true,
-        write: false, //Don't write anywhere
         sourcemap: true,
         plugins: [
             sveltePlugin({
@@ -21,10 +21,9 @@ test("Can filter out warnings", async () => {
     });
 
     const resultsWithFilter = await _build({
+        ...commonOptions,
         entryPoints: ["./test/fixtures/warnings/entry.js"],
         outdir: "../example/dist",
-        bundle: true,
-        write: false, //Don't write anywhere
         sourcemap: true,
         plugins: [
             sveltePlugin({

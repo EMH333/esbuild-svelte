@@ -3,6 +3,7 @@ import * as assert from "uvu/assert";
 import { build as _build } from "esbuild";
 import sveltePlugin from "../dist/index.mjs";
 import sveltePluginCJS from "../dist/index.js";
+import commonOptions from "./commonOptions.js";
 
 test("Without esbuild", async () => {
     let build = {};
@@ -43,13 +44,9 @@ test("Without esbuild", async () => {
 test("Simple build", async () => {
     //Try a simple esbuild build
     const results = await _build({
+        ...commonOptions,
         entryPoints: ["./example-js/entry.js"],
         outdir: "../example-js/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: true,
-        write: false, //Don't write anywhere
         plugins: [sveltePlugin()],
     });
 
@@ -61,13 +58,9 @@ test("Simple build", async () => {
 test("Simple CommonJS build", async () => {
     //Try a simple esbuild build
     const results = await _build({
+        ...commonOptions,
         entryPoints: ["./example-js/entry.js"],
         outdir: "../example-js/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: true,
-        write: false, //Don't write anywhere
         plugins: [sveltePluginCJS()],
     });
 
@@ -79,13 +72,9 @@ test("Simple CommonJS build", async () => {
 test("More advanced build", async () => {
     //more advanced
     const results = await _build({
+        ...commonOptions,
         entryPoints: ["./example-js/entry.js"],
         outdir: "../example-js/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: true,
-        write: false, //Don't write anywhere
         sourcemap: "inline",
         plugins: [sveltePlugin({ compilerOptions: { dev: true } })],
     });
@@ -98,13 +87,9 @@ test("More advanced build", async () => {
 test("CSS external boolean", async () => {
     //more advanced
     const results = await _build({
+        ...commonOptions,
         entryPoints: ["./example-js/entry.js"],
         outdir: "../example-js/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: false,
-        write: false, //Don't write anywhere
         sourcemap: "inline",
         plugins: [sveltePlugin({ compilerOptions: { dev: true, css: false } })],
     });
@@ -117,13 +102,9 @@ test("CSS external boolean", async () => {
 test("CSS external string", async () => {
     //more advanced
     const results = await _build({
+        ...commonOptions,
         entryPoints: ["./example-js/entry.js"],
         outdir: "../example-js/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: false,
-        write: false, //Don't write anywhere
         sourcemap: "inline",
         plugins: [sveltePlugin({ compilerOptions: { dev: true, css: "external" } })],
     });
@@ -134,15 +115,11 @@ test("CSS external string", async () => {
 });
 
 test("CSS injected boolean", async () => {
-    //more advanced
+    //TODO this should fail with a warning with svelte v4
     const results = await _build({
+        ...commonOptions,
         entryPoints: ["./example-js/entry.js"],
         outdir: "../example-js/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: false,
-        write: false, //Don't write anywhere
         sourcemap: "inline",
         plugins: [sveltePlugin({ compilerOptions: { dev: true, css: true } })],
     });
@@ -155,13 +132,9 @@ test("CSS injected boolean", async () => {
 test("CSS injected string", async () => {
     //more advanced
     const results = await _build({
+        ...commonOptions,
         entryPoints: ["./example-js/entry.js"],
         outdir: "../example-js/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: false,
-        write: false, //Don't write anywhere
         sourcemap: "inline",
         plugins: [sveltePlugin({ compilerOptions: { dev: true, css: "injected" } })],
     });
@@ -174,13 +147,9 @@ test("CSS injected string", async () => {
 test("CSS none", async () => {
     //more advanced
     const results = await _build({
+        ...commonOptions,
         entryPoints: ["./example-js/entry.js"],
         outdir: "../example-js/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: false,
-        write: false, //Don't write anywhere
         sourcemap: "inline",
         plugins: [sveltePlugin({ compilerOptions: { dev: true, css: "none" } })],
     });

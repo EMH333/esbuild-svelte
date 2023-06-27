@@ -6,30 +6,23 @@ import { sass } from "svelte-preprocess-sass";
 import sveltePlugin from "../dist/index.mjs";
 import { tmpdir } from "os";
 import { join } from "path";
+import commonOptions from "./commonOptions.js";
 
 //with cache enabled
 test("Basic cache", async () => {
     await build({
+        ...commonOptions,
         entryPoints: ["./example-js/entry.js"],
         outdir: "../example-js/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: true,
-        write: false, //Don't write anywhere
         plugins: [sveltePlugin({ cache: true })],
     });
 });
 
 async function incrementalTest() {
     let result = await build({
+        ...commonOptions,
         entryPoints: ["./example-js/entry.js"],
         outdir: "../example-js/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: true,
-        write: false, //Don't write anywhere
         plugins: [sveltePlugin({ cache: true })],
         incremental: true,
     });
@@ -64,11 +57,10 @@ async function depsSetup(cacheType) {
     // Set color to red
     writeFileSync(join(dirname, "/xyz.sass"), ".xyz\n  color: red");
     const result = await build({
+        ...commonOptions,
         entryPoints: [join(dirname, "/app.js")],
-        bundle: true,
         incremental: true,
-        write: false,
-        outfile: "out.js",
+        outdir: "./dist",
         external: ["svelte/internal"],
         plugins: [
             sveltePlugin({
@@ -157,13 +149,9 @@ test("Overzealous cache with preprocessor", async () => {
 
 test("Overzealous cache should still build", async () => {
     let result = await build({
+        ...commonOptions,
         entryPoints: ["./example-js/entry.js"],
         outdir: "../example-js/dist",
-        format: "esm",
-        minify: true,
-        bundle: true,
-        splitting: true,
-        write: false, //Don't write anywhere
         plugins: [sveltePlugin({ cache: "overzealous" })],
         incremental: true,
     });
