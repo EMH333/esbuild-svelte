@@ -26,7 +26,8 @@ If applicable, add screenshots to help explain your problem.
 
 - esbuild-svelte version:
 - esbuild version:
-- Svelte preprocessors used (if any):
+- svelte version:
+- Svelte preprocessors used and their versions (if any):
 
 **Additional context**
 Add any other context about the problem here.
