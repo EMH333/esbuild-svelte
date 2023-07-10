@@ -125,7 +125,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                             },
                         ],
                     };
-                }
+                },
             );
 
             //main loader
@@ -189,7 +189,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                                 options.preprocess,
                                 {
                                     filename,
-                                }
+                                },
                             );
                         } catch (e: any) {
                             // if preprocess failed there are chances that an external dependency caused exception
@@ -251,7 +251,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                             .replace(/\\/g, "/");
                         cssCode.set(
                             cssPath,
-                            css.code + `/*# sourceMappingURL=${toUrl(css.map.toString())} */`
+                            css.code + `/*# sourceMappingURL=${toUrl(css.map.toString())} */`,
                         );
                         contents = contents + `\nimport "${cssPath}";`;
                     }
@@ -317,7 +317,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                                     if (fileCacheEntry != undefined) {
                                         fileCacheEntry?.dependencies.set(
                                             i.path,
-                                            statSync(i.path).mtime
+                                            statSync(i.path).mtime,
                                         );
                                         fileCache.set(fileName, fileCacheEntry);
                                     }

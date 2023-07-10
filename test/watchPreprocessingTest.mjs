@@ -57,7 +57,7 @@ test("Watch and build while preprocess of external dependency succeed and fails"
     // write external scss with invalid syntax
     writeFileSync(
         `${__dirname}/fixtures/watch-preprocessing/external.scss`,
-        "p { color: red; }!$%^&*()@$%^@@"
+        "p { color: red; }!$%^&*()@$%^@@",
     );
     const firstRebuildResult = await firstRebuild;
     assert.ok(firstRebuildResult instanceof Error, "First build did not fail");
@@ -65,7 +65,7 @@ test("Watch and build while preprocess of external dependency succeed and fails"
     // write external scss with valid syntax again
     writeFileSync(
         `${__dirname}/fixtures/watch-preprocessing/external.scss`,
-        "p {\n  color: red;\n}\n"
+        "p {\n  color: red;\n}\n",
     );
     const secondRebuildResult = await secondRebuild;
     assert.ok(secondRebuildResult.errors.length === 0, "Second build fail");

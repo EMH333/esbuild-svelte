@@ -28,12 +28,12 @@ test("Preprocessor Sourcemap test", async () => {
             assert.match(out.text, /<script lang=\\"typescript\\">/);
             assert.match(out.text, /interface Test/);
             assert.ok(
-                json.sources.includes("../test/fixtures/preprocessing-sourcemaps/pp-sourcemaps.js")
+                json.sources.includes("../test/fixtures/preprocessing-sourcemaps/pp-sourcemaps.js"),
             );
             assert.ok(
                 json.sources.includes(
-                    "../test/fixtures/preprocessing-sourcemaps/pp-sourcemaps.svelte"
-                )
+                    "../test/fixtures/preprocessing-sourcemaps/pp-sourcemaps.svelte",
+                ),
             );
             assert.not.ok(json.sourcesContent.includes(null), "Sourcemap includes null");
             assert.ok(json.mappings.length > 3900); //note this is kind of an random number, but failing this should prompt

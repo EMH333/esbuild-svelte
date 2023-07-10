@@ -37,8 +37,8 @@ const esbuildCommon = {
         "./dist/index.js",
         rewrite(output).replace(
             /export {.*sveltePlugin as default.*};/s,
-            "module.exports = sveltePlugin;"
-        )
+            "module.exports = sveltePlugin;",
+        ),
     );
 })().catch((err) => {
     console.error("ERROR", err.stack || err);

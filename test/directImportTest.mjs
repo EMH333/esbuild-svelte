@@ -20,7 +20,7 @@ test("Can handle direct svelte files", async () => {
         assert.match(
             err.errors[0].text,
             "does not support creating entry files yet",
-            "Should be my error message"
+            "Should be my error message",
         );
         assert.ok(err.errors.length == 1, "There should be one error");
     }

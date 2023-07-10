@@ -51,7 +51,7 @@ async function depsSetup(cacheType) {
     writeFileSync(join(dirname, "/app.js"), 'import x from "./foo.svelte"\nconsole.log(x)');
     writeFileSync(
         join(dirname, "/foo.svelte"),
-        '<style lang="sass">@import "./xyz.sass"</style><div class="xyz">foo</div>'
+        '<style lang="sass">@import "./xyz.sass"</style><div class="xyz">foo</div>',
     );
 
     // Set color to red
@@ -101,7 +101,7 @@ test("Preprocess w/ deps delete", async () => {
         assert.not.match(
             err.errors[0].text,
             "stat",
-            "`stat` shouldn't be generating the error message"
+            "`stat` shouldn't be generating the error message",
         );
         assert.ok(err.errors.length == 1, "There should be one error");
     } finally {

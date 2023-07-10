@@ -32,7 +32,7 @@ esbuild
                 "Build had warnings with esbuild version " +
                     esbuildVersion +
                     " and svelte version " +
-                    svelteVersion
+                    svelteVersion,
             );
             process.exit(1);
         }
@@ -43,7 +43,7 @@ esbuild
             "Build failed with esbuild version " +
                 esbuildVersion +
                 " and svelte version " +
-                svelteVersion
+                svelteVersion,
         );
         process.exit(1);
     });

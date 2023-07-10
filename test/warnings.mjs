@@ -51,7 +51,7 @@ test("Can filter out warnings", async () => {
     assert.equal(
         resultsWithFilter.warnings[0].text,
         "A11y: <img> element should have an alt attribute",
-        "The not filtered warning is still there"
+        "The not filtered warning is still there",
     );
     assert.equal(resultsWithFilter.errors.length, 0, "Should not have errors");
 });
