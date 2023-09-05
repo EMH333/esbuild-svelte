@@ -56,16 +56,22 @@ const convertMessage = ({ message, start, end, filename, frame }: Warning) => ({
     text: message,
     location: start &&
         end && {
-            file: filename,
-            line: start.line,
-            column: start.column,
-            length: start.line === end.line ? end.column - start.column : 0,
-            lineText: frame,
-        },
+        file: filename,
+        line: start.line,
+        column: start.column,
+        length: start.line === end.line ? end.column - start.column : 0,
+        lineText: frame,
+    },
 });
 
-const shouldCache = (build: PluginBuild) =>
-    build.initialOptions.incremental || build.initialOptions.watch;
+//still support old incremental option if possible, but can still be overriden by cache option
+const shouldCache = (build: (PluginBuild & {
+    initialOptions: {
+        incremental?: boolean;
+        watch?: boolean;
+    }
+})) =>
+    build.initialOptions?.incremental || build.initialOptions?.watch;
 
 // TODO: Hot fix to replace broken e64enc function in svelte on node 16
 const b64enc = Buffer
@@ -194,7 +200,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         } catch (e: any) {
                             // if preprocess failed there are chances that an external dependency caused exception
                             // to avoid stop watching those files, we keep the previous dependencies if available
-                            if (build.initialOptions.watch && cachedFile) {
+                            if (cachedFile) {
                                 previousWatchFiles = Array.from(cachedFile.dependencies.keys());
                             }
                             throw e;
@@ -274,10 +280,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     }
 
                     // make sure to tell esbuild to watch any additional files used if supported
-                    if (build.initialOptions.watch) {
-                        // this array does include the orignal file, but esbuild should be smart enough to ignore it
-                        result.watchFiles = Array.from(dependencyModifcationTimes.keys());
-                    }
+                    result.watchFiles = Array.from(dependencyModifcationTimes.keys());
 
                     return result;
                 } catch (e: any) {
@@ -295,7 +298,25 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 return css ? { contents: css, loader: "css", resolveDir: dirname(path) } : null;
             });
 
-            // code in this section can use esbuild features <= 0.11.15 because of `onEnd` check
+            // code in this section can use esbuild features >= 0.11.15 because of `onEnd` check
+            // this enables the cache at the end of the build. The cache is disabled by default,
+            // but if this plugin instance is used agian, then the cache will be enabled (because
+            // we can be confident that the build is incremental or watch).
+            // This saves enabling caching on every build, which would be a performance hit but
+            // also makes sure incremental performance is increased.
+            if (typeof build.onEnd === "function") {
+                build.onEnd(() => {
+                    if (!options) {
+                        options = {};
+                    }
+                    if (options.cache === undefined) {
+                        options.cache = true;
+                    }
+                });
+            }
+
+            // code in this section can use esbuild features >= 0.11.15 because of `onEnd` check
+            // TODO long term overzealous should be deprecated and removed (technically it doesn't work beyond the 0.17.0 context API changes)
             if (
                 shouldCache(build) &&
                 options?.cache == "overzealous" &&

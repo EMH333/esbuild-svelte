@@ -1,6 +1,6 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
-import { build } from "esbuild";
+import { build, context } from "esbuild";
 import { mkdirSync, unlinkSync, writeFileSync } from "fs";
 import { sass } from "svelte-preprocess-sass";
 import sveltePlugin from "../dist/index.mjs";
@@ -19,12 +19,11 @@ test("Basic cache", async () => {
 });
 
 async function incrementalTest() {
-    let result = await build({
+    let result = await context({
         ...commonOptions,
         entryPoints: ["./example-js/entry.js"],
         outdir: "../example-js/dist",
         plugins: [sveltePlugin({ cache: true })],
-        incremental: true,
     });
 
     // Call "rebuild" as many times as you want
@@ -33,7 +32,7 @@ async function incrementalTest() {
     }
 
     // Call "dispose" when you're done to free up resources.
-    result.rebuild.dispose();
+    result.dispose();
 }
 
 test("Cache w/ rebuild", async () => {
@@ -56,10 +55,9 @@ async function depsSetup(cacheType) {
 
     // Set color to red
     writeFileSync(join(dirname, "/xyz.sass"), ".xyz\n  color: red");
-    const result = await build({
+    const result = await context({
         ...commonOptions,
         entryPoints: [join(dirname, "/app.js")],
-        incremental: true,
         outdir: "./dist",
         external: ["svelte/internal"],
         plugins: [
@@ -72,20 +70,22 @@ async function depsSetup(cacheType) {
         ],
         logLevel: "silent",
     });
-    return { result, dirname };
+    //make sure and build at least once
+    let firstOut = await result.rebuild();
+    return { result, firstOut, dirname };
 }
 
 test("Preprocess w/ deps basic", async () => {
-    let { result, dirname } = await depsSetup();
+    let { result, firstOut, dirname } = await depsSetup();
 
     // Set color to green
     writeFileSync(join(dirname, "/xyz.sass"), ".xyz\n  color: green");
-    const result2 = await result.rebuild();
+    const secondOut = await result.rebuild();
 
-    result.rebuild.dispose();
+    assert.match(firstOut.outputFiles[1].text, "red");
+    assert.match(secondOut.outputFiles[1].text, "green");
 
-    assert.match(result.outputFiles[1].text, "red");
-    assert.match(result2.outputFiles[1].text, "green");
+    result.dispose();
 });
 
 test("Preprocess w/ deps delete", async () => {
@@ -105,7 +105,7 @@ test("Preprocess w/ deps delete", async () => {
         );
         assert.ok(err.errors.length == 1, "There should be one error");
     } finally {
-        result.rebuild.dispose();
+        result.dispose();
     }
 });
 
@@ -130,30 +130,29 @@ test("Don't cache errors", async () => {
     } catch (err) {
         assert.not.ok(true); //expect to not to
     } finally {
-        result.rebuild.dispose();
+        result.dispose();
     }
 });
 
 test("Overzealous cache with preprocessor", async () => {
-    let { result, dirname } = await depsSetup("overzealous");
+    let { result, firstOut, dirname } = await depsSetup("overzealous");
 
     // Set color to green
     writeFileSync(join(dirname, "/xyz.sass"), ".xyz\n  color: green");
-    const result2 = await result.rebuild();
+    const secondOut = await result.rebuild();
 
-    result.rebuild.dispose();
+    assert.match(firstOut.outputFiles[1].text, "red");
+    assert.match(secondOut.outputFiles[1].text, "green");
 
-    assert.match(result.outputFiles[1].text, "red");
-    assert.match(result2.outputFiles[1].text, "green");
+    result.dispose();
 });
 
 test("Overzealous cache should still build", async () => {
-    let result = await build({
+    let result = await context({
         ...commonOptions,
         entryPoints: ["./example-js/entry.js"],
         outdir: "../example-js/dist",
         plugins: [sveltePlugin({ cache: "overzealous" })],
-        incremental: true,
     });
 
     // Call "rebuild" as many times as you want
@@ -162,7 +161,7 @@ test("Overzealous cache should still build", async () => {
     }
 
     // Call "dispose" when you're done to free up resources.
-    result.rebuild.dispose();
+    result.dispose();
 });
 
 test.run();

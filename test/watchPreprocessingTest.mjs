@@ -3,7 +3,7 @@ import * as assert from "uvu/assert";
 import { writeFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import { build as _build } from "esbuild";
+import { context } from "esbuild";
 import { sass } from "svelte-preprocess-sass";
 import sveltePlugin from "../dist/index.mjs";
 import commonOptions from "./commonOptions.js";
@@ -29,7 +29,7 @@ test("Watch and build while preprocess of external dependency succeed and fails"
     const secondRebuild = _createDeferred();
 
     //more advanced
-    const results = await _build({
+    const results = await context({
         ...commonOptions,
         entryPoints: ["./test/fixtures/watch-preprocessing/entry.js"],
         outdir: "../example/dist",
@@ -41,37 +41,51 @@ test("Watch and build while preprocess of external dependency succeed and fails"
                     style: sass(),
                 },
             }),
+            {
+                // this plugin will pass the result back to the promises
+                name: "watch-preprocessing",
+                setup(build) {
+                    build.onEnd((result) => {
+                        count++;
+                        if (count === 3) {
+                            firstRebuild.forceResolve(result);
+                        } else if (count === 4) {
+                            secondRebuild.forceResolve(result);
+                        }
+                    });
+                },
+            }
         ],
-        watch: {
-            onRebuild(err, result) {
-                count++;
-                if (count === 1) {
-                    firstRebuild.forceResolve(err);
-                } else if (count === 2) {
-                    secondRebuild.forceResolve(result);
-                }
-            },
-        },
     });
 
-    // write external scss with invalid syntax
-    writeFileSync(
-        `${__dirname}/fixtures/watch-preprocessing/external.scss`,
-        "p { color: red; }!$%^&*()@$%^@@",
-    );
-    const firstRebuildResult = await firstRebuild;
-    assert.ok(firstRebuildResult instanceof Error, "First build did not fail");
+    await results.rebuild(); // have to do an initial build to prime everything
+    await results.rebuild(); // do one more good build to start caching
 
-    // write external scss with valid syntax again
-    writeFileSync(
-        `${__dirname}/fixtures/watch-preprocessing/external.scss`,
-        "p {\n  color: red;\n}\n",
-    );
-    const secondRebuildResult = await secondRebuild;
-    assert.ok(secondRebuildResult.errors.length === 0, "Second build fail");
+    // start watching
+    results.watch().catch((err) => {
+        console.error(err);
+    });
 
-    // stop watching
-    results.stop();
+    try {
+        // write external scss with invalid syntax
+        writeFileSync(
+            `${__dirname}/fixtures/watch-preprocessing/external.scss`,
+            "p { color: red; }!$%^&*()@$%^@@",
+        );
+        const firstRebuildResult = await firstRebuild;
+        assert.ok(firstRebuildResult.errors.length !== 0, "First build did not fail");
+
+        // write external scss with valid syntax again
+        writeFileSync(
+            `${__dirname}/fixtures/watch-preprocessing/external.scss`,
+            "p {\n  color: red;\n}\n",
+        );
+        const secondRebuildResult = await secondRebuild;
+        assert.ok(secondRebuildResult.errors.length === 0, "Second build fail");
+    } finally {
+        // stop watching
+        results.dispose();
+    }
 });
 
 test.run();

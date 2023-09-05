@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased (Breaking)
+
+- Update development esbuild version to `0.19.0`
+
+  This means that this plugin now supports additional inhancements when using the `context` esbuild `v0.17.0` API as detailed below.
+
+- **Minorly Breaking** Caching is automatically enabled after two sucessful builds when using the `context` esbuild API
+
+  Previously caching was automatically enabled when using the watch or incremental esbuild options, but those were removed in esbuild `v0.17.0`. This change brings back the automatic cache enabling when using the `context` API which supports the same features as the previous watch and incremental options. esbuild does not provide a way for plugins to determine if the `context` API is being used, so this feature is enabled after two successful builds. This should be a reasonable compromise between not enabling the cache at all and enabling it for every build (which wastes time and space if caching isn't needed).
+
+  If you are using the `context` API and want to disable the cache, you can set the `cache` option to `false` in the plugin options but this isn't recommended (if you do need to disable the cache for some reason, please open an issue to see if your usecase can be fixed).
+
 ## 0.7.4
 
 - Lock Svelte peerDependency to `>=3.43.0 <5` to protect against breaking changes in future Svelte releases
