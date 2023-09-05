@@ -54,7 +54,7 @@ test("Watch and build while preprocess of external dependency succeed and fails"
                         }
                     });
                 },
-            }
+            },
         ],
     });
 

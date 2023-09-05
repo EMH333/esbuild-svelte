@@ -56,22 +56,23 @@ const convertMessage = ({ message, start, end, filename, frame }: Warning) => ({
     text: message,
     location: start &&
         end && {
-        file: filename,
-        line: start.line,
-        column: start.column,
-        length: start.line === end.line ? end.column - start.column : 0,
-        lineText: frame,
-    },
+            file: filename,
+            line: start.line,
+            column: start.column,
+            length: start.line === end.line ? end.column - start.column : 0,
+            lineText: frame,
+        },
 });
 
 //still support old incremental option if possible, but can still be overriden by cache option
-const shouldCache = (build: (PluginBuild & {
-    initialOptions: {
-        incremental?: boolean;
-        watch?: boolean;
-    }
-})) =>
-    build.initialOptions?.incremental || build.initialOptions?.watch;
+const shouldCache = (
+    build: PluginBuild & {
+        initialOptions: {
+            incremental?: boolean;
+            watch?: boolean;
+        };
+    },
+) => build.initialOptions?.incremental || build.initialOptions?.watch;
 
 // TODO: Hot fix to replace broken e64enc function in svelte on node 16
 const b64enc = Buffer
