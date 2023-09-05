@@ -12,6 +12,10 @@
 
   If you are using the `context` API and want to disable the cache, you can set the `cache` option to `false` in the plugin options but this isn't recommended (if you do need to disable the cache for some reason, please open an issue to see if your usecase can be fixed).
 
+- **Minorly Breaking** Add dependency to `@jridgewell/trace-mapping` so error messages are more accurate when using preprocessors ([#83](https://github.com/EMH333/esbuild-svelte/issues/83))
+
+  If you are using Svelte 4, this doesn't add additional dependencies because that package is already required by Svelte 4.
+
 ## 0.7.4
 
 - Lock Svelte peerDependency to `>=3.43.0 <5` to protect against breaking changes in future Svelte releases
