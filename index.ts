@@ -281,11 +281,20 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     }
 
                     // make sure to tell esbuild to watch any additional files used if supported
-                    result.watchFiles = Array.from(dependencyModifcationTimes.keys());
+                    // only provide if context API is supported or we are caching
+                    if (build.esbuild?.context !== undefined || shouldCache(build)) {
+                        result.watchFiles = Array.from(dependencyModifcationTimes.keys());
+                    }
 
                     return result;
                 } catch (e: any) {
-                    return { errors: [convertMessage(e)], watchFiles: previousWatchFiles };
+                    let result: OnLoadResult = {};
+                    result.errors = [convertMessage(e)];
+                    // only provide if context API is supported or we are caching
+                    if (build.esbuild?.context !== undefined || shouldCache(build)) {
+                        result.watchFiles = previousWatchFiles;
+                    }
+                    return result;
                 }
             });
 
