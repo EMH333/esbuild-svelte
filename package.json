@@ -49,5 +49,8 @@
   },
   "engines": {
     "node": ">=14"
+  },
+  "dependencies": {
+    "@jridgewell/trace-mapping": "^0.3.18"
   }
 }

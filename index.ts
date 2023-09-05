@@ -3,10 +3,11 @@ import { preprocess, compile, VERSION } from "svelte/compiler";
 import { dirname, basename, relative } from "path";
 import { promisify } from "util";
 import { readFile, statSync } from "fs";
+import { originalPositionFor, TraceMap } from "@jridgewell/trace-mapping";
 
 import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
 import type { PreprocessorGroup } from "svelte/types/compiler/preprocess";
-import type { OnLoadResult, Plugin, PluginBuild } from "esbuild";
+import type { OnLoadResult, Plugin, PluginBuild, Location, PartialMessage } from "esbuild";
 
 interface esbuildSvelteOptions {
     /**
@@ -52,17 +53,40 @@ interface CacheData {
     dependencies: Map<string, Date>;
 }
 
-const convertMessage = ({ message, start, end, filename, frame }: Warning) => ({
-    text: message,
-    location: start &&
-        end && {
+async function convertMessage(
+    { message, start, end }: Warning,
+    filename: string,
+    source: string,
+    sourcemap: any,
+): Promise<PartialMessage> {
+    let location: Partial<Location> | undefined;
+    if (start && end) {
+        let lineText = source.split(/\r\n|\r|\n/g)[start.line - 1];
+        let lineEnd = start.line === end.line ? end.column : lineText.length;
+
+        // Adjust the start and end positions based on what the preprocessors did so the positions are correct
+        if (sourcemap) {
+            sourcemap = new TraceMap(sourcemap);
+            const pos = originalPositionFor(sourcemap, {
+                line: start.line,
+                column: start.column,
+            });
+            if (pos.source) {
+                start.line = pos.line ?? start.line;
+                start.column = pos.column ?? start.column;
+            }
+        }
+
+        location = {
             file: filename,
             line: start.line,
             column: start.column,
-            length: start.line === end.line ? end.column - start.column : 0,
-            lineText: frame,
-        },
-});
+            length: lineEnd - start.column,
+            lineText,
+        };
+    }
+    return { text: message, location };
+}
 
 //still support old incremental option if possible, but can still be overriden by cache option
 const shouldCache = (
@@ -269,7 +293,17 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                     const result: OnLoadResult = {
                         contents,
-                        warnings: warnings.map(convertMessage),
+                        warnings: await Promise.all(
+                            warnings.map(
+                                async (e) =>
+                                    await convertMessage(
+                                        e,
+                                        args.path,
+                                        source,
+                                        compilerOptions.sourcemap,
+                                    ),
+                            ),
+                        ),
                     };
 
                     // if we are told to cache, then cache
@@ -289,7 +323,14 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     return result;
                 } catch (e: any) {
                     let result: OnLoadResult = {};
-                    result.errors = [convertMessage(e)];
+                    result.errors = [
+                        await convertMessage(
+                            e,
+                            args.path,
+                            originalSource,
+                            compilerOptions.sourcemap,
+                        ),
+                    ];
                     // only provide if context API is supported or we are caching
                     if (build.esbuild?.context !== undefined || shouldCache(build)) {
                         result.watchFiles = previousWatchFiles;
