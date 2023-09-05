@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased (Breaking)
+## 0.8.0 (Breaking)
 
 - **Minorly Breaking** Caching is automatically enabled after two sucessful builds when using the `context` esbuild API
 
