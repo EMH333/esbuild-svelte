@@ -1,6 +1,6 @@
 {
   "name": "esbuild-svelte",
-  "version": "0.7.4",
+  "version": "0.8.0",
   "description": "esbuild plugin to resolve .svelte files",
   "repository": "https://github.com/EMH333/esbuild-svelte",
   "module": "dist/index.mjs",
