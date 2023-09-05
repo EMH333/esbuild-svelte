@@ -323,7 +323,14 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     return result;
                 } catch (e: any) {
                     let result: OnLoadResult = {};
-                    result.errors = [await convertMessage(e, args.path, originalSource, compilerOptions.sourcemap)];
+                    result.errors = [
+                        await convertMessage(
+                            e,
+                            args.path,
+                            originalSource,
+                            compilerOptions.sourcemap,
+                        ),
+                    ];
                     // only provide if context API is supported or we are caching
                     if (build.esbuild?.context !== undefined || shouldCache(build)) {
                         result.watchFiles = previousWatchFiles;
