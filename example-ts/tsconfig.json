@@ -24,7 +24,7 @@
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
     "types": [
       // "node",
-      "svelte",
+      "svelte"
     ] /* Specify type package names to be included without being referenced in a source file. */,
 
     /* Interop Constraints */
@@ -39,8 +39,8 @@
 
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   "include": ["entry.ts"],
-  "exclude": ["node_modules/**", "dist/**"],
+  "exclude": ["node_modules/**", "dist/**"]
 }
