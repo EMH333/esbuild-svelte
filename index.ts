@@ -5,8 +5,7 @@ import { promisify } from "util";
 import { readFile, statSync } from "fs";
 import { originalPositionFor, TraceMap } from "@jridgewell/trace-mapping";
 
-import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
-import type { PreprocessorGroup } from "svelte/types/compiler/preprocess";
+import type { CompileOptions, Warning, PreprocessorGroup } from "svelte/compiler";
 import type { OnLoadResult, Plugin, PluginBuild, Location, PartialMessage } from "esbuild";
 
 interface esbuildSvelteOptions {
@@ -202,7 +201,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 dependencyModifcationTimes.set(args.path, statSync(args.path).mtime); // add the target file
 
                 let compilerOptions = {
-                    css: (svelteVersion < 3 ? false : "external") as boolean | "external",
+                    css: "external" as "external",
                     ...options?.compilerOptions,
                 };
 
@@ -273,10 +272,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     let contents = js.code + `\n//# sourceMappingURL=` + toUrl(js.map.toString());
 
                     //if svelte emits css seperately, then store it in a map and import it from the js
-                    if (
-                        (compilerOptions.css === false || compilerOptions.css === "external") &&
-                        css.code
-                    ) {
+                    if (compilerOptions.css === "external" && css?.code) {
                         let cssPath = args.path
                             .replace(".svelte", ".esbuild-svelte-fake-css") //TODO append instead of replace to support different svelte filters
                             .replace(/\\/g, "/");

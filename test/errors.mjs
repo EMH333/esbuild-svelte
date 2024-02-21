@@ -35,7 +35,7 @@ test("Errors (with preprocessors) are in the right spot", async () => {
         assert.equal(error.location.column, 31, "Should have the right column");
         assert.equal(
             error.text,
-            "Expected value for the attribute",
+            "Expected attribute value",
             "Should have the right error message",
         );
         return;

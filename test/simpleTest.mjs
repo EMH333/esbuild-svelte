@@ -84,25 +84,7 @@ test("More advanced build", async () => {
     assert.equal(results.outputFiles.length, 2, "Non-expected number of output files");
 });
 
-// remove for svelte v5
-test("CSS external boolean", async () => {
-    //Note this fails on svelte v4 since booleans are deprecated and it has seemingly been broken
-    //I'm not sure if this is a bug or not, but I'm going to choose to ignore this failure for now,
-    //since there is an easy workaround (use a string instead of a boolean)
-    const results = await _build({
-        ...commonOptions,
-        entryPoints: ["./example-js/entry.js"],
-        outdir: "../example-js/dist",
-        sourcemap: "inline",
-        plugins: [sveltePlugin({ compilerOptions: { dev: true, css: false } })],
-    });
-
-    assert.equal(results.errors.length, 0, "Non-zero number of errors");
-    assert.equal(results.warnings.length, 0, "Non-zero number of warnings");
-    //assert.equal(results.outputFiles.length, 2, "Non-expected number of output files");
-});
-
-test("CSS external string", async () => {
+test("CSS external", async () => {
     //more advanced
     const results = await _build({
         ...commonOptions,
@@ -117,23 +99,7 @@ test("CSS external string", async () => {
     assert.equal(results.outputFiles.length, 2, "Non-expected number of output files");
 });
 
-// remove for svelte v5
-test("CSS injected boolean", async () => {
-    //TODO this should fail with a warning with svelte v4
-    const results = await _build({
-        ...commonOptions,
-        entryPoints: ["./example-js/entry.js"],
-        outdir: "../example-js/dist",
-        sourcemap: "inline",
-        plugins: [sveltePlugin({ compilerOptions: { dev: true, css: true } })],
-    });
-
-    assert.equal(results.errors.length, 0, "Non-zero number of errors");
-    assert.equal(results.warnings.length, 0, "Non-zero number of warnings");
-    assert.equal(results.outputFiles.length, 1, "Non-expected number of output files");
-});
-
-test("CSS injected string", async () => {
+test("CSS injected", async () => {
     //more advanced
     const results = await _build({
         ...commonOptions,
@@ -141,21 +107,6 @@ test("CSS injected string", async () => {
         outdir: "../example-js/dist",
         sourcemap: "inline",
         plugins: [sveltePlugin({ compilerOptions: { dev: true, css: "injected" } })],
-    });
-
-    assert.equal(results.errors.length, 0, "Non-zero number of errors");
-    assert.equal(results.warnings.length, 0, "Non-zero number of warnings");
-    assert.equal(results.outputFiles.length, 1, "Non-expected number of output files");
-});
-
-test("CSS none", async () => {
-    //more advanced
-    const results = await _build({
-        ...commonOptions,
-        entryPoints: ["./example-js/entry.js"],
-        outdir: "../example-js/dist",
-        sourcemap: "inline",
-        plugins: [sveltePlugin({ compilerOptions: { dev: true, css: "none" } })],
     });
 
     assert.equal(results.errors.length, 0, "Non-zero number of errors");
