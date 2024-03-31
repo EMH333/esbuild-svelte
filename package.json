@@ -41,7 +41,7 @@
     "prettier": "^3.2.5",
     "rewrite-imports": "^3.0.0",
     "sass": "^1.71.0",
-    "svelte": "5.0.0-next.64",
+    "svelte": "5.0.0-next.90",
     "svelte-preprocess-esbuild": "^3.0.0",
     "svelte-preprocess-sass": "^2.0.1",
     "typescript": "^5.3.3",
