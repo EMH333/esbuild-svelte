@@ -275,7 +275,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     //if svelte emits css seperately, then store it in a map and import it from the js
                     if (
                         (compilerOptions.css === false || compilerOptions.css === "external") &&
-                        css.code
+                        css?.code
                     ) {
                         let cssPath = args.path
                             .replace(".svelte", ".esbuild-svelte-fake-css") //TODO append instead of replace to support different svelte filters
