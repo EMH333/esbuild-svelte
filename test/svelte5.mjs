@@ -7,7 +7,7 @@ import { VERSION } from "svelte/compiler";
 
 test("Simple Svelte v5 build", async () => {
     // only run for svelte 5
-    if (!VERSION.startsWith('5')) {
+    if (!VERSION.startsWith("5")) {
         return;
     }
 

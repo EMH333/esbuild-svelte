@@ -87,7 +87,7 @@ test("More advanced build", async () => {
 
 test("CSS external boolean", async () => {
     // TODO remove for svelte 5
-    if (VERSION.startsWith('5')) {
+    if (VERSION.startsWith("5")) {
         return;
     }
 
@@ -125,7 +125,7 @@ test("CSS external string", async () => {
 // remove for svelte v5
 test("CSS injected boolean", async () => {
     // TODO remove for svelte 5
-    if (VERSION.startsWith('5')) {
+    if (VERSION.startsWith("5")) {
         return;
     }
     //TODO this should fail with a warning with svelte v4
@@ -159,7 +159,7 @@ test("CSS injected string", async () => {
 
 test("CSS none", async () => {
     // TODO remove for svelte 5
-    if (VERSION.startsWith('5')) {
+    if (VERSION.startsWith("5")) {
         return;
     }
 
