@@ -4,6 +4,7 @@ import { build as _build } from "esbuild";
 import sveltePlugin from "../dist/index.mjs";
 import sveltePluginCJS from "../dist/index.js";
 import commonOptions from "./commonOptions.js";
+import { VERSION } from "svelte/compiler";
 
 test("Without esbuild", async () => {
     let build = {};
@@ -84,8 +85,12 @@ test("More advanced build", async () => {
     assert.equal(results.outputFiles.length, 2, "Non-expected number of output files");
 });
 
-// remove for svelte v5
 test("CSS external boolean", async () => {
+    // TODO remove for svelte 5
+    if (VERSION.startsWith('5')) {
+        return;
+    }
+
     //Note this fails on svelte v4 since booleans are deprecated and it has seemingly been broken
     //I'm not sure if this is a bug or not, but I'm going to choose to ignore this failure for now,
     //since there is an easy workaround (use a string instead of a boolean)
@@ -119,6 +124,10 @@ test("CSS external string", async () => {
 
 // remove for svelte v5
 test("CSS injected boolean", async () => {
+    // TODO remove for svelte 5
+    if (VERSION.startsWith('5')) {
+        return;
+    }
     //TODO this should fail with a warning with svelte v4
     const results = await _build({
         ...commonOptions,
@@ -149,6 +158,11 @@ test("CSS injected string", async () => {
 });
 
 test("CSS none", async () => {
+    // TODO remove for svelte 5
+    if (VERSION.startsWith('5')) {
+        return;
+    }
+
     //more advanced
     const results = await _build({
         ...commonOptions,

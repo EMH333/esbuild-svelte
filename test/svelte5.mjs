@@ -3,8 +3,14 @@ import * as assert from "uvu/assert";
 import { build } from "esbuild";
 import sveltePlugin from "../dist/index.mjs";
 import commonOptions from "./commonOptions.js";
+import { VERSION } from "svelte/compiler";
 
 test("Simple Svelte v5 build", async () => {
+    // only run for svelte 5
+    if (!VERSION.startsWith('5')) {
+        return;
+    }
+
     //Try a simple build with v5 features
     const results = await build({
         ...commonOptions,
