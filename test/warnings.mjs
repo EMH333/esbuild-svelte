@@ -75,15 +75,15 @@ test("Warnings are in the right spot", async () => {
 
     assert.equal(results.warnings.length, 2, "Should have two warnings");
     assert.equal(results.errors.length, 0, "Should not have errors");
-    assert.equal(results.warnings[0].location.column, 7, "Column is correct");
+    assert.equal(results.warnings[0].location.column, 2, "Column is correct");
     assert.equal(results.warnings[0].location.line, 3, "Line is correct");
-    assert.equal(results.warnings[0].location.length, 9, "Length is correct");
+    assert.equal(results.warnings[0].location.length, 21, "Length is correct");
     assert.equal(
         results.warnings[0].location.lineText,
-        "  {#if MY_GLOBAL}",
+        '  <img src="foo.jpg" />',
         "Line text is correct",
     );
-    assert.match(results.warnings[0].text, /'MY_GLOBAL' is not defined/);
+    assert.match(results.warnings[0].text, /`<img>` element should have an alt attribute/);
 });
 
 test("Preprocessor warnings are as expected", async () => {
