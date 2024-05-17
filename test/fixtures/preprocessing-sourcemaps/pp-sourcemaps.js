@@ -1,5 +1,6 @@
+import { mount } from "svelte";
 import Test from "./pp-sourcemaps.svelte";
 
-new Test({
+mount(Test, {
     target: document.body,
 });
