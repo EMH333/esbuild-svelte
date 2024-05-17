@@ -31,10 +31,10 @@ test("Can filter out warnings", async () => {
                 preprocess: typescript(),
                 compilerOptions: { dev: true },
                 filterWarnings: (warning) => {
-                    // Ignore warning about the missing MY_GLOBAL.
+                    // Ignore warning about the unused CSS.
                     if (
-                        warning.code === "missing-declaration" &&
-                        warning.message.startsWith("'MY_GLOBAL' is not defined")
+                        warning.code === "css_unused_selector" &&
+                        warning.message.startsWith('Unused CSS selector ".special-image"')
                     ) {
                         return false;
                     }
@@ -51,7 +51,7 @@ test("Can filter out warnings", async () => {
     assert.equal(resultsWithFilter.warnings.length, 1, "Should have one warning");
     assert.equal(
         resultsWithFilter.warnings[0].text,
-        "A11y: <img> element should have an alt attribute",
+        "`<img>` element should have an alt attribute",
         "The not filtered warning is still there",
     );
     assert.equal(resultsWithFilter.errors.length, 0, "Should not have errors");
