@@ -13,7 +13,7 @@ if (!fs.existsSync("./dist/")) {
 //build the application
 esbuild
     .build({
-        entryPoints: ["./entry.js"],
+        entryPoints: [Number(svelteVersion.at(0)) >= 5 ? "./entry5.js" : "./entry.js"],
         mainFields: ["svelte", "browser", "module", "main"],
         conditions: ["svelte", "browser"],
         target: "es2016",
@@ -23,7 +23,7 @@ esbuild
         minify: false, //so the resulting code is easier to understand
         bundle: true,
         splitting: true,
-        sourcemap: "inline",
+        sourcemap: "external",
         plugins: [sveltePlugin()],
     })
     .then((results) => {
