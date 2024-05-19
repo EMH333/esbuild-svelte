@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.1
+
+- Update Svelte peer dependency version lock to include Svelte 5
+
+  This should have no impact on Svelte 3 or 4 users, but will allow folks to start trying out Svelte 5 if they so please. Any errors or issues should be reported as bugs in order to resolve them before Svelte 5 is offically released.
+
+  **Plugin versions `v0.8.x` will be the last to support Svelte 3 and Svelte 4 below `v4.2.1`**
+
 ## 0.8.0 (Breaking)
 
 - **Minorly Breaking** Caching is automatically enabled after two sucessful builds when using the `context` esbuild API

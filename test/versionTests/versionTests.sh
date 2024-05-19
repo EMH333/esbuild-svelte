@@ -11,8 +11,8 @@ cp ../../dist/index.js .
 npm init -y || exit
 
 # array of versions
-ESBUILD_VERSIONS=("0.9.6" "0.16.17" "0.18.10" "0.19.2")
-SVELTE_VERSIONS=("3.43.0" "3.59.2" "4.0.0")
+ESBUILD_VERSIONS=("0.9.6" "0.16.17" "0.18.10" "0.19.2" "0.21.3")
+SVELTE_VERSIONS=("3.43.0" "3.59.2" "4.0.0" "5.0.0-next.127")
 
 # loop through versions
 for ESBUILD_VERSION in "${ESBUILD_VERSIONS[@]}"
