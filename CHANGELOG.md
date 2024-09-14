@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.2
+
+- Update Svelte peer dependency version lock to include Svelte 5 pre-release versions ([#235](https://github.com/EMH333/esbuild-svelte/issues/235#issuecomment-2121502360))
+
+  The version lock will be updated once Svelte 5 is released to remove support for pre-release versions. But for now, this should help prevent needing to use `--force` or `--legacy-peer-deps` when using Svelte 5 pre-releases.
+
 ## 0.8.1
 
 - Update Svelte peer dependency version lock to include Svelte 5

@@ -36,7 +36,7 @@
   "license": "MIT",
   "peerDependencies": {
     "esbuild": ">=0.9.6",
-    "svelte": ">=3.43.0 <6"
+    "svelte": ">=3.43.0 <6 || ^5.0.0-next.0"
   },
   "devDependencies": {
     "@types/node": "^16.18.37",
