@@ -50,7 +50,7 @@ async function depsSetup(cacheType) {
     writeFileSync(join(dirname, "/app.js"), 'import x from "./foo.svelte"\nconsole.log(x)');
     writeFileSync(
         join(dirname, "/foo.svelte"),
-        '<style lang="sass">@import "./xyz.sass"</style><div class="xyz">foo</div>',
+        '<style lang="sass">@use "./xyz.sass"</style><div class="xyz">foo</div>',
     );
 
     // Set color to red

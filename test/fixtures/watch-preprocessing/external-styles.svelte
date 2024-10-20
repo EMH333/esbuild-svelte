@@ -1,5 +1,5 @@
 <style lang="scss">
-  @import "./external.scss";
+  @use "./external.scss";
 </style>
 
 <div>
