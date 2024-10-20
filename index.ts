@@ -192,7 +192,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 dependencyModifcationTimes.set(args.path, statSync(args.path).mtime); // add the target file
 
                 let compilerOptions = {
-                    css: (svelteVersion < 3 ? false : "external") as boolean | "external",
+                    css: "external" as "external",
                     ...options?.compilerOptions,
                 };
 
