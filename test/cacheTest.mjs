@@ -134,34 +134,4 @@ test("Don't cache errors", async () => {
     }
 });
 
-test("Overzealous cache with preprocessor", async () => {
-    let { result, firstOut, dirname } = await depsSetup("overzealous");
-
-    // Set color to green
-    writeFileSync(join(dirname, "/xyz.sass"), ".xyz\n  color: green");
-    const secondOut = await result.rebuild();
-
-    assert.match(firstOut.outputFiles[1].text, "red");
-    assert.match(secondOut.outputFiles[1].text, "green");
-
-    result.dispose();
-});
-
-test("Overzealous cache should still build", async () => {
-    let result = await context({
-        ...commonOptions,
-        entryPoints: ["./example-js/entry.js"],
-        outdir: "../example-js/dist",
-        plugins: [sveltePlugin({ cache: "overzealous" })],
-    });
-
-    // Call "rebuild" as many times as you want
-    for (let i = 0; i < 5; i++) {
-        await result.rebuild();
-    }
-
-    // Call "dispose" when you're done to free up resources.
-    result.dispose();
-});
-
 test.run();

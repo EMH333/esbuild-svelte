@@ -22,11 +22,9 @@ interface esbuildSvelteOptions {
 
     /**
      * Attempts to cache compiled files if the mtime of the file hasn't changed since last run.
-     * Only works with incremental or watch mode builds
      *
-     * "overzealous" - be agressive about which files trigger a cache expiration
      */
-    cache?: boolean | "overzealous";
+    cache?: boolean;
 
     /**
      * Should esbuild-svelte create a binding to an html element for components given in the entryPoints list
@@ -362,40 +360,6 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     options.cache = true;
                 }
             });
-
-            // code in this section can use esbuild features >= 0.11.15 because of `onEnd` check
-            // TODO long term overzealous should be deprecated and removed (technically it doesn't work beyond the 0.17.0 context API changes)
-            if (
-                shouldCache(build) &&
-                options?.cache == "overzealous" &&
-                typeof build.onEnd === "function"
-            ) {
-                build.initialOptions.metafile = true; // enable the metafile to get the required information
-
-                build.onEnd((result) => {
-                    for (let fileName in result.metafile?.inputs) {
-                        if (SVELTE_FILTER.test(fileName)) {
-                            // only run on svelte files
-                            let file = result.metafile?.inputs[fileName];
-                            file?.imports?.forEach((i) => {
-                                // for each import from a svelte file
-                                // if import is a svelte file then we make note of it
-                                if (SVELTE_FILTER.test(i.path)) {
-                                    // update file cache with the new dependency
-                                    let fileCacheEntry = fileCache.get(fileName);
-                                    if (fileCacheEntry != undefined) {
-                                        fileCacheEntry?.dependencies.set(
-                                            i.path,
-                                            statSync(i.path).mtime,
-                                        );
-                                        fileCache.set(fileName, fileCacheEntry);
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-            }
         },
     };
 }

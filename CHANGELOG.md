@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Bump esbuild minimum version to `0.17.0`
+- Remove `overzealous` cache option (was unusable)
 
 ## 0.8.2
 
