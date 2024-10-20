@@ -17,11 +17,6 @@ interface esbuildSvelteOptions {
      */
     cache?: boolean;
     /**
-     * Should esbuild-svelte create a binding to an html element for components given in the entryPoints list
-     * Defaults to `false` for now until support is added
-     */
-    fromEntryFile?: boolean;
-    /**
      * The regex filter to use when filtering files to compile
      * Defaults to `/\.svelte$/`
      */

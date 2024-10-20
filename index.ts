@@ -27,12 +27,6 @@ interface esbuildSvelteOptions {
     cache?: boolean;
 
     /**
-     * Should esbuild-svelte create a binding to an html element for components given in the entryPoints list
-     * Defaults to `false` for now until support is added
-     */
-    fromEntryFile?: boolean;
-
-    /**
      * The regex filter to use when filtering files to compile
      * Defaults to `/\.svelte$/`
      */
@@ -114,11 +108,6 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 options.cache = true;
             }
 
-            // disable entry file generation by default
-            if (options.fromEntryFile == undefined) {
-                options.fromEntryFile = false;
-            }
-
             // by default all warnings are enabled
             if (options.filterWarnings == undefined) {
                 options.filterWarnings = () => true;
@@ -127,27 +116,6 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
             //Store generated css code for use in fake import
             const cssCode = new Map<string, string>();
             const fileCache = new Map<string, CacheData>();
-
-            //check and see if trying to load svelte files directly
-            build.onResolve({ filter: svelteFilter }, ({ path, kind }) => {
-                if (kind === "entry-point" && options?.fromEntryFile) {
-                    return { path, namespace: "esbuild-svelte-direct-import" };
-                }
-            });
-
-            //main loader
-            build.onLoad(
-                { filter: svelteFilter, namespace: "esbuild-svelte-direct-import" },
-                async (args) => {
-                    return {
-                        errors: [
-                            {
-                                text: "esbuild-svelte does not support creating entry files yet",
-                            },
-                        ],
-                    };
-                },
-            );
 
             //main loader
             build.onLoad({ filter: svelteFilter }, async (args) => {
