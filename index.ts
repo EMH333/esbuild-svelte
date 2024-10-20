@@ -96,14 +96,6 @@ const shouldCache = (
     },
 ) => build.initialOptions?.incremental || build.initialOptions?.watch;
 
-// TODO: Hot fix to replace broken e64enc function in svelte on node 16
-const b64enc = Buffer
-    ? (b: string) => Buffer.from(b).toString("base64")
-    : (b: string) => btoa(encodeURIComponent(b));
-function toUrl(data: string) {
-    return "data:application/json;charset=utf-8;base64," + b64enc(data);
-}
-
 const SVELTE_FILTER = /\.svelte$/;
 const FAKE_CSS_FILTER = /\.esbuild-svelte-fake-css$/;
 
@@ -268,7 +260,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         }
                     }
 
-                    let contents = js.code + `\n//# sourceMappingURL=` + toUrl(js.map.toString());
+                    let contents = js.code + `\n//# sourceMappingURL=` + js.map.toUrl();
 
                     //if svelte emits css seperately, then store it in a map and import it from the js
                     if (
@@ -280,7 +272,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                             .replace(/\\/g, "/");
                         cssCode.set(
                             cssPath,
-                            css.code + `/*# sourceMappingURL=${toUrl(css.map.toString())} */`,
+                            css.code + `/*# sourceMappingURL=${css.map.toUrl()} */`,
                         );
                         contents = contents + `\nimport "${cssPath}";`;
                     }
