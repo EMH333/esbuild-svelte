@@ -349,22 +349,19 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 return css ? { contents: css, loader: "css", resolveDir: dirname(path) } : null;
             });
 
-            // code in this section can use esbuild features >= 0.11.15 because of `onEnd` check
             // this enables the cache at the end of the build. The cache is disabled by default,
             // but if this plugin instance is used agian, then the cache will be enabled (because
             // we can be confident that the build is incremental or watch).
             // This saves enabling caching on every build, which would be a performance hit but
             // also makes sure incremental performance is increased.
-            if (typeof build.onEnd === "function") {
-                build.onEnd(() => {
-                    if (!options) {
-                        options = {};
-                    }
-                    if (options.cache === undefined) {
-                        options.cache = true;
-                    }
-                });
-            }
+            build.onEnd(() => {
+                if (!options) {
+                    options = {};
+                }
+                if (options.cache === undefined) {
+                    options.cache = true;
+                }
+            });
 
             // code in this section can use esbuild features >= 0.11.15 because of `onEnd` check
             // TODO long term overzealous should be deprecated and removed (technically it doesn't work beyond the 0.17.0 context API changes)

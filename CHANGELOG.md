@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Bump esbuild minimum version to `0.17.0`
+
 ## 0.8.2
 
 - Update Svelte peer dependency version lock to include Svelte 5 pre-release versions ([#235](https://github.com/EMH333/esbuild-svelte/issues/235#issuecomment-2121502360))
