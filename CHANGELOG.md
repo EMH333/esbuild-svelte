@@ -4,6 +4,7 @@
 
 - Bump svelte minimum version to `4.2.1`
 - Bump esbuild minimum version to `0.17.0`
+- Bump node minimum version to 16 (lowest supported by Svelte `4.2.1`)
 - Remove `overzealous` cache option (was unusable)
 - Remove `fromEntryFile` option (was unusable)
 

@@ -51,7 +51,7 @@
     "uvu": "^0.5.6"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "dependencies": {
     "@jridgewell/trace-mapping": "^0.3.19"
