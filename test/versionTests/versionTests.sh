@@ -12,7 +12,7 @@ npm init -y || exit
 
 # array of versions
 ESBUILD_VERSIONS=("0.17.19" "0.18.10" "0.19.2" "0.21.3" "0.24.0")
-SVELTE_VERSIONS=("4.2.1" "5.0.3")
+SVELTE_VERSIONS=("4.2.1" "5.1.3")
 
 # loop through versions
 for ESBUILD_VERSION in "${ESBUILD_VERSIONS[@]}"

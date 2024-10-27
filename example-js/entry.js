@@ -1,5 +1,4 @@
+import { mount } from "svelte";
 import Test from "./index.svelte";
 
-new Test({
-    target: document.body,
-});
+mount(Test, { target: document.body });

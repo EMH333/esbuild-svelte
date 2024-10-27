@@ -1,19 +1,27 @@
 //original version from https://github.com/evanw/esbuild/blob/plugins/docs/plugin-examples.md
-import { preprocess, compile, VERSION } from "svelte/compiler";
+import { preprocess, compile, VERSION, compileModule } from "svelte/compiler";
 import { dirname, basename, relative } from "path";
 import { promisify } from "util";
 import { readFile, statSync } from "fs";
 import { originalPositionFor, TraceMap } from "@jridgewell/trace-mapping";
 
-import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
-import type { PreprocessorGroup } from "svelte/types/compiler/preprocess";
+import type { CompileOptions, ModuleCompileOptions, CompileResult } from "svelte/compiler";
+import type { PreprocessorGroup } from "svelte/compiler";
 import type { OnLoadResult, Plugin, PluginBuild, Location, PartialMessage } from "esbuild";
+
+type Warning = CompileResult["warnings"][number];
 
 interface esbuildSvelteOptions {
     /**
      * Svelte compiler options
      */
     compilerOptions?: CompileOptions;
+
+    /**
+     * Svelte compiler options for module files (*.svelte.js and *.svelte.ts)
+     */
+
+    moduleCompilerOptions?: ModuleCompileOptions;
 
     /**
      * The preprocessor(s) to run the Svelte code through before compiling
@@ -36,7 +44,7 @@ interface esbuildSvelteOptions {
      * A function to filter out warnings
      * Defaults to a constant function that returns `true`
      */
-    filterWarnings?: (warning: Warning) => boolean;
+    filterWarnings?: (warning: Warning) => warning is Warning;
 }
 
 interface CacheData {
@@ -90,7 +98,7 @@ const shouldCache = (
     },
 ) => build.initialOptions?.incremental || build.initialOptions?.watch;
 
-const SVELTE_FILTER = /\.svelte$/;
+const SVELTE_FILTER = /(\.svelte$)|(\.svelte.js$)|(\.svelte.ts$)/;
 const FAKE_CSS_FILTER = /\.esbuild-svelte-fake-css$/;
 
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
@@ -110,7 +118,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
             // by default all warnings are enabled
             if (options.filterWarnings == undefined) {
-                options.filterWarnings = () => true;
+                options.filterWarnings = (_warning: Warning): _warning is Warning => true;
             }
 
             //Store generated css code for use in fake import
@@ -155,6 +163,69 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 let originalSource = await promisify(readFile)(args.path, "utf8");
                 let filename = relative(process.cwd(), args.path);
 
+                let source = originalSource;
+
+                if (filename.endsWith(".svelte.ts")) {
+                    let {
+                        banner,
+                        footer,
+                        bundle,
+                        splitting,
+                        preserveSymlinks,
+                        outfile,
+                        metafile,
+                        outdir,
+                        outbase,
+                        external,
+                        packages,
+                        alias,
+                        resolveExtensions,
+                        mainFields,
+                        conditions,
+                        write,
+                        allowOverwrite,
+                        tsconfig,
+                        outExtension,
+                        publicPath,
+                        entryNames,
+                        chunkNames,
+                        assetNames,
+                        inject,
+                        entryPoints,
+                        stdin,
+                        plugins,
+                        absWorkingDir,
+                        nodePaths,
+                        ...transformOptions
+                    } = {
+                        ...build.initialOptions,
+                    };
+
+                    try {
+                        const result = await build.esbuild.transform(originalSource, {
+                            ...transformOptions,
+                            loader: "ts",
+                        });
+
+                        source = result.code;
+                    } catch (e: any) {
+                        let result: OnLoadResult = {};
+                        result.errors = [
+                            await convertMessage(
+                                e,
+                                args.path,
+                                originalSource,
+                                options?.compilerOptions?.sourcemap,
+                            ),
+                        ];
+                        // only provide if context API is supported or we are caching
+                        if (build.esbuild?.context !== undefined || shouldCache(build)) {
+                            result.watchFiles = previousWatchFiles;
+                        }
+                        return result;
+                    }
+                }
+
                 //file modification time storage
                 const dependencyModifcationTimes = new Map<string, Date>();
                 dependencyModifcationTimes.set(args.path, statSync(args.path).mtime); // add the target file
@@ -164,22 +235,20 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     ...options?.compilerOptions,
                 };
 
+                let moduleCompilerOptions: ModuleCompileOptions = {
+                    ...options?.moduleCompilerOptions,
+                };
+
                 //actually compile file
                 try {
-                    let source = originalSource;
-
                     //do preprocessor stuff if it exists
                     if (options?.preprocess) {
                         let preprocessResult = null;
 
                         try {
-                            preprocessResult = await preprocess(
-                                originalSource,
-                                options.preprocess,
-                                {
-                                    filename,
-                                },
-                            );
+                            preprocessResult = await preprocess(source, options.preprocess, {
+                                filename,
+                            });
                         } catch (e: any) {
                             // if preprocess failed there are chances that an external dependency caused exception
                             // to avoid stop watching those files, we keep the previous dependencies if available
@@ -210,7 +279,23 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         }
                     }
 
-                    let { js, css, warnings } = compile(source, { ...compilerOptions, filename });
+                    let { js, css, warnings } = (() => {
+                        if (filename.endsWith(".svelte.js") || filename.endsWith(".svelte.ts")) {
+                            return compileModule(source, {
+                                ...moduleCompilerOptions,
+                                filename,
+                            });
+                        }
+
+                        if (filename.endsWith(".svelte")) {
+                            return compile(source, {
+                                ...compilerOptions,
+                                filename,
+                            });
+                        }
+
+                        throw new Error(`Cannot compile ${filename}`);
+                    })();
 
                     //esbuild doesn't seem to like sourcemaps without "sourcesContent" which Svelte doesn't provide
                     //so attempt to populate that array if we can find filename in sources
@@ -231,10 +316,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     let contents = js.code + `\n//# sourceMappingURL=` + js.map.toUrl();
 
                     //if svelte emits css seperately, then store it in a map and import it from the js
-                    if (
-                        (compilerOptions.css === false || compilerOptions.css === "external") &&
-                        css?.code
-                    ) {
+                    if (compilerOptions.css === "external" && css?.code) {
                         let cssPath = args.path
                             .replace(".svelte", ".esbuild-svelte-fake-css") //TODO append instead of replace to support different svelte filters
                             .replace(/\\/g, "/");

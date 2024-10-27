@@ -1,12 +1,13 @@
-/// <reference types="svelte" />
-import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
-import type { PreprocessorGroup } from "svelte/types/compiler/preprocess";
+import type { CompileOptions, ModuleCompileOptions, CompileResult } from "svelte/compiler";
+import type { PreprocessorGroup } from "svelte/compiler";
 import type { Plugin } from "esbuild";
+type Warning = CompileResult["warnings"][number];
 interface esbuildSvelteOptions {
     /**
      * Svelte compiler options
      */
     compilerOptions?: CompileOptions;
+    moduleCompilerOptions?: ModuleCompileOptions;
     /**
      * The preprocessor(s) to run the Svelte code through before compiling
      */
@@ -25,7 +26,7 @@ interface esbuildSvelteOptions {
      * A function to filter out warnings
      * Defaults to a constant function that returns `true`
      */
-    filterWarnings?: (warning: Warning) => boolean;
+    filterWarnings?: (warning: Warning) => warning is Warning;
 }
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin;
 export {};

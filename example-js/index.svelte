@@ -1,6 +1,10 @@
 <script>
   import Second from "./second.svelte";
+  import Counter from "./test.svelte";
+
   let inputBinding;
+
+  const counter = new Counter();
 
   function change() {
     inputBinding.value = "testing" + Math.round(Math.random() * 100);
@@ -26,7 +30,10 @@
 </div>
 
 <div class="secondStyle">
-  <button on:click={change}>Click this button!</button>
+  <button onclick={change}>Click this button!</button>
+  <button onclick={() => counter.value++}>Increment rune counter</button>
+
+  {counter.value}
 
   <Second />
 </div>

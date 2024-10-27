@@ -1,7 +1,7 @@
 import fs from "fs";
 import esbuild from "esbuild";
 import esbuildSvelte from "esbuild-svelte";
-import sveltePreprocess from "svelte-preprocess";
+import { sveltePreprocess } from "svelte-preprocess";
 
 //make sure the directoy exists before stuff gets put into it
 if (!fs.existsSync("./dist/")) {

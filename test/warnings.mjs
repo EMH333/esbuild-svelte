@@ -33,8 +33,8 @@ test("Can filter out warnings", async () => {
                 filterWarnings: (warning) => {
                     // Ignore warning about the missing MY_GLOBAL.
                     if (
-                        warning.code === "missing-declaration" &&
-                        warning.message.startsWith("'MY_GLOBAL' is not defined")
+                        warning.code === "block_empty" &&
+                        warning.message.startsWith("Empty block")
                     ) {
                         return false;
                     }
@@ -51,7 +51,7 @@ test("Can filter out warnings", async () => {
     assert.equal(resultsWithFilter.warnings.length, 1, "Should have one warning");
     assert.equal(
         resultsWithFilter.warnings[0].text,
-        "A11y: <img> element should have an alt attribute",
+        "`<img>` element should have an alt attribute",
         "The not filtered warning is still there",
     );
     assert.equal(resultsWithFilter.errors.length, 0, "Should not have errors");
@@ -75,15 +75,15 @@ test("Warnings are in the right spot", async () => {
 
     assert.equal(results.warnings.length, 2, "Should have two warnings");
     assert.equal(results.errors.length, 0, "Should not have errors");
-    assert.equal(results.warnings[0].location.column, 7, "Column is correct");
+    assert.equal(results.warnings[0].location.column, 16, "Column is correct");
     assert.equal(results.warnings[0].location.line, 3, "Line is correct");
-    assert.equal(results.warnings[0].location.length, 9, "Length is correct");
+    assert.equal(results.warnings[0].location.length, 1, "Length is correct");
     assert.equal(
         results.warnings[0].location.lineText,
         "  {#if MY_GLOBAL}",
         "Line text is correct",
     );
-    assert.match(results.warnings[0].text, /'MY_GLOBAL' is not defined/);
+    assert.match(results.warnings[0].text, /Empty block/);
 });
 
 test("Preprocessor warnings are as expected", async () => {
