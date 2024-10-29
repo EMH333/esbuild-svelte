@@ -20,7 +20,6 @@ interface esbuildSvelteOptions {
     /**
      * Svelte compiler options for module files (*.svelte.js and *.svelte.ts)
      */
-
     moduleCompilerOptions?: ModuleCompileOptions;
 
     /**
@@ -44,7 +43,7 @@ interface esbuildSvelteOptions {
      * A function to filter out warnings
      * Defaults to a constant function that returns `true`
      */
-    filterWarnings?: (warning: Warning) => warning is Warning;
+    filterWarnings?: (warning: Warning) => boolean;
 }
 
 interface CacheData {
@@ -98,12 +97,21 @@ const shouldCache = (
     },
 ) => build.initialOptions?.incremental || build.initialOptions?.watch;
 
-const SVELTE_FILTER = /(\.svelte$)|(\.svelte.js$)|(\.svelte.ts$)/;
+const SVELTE_VERSION = VERSION.split(".").map((v) => parseInt(v))[0];
+const SVELTE_JAVASCRIPT_MODULE_FILTER = /\.svelte\.js$/;
+const SVELTE_TYPESCRIPT_MODULE_FILTER = /\.svelte\.ts$/;
+const SVELTE_MODULE_FILTER = new RegExp(
+    `(${SVELTE_JAVASCRIPT_MODULE_FILTER.source})|(${SVELTE_TYPESCRIPT_MODULE_FILTER.source})`,
+);
+const SVELTE_FILE_FILTER = /\.svelte$/;
+const SVELTE_FILTER =
+    SVELTE_VERSION === 5
+        ? new RegExp(`(${SVELTE_FILE_FILTER.source})|${SVELTE_MODULE_FILTER.source}`)
+        : SVELTE_FILE_FILTER;
 const FAKE_CSS_FILTER = /\.esbuild-svelte-fake-css$/;
 
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
     const svelteFilter = options?.include ?? SVELTE_FILTER;
-    const svelteVersion = VERSION.split(".").map((v) => parseInt(v))[0];
     return {
         name: "esbuild-svelte",
         setup(build) {
@@ -118,7 +126,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
             // by default all warnings are enabled
             if (options.filterWarnings == undefined) {
-                options.filterWarnings = (_warning: Warning): _warning is Warning => true;
+                options.filterWarnings = () => true;
             }
 
             //Store generated css code for use in fake import
@@ -165,7 +173,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                 let source = originalSource;
 
-                if (filename.endsWith(".svelte.ts")) {
+                if (SVELTE_TYPESCRIPT_MODULE_FILTER.test(filename)) {
                     let {
                         banner,
                         footer,
@@ -280,14 +288,14 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     }
 
                     let { js, css, warnings } = (() => {
-                        if (filename.endsWith(".svelte.js") || filename.endsWith(".svelte.ts")) {
+                        if (SVELTE_MODULE_FILTER.test(filename)) {
                             return compileModule(source, {
                                 ...moduleCompilerOptions,
                                 filename,
                             });
                         }
 
-                        if (filename.endsWith(".svelte")) {
+                        if (SVELTE_FILE_FILTER.test(filename)) {
                             return compile(source, {
                                 ...compilerOptions,
                                 filename,

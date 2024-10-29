@@ -31,7 +31,7 @@ test("Can filter out warnings", async () => {
                 preprocess: typescript(),
                 compilerOptions: { dev: true },
                 filterWarnings: (warning) => {
-                    // Ignore warning about the missing MY_GLOBAL.
+                    // Ignore warning about the empty if block.
                     if (
                         warning.code === "block_empty" &&
                         warning.message.startsWith("Empty block")

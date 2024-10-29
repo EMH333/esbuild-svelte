@@ -7,6 +7,9 @@ interface esbuildSvelteOptions {
      * Svelte compiler options
      */
     compilerOptions?: CompileOptions;
+    /**
+     * Svelte compiler options for module files (*.svelte.js and *.svelte.ts)
+     */
     moduleCompilerOptions?: ModuleCompileOptions;
     /**
      * The preprocessor(s) to run the Svelte code through before compiling
@@ -26,7 +29,7 @@ interface esbuildSvelteOptions {
      * A function to filter out warnings
      * Defaults to a constant function that returns `true`
      */
-    filterWarnings?: (warning: Warning) => warning is Warning;
+    filterWarnings?: (warning: Warning) => boolean;
 }
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin;
 export {};
