@@ -39,7 +39,7 @@
     "svelte": ">=4.2.1 <6"
   },
   "devDependencies": {
-    "@types/node": "^16.18.37",
+    "@types/node": "^18.15.3",
     "esbuild": "^0.24.0",
     "prettier": "^3.3.0",
     "rewrite-imports": "^3.0.0",
@@ -51,7 +51,7 @@
     "uvu": "^0.5.6"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "dependencies": {
     "@jridgewell/trace-mapping": "^0.3.19"
