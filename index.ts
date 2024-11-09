@@ -1,5 +1,5 @@
 //original version from https://github.com/evanw/esbuild/blob/plugins/docs/plugin-examples.md
-import { preprocess, compile, VERSION, compileModule } from "svelte/compiler";
+import { preprocess, compile, VERSION } from "svelte/compiler";
 import { dirname, basename, relative } from "path";
 import { promisify } from "util";
 import { readFile, statSync } from "fs";
@@ -287,8 +287,9 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         }
                     }
 
-                    let { js, css, warnings } = (() => {
-                        if (SVELTE_MODULE_FILTER.test(filename)) {
+                    let { js, css, warnings } = await (async () => {
+                        if (SVELTE_VERSION === 5 && SVELTE_MODULE_FILTER.test(filename)) {
+                            const { compileModule } = await import("svelte/compiler")
                             return compileModule(source, {
                                 ...moduleCompilerOptions,
                                 filename,
