@@ -12,19 +12,19 @@ if (!existsSync("./dist/")) {
 
 //build the application
 build({
-        entryPoints: [Number(svelteVersion.at(0)) >= 5 ? "./entry5.js" : "./entry.js"],
-        mainFields: ["svelte", "browser", "module", "main"],
-        conditions: ["svelte", "browser"],
-        target: "es2016",
-        outdir: "./dist",
-        format: "esm",
-        logLevel: "info",
-        minify: false, //so the resulting code is easier to understand
-        bundle: true,
-        splitting: true,
-        sourcemap: "external",
-        plugins: [sveltePlugin()],
-    })
+    entryPoints: [Number(svelteVersion.at(0)) >= 5 ? "./entry5.js" : "./entry.js"],
+    mainFields: ["svelte", "browser", "module", "main"],
+    conditions: ["svelte", "browser"],
+    target: "es2016",
+    outdir: "./dist",
+    format: "esm",
+    logLevel: "info",
+    minify: false, //so the resulting code is easier to understand
+    bundle: true,
+    splitting: true,
+    sourcemap: "external",
+    plugins: [sveltePlugin()],
+})
     .then((results) => {
         if (results.warnings.length > 0) {
             console.error(

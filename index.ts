@@ -289,7 +289,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                     let { js, css, warnings } = await (async () => {
                         if (SVELTE_VERSION === 5 && SVELTE_MODULE_FILTER.test(filename)) {
-                            const { compileModule } = await import("svelte/compiler")
+                            const { compileModule } = await import("svelte/compiler");
                             return compileModule(source, {
                                 ...moduleCompilerOptions,
                                 filename,
