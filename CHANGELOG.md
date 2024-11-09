@@ -1,10 +1,14 @@
 # Changelog
 
-## Unreleased
+## 0.9.0 (Breaking)
 
+This will be the last pre-v1 minor release if all goes according to plan.
+
+- Add support for `*.svelte.js` and `*.svelte.ts` Svelte modules (Thank you [@ElijahJohnson5 for the contribution!](https://github.com/EMH333/esbuild-svelte/pull/254))
+- Remove support for boolean values for Svelte `css` compile option (use `external` or `injected` instead)
 - Bump svelte minimum version to `4.2.1`
 - Bump esbuild minimum version to `0.17.0`
-- Bump node minimum version to 16 (lowest supported by Svelte `4.2.1`)
+- Bump Node minimum version to 18 (lowest supported by Svelte 5)
 - Remove `overzealous` cache option (was unusable)
 - Remove `fromEntryFile` option (was unusable)
 
