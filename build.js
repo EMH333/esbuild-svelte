@@ -11,7 +11,7 @@ const write = promisify(writeFile);
 const esbuildCommon = {
     entryPoints: ["./index.ts"],
     platform: "node",
-    target: ["node14.19.3"],
+    target: ["node18.12.0"],
 };
 
 (async function () {
