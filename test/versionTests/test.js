@@ -1,18 +1,17 @@
-const fs = require("fs");
-const esbuild = require("esbuild");
-const sveltePlugin = require("./index");
+import { existsSync, mkdirSync } from "fs";
+import { build } from "esbuild";
+import sveltePlugin from "./index.mjs";
 
 const esbuildVersion = process.argv[2];
 const svelteVersion = process.argv[3];
 
 //make sure the directoy exists before stuff gets put into it
-if (!fs.existsSync("./dist/")) {
-    fs.mkdirSync("./dist/");
+if (!existsSync("./dist/")) {
+    mkdirSync("./dist/");
 }
 
 //build the application
-esbuild
-    .build({
+build({
         entryPoints: [Number(svelteVersion.at(0)) >= 5 ? "./entry5.js" : "./entry.js"],
         mainFields: ["svelte", "browser", "module", "main"],
         conditions: ["svelte", "browser"],
