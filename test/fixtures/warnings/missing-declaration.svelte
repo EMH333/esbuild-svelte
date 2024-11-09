@@ -1,9 +1,6 @@
 <div>
-  <!-- This will generate a warning about unknown MY_GLOBAL -->
+  <!-- This will generate a warning about empty block -->
   {#if MY_GLOBAL}
-  <p>MY_GLOBAL is truthy</p>
-  {:else}
-  <p>MY_GLOBAL is falsy</p>
   {/if}
 
   <!-- This will generate a warning about missing alt -->

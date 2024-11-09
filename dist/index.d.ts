@@ -1,12 +1,16 @@
-/// <reference types="svelte" />
-import type { CompileOptions, Warning } from "svelte/types/compiler/interfaces";
-import type { PreprocessorGroup } from "svelte/types/compiler/preprocess";
+import type { CompileOptions, ModuleCompileOptions, CompileResult } from "svelte/compiler";
+import type { PreprocessorGroup } from "svelte/compiler";
 import type { Plugin } from "esbuild";
+type Warning = CompileResult["warnings"][number];
 interface esbuildSvelteOptions {
     /**
      * Svelte compiler options
      */
     compilerOptions?: CompileOptions;
+    /**
+     * Svelte compiler options for module files (*.svelte.js and *.svelte.ts)
+     */
+    moduleCompilerOptions?: ModuleCompileOptions;
     /**
      * The preprocessor(s) to run the Svelte code through before compiling
      */

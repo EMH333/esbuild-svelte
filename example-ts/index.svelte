@@ -2,7 +2,10 @@
   import {haha} from "./fun";
   import type {Joke} from "./fun";
   import Second from "./second.svelte";
+  import Counter from "./test.svelte";
   let inputBinding : HTMLInputElement;
+
+  const counter: Counter = new Counter();
 
   const jo : Joke = {
     rating: 2, joke: "123",
@@ -36,7 +39,10 @@
 </div>
 
 <div class="secondStyle">
-  <button on:click={change}>Click this button!</button>
+  <button onclick={change}>Click this button!</button>
+  <button onclick={() => counter.value++}>Increment rune counter</button>
+
+  {counter.value}
   <p>{haha()}</p>
   <p>{add(1,4)}</p>
   <p>{JSON.stringify(jo)}</p>
