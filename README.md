@@ -39,7 +39,7 @@ npx degit EMH333/esbuild-svelte/example-ts my-svelte-app
 
 ### CSS Output
 
-By default, `esbuild-svelte` emits external css files from Svelte for `esbuild` to process. If this isn't desired, use a configuration that turns off external css output and instead includes it in the javascript output. For example: `sveltePlugin({compilerOptions: {css: true}})`
+By default, `esbuild-svelte` emits external css files from Svelte for `esbuild` to process. If this isn't desired, use a configuration that turns off external css output and instead includes it in the javascript output. For example: `sveltePlugin({compilerOptions: {css: "injected"}})`
 
 ### Typescript and Other Svelte Preprocessing
 
@@ -65,6 +65,8 @@ esbuild
   })
   .catch(() => process.exit(1));
 ```
+
+Typescript in `.svelte.ts` files is supported natively.
 
 ### `svelte` exports condition
 
