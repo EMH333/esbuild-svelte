@@ -80,4 +80,29 @@ test("Svelte module typescript files", async () => {
     assert.equal(results.outputFiles.length, 2, "Non-expected number of output files");
 });
 
+test("Svelte module typescript files minification", async () => {
+    // only run for svelte 5
+    if (!VERSION.startsWith("5")) {
+        return;
+    }
+
+    const results = await build({
+        ...commonOptions,
+        entryPoints: ["./test/fixtures/ts-module-minification/entry.ts"],
+        outdir: "./example-js/dist",
+        sourcemap: true,
+        minify: true,
+        plugins: [
+            sveltePlugin({
+                compilerOptions: { dev: true },
+            }),
+        ],
+        logLevel: "silent",
+    });
+
+    assert.equal(results.errors.length, 0, "Non-zero number of errors");
+    assert.equal(results.warnings.length, 0, "Non-zero number of warnings");
+    assert.equal(results.outputFiles.length, 2, "Non-expected number of output files");
+});
+
 test.run();
