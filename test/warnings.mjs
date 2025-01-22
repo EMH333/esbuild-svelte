@@ -51,7 +51,7 @@ test("Can filter out warnings", async () => {
     assert.equal(resultsWithFilter.warnings.length, 1, "Should have one warning");
     assert.equal(
         resultsWithFilter.warnings[0].text,
-        "`<img>` element should have an alt attribute",
+        "`<img>` element should have an alt attribute\nhttps://svelte.dev/e/a11y_missing_attribute",
         "The not filtered warning is still there",
     );
     assert.equal(resultsWithFilter.errors.length, 0, "Should not have errors");
