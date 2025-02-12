@@ -4,7 +4,7 @@
     "build": "node buildscript.js"
   },
   "dependencies": {
-    "esbuild": "^0.20.1",
+    "esbuild": "^0.25.0",
     "esbuild-svelte": "^0.8.0",
     "svelte": "^5.1.3"
   },

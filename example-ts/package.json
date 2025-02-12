@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@tsconfig/svelte": "^5.0.2",
-    "esbuild": "^0.20.1",
+    "esbuild": "^0.25.0",
     "esbuild-svelte": "^0.8.0",
     "svelte": "^5.1.3",
     "svelte-check": "^4.0.5",
