@@ -110,6 +110,42 @@ const SVELTE_FILTER =
         : SVELTE_FILE_FILTER;
 const FAKE_CSS_FILTER = /\.esbuild-svelte-fake-css$/;
 
+// This is effectively: esbuild build options - valid transform options
+// TODO: there are better ways to do this
+const TS_MODULE_DISALLOWED_OPTIONS = [
+    "banner",
+    "footer",
+    "bundle",
+    "splitting",
+    "preserveSymlinks",
+    "outfile",
+    "metafile",
+    "outdir",
+    "outbase",
+    "external",
+    "packages",
+    "alias",
+    "resolveExtensions",
+    "mainFields",
+    "conditions",
+    "write",
+    "allowOverwrite",
+    "tsconfig",
+    "outExtension",
+    "publicPath",
+    "entryNames",
+    "chunkNames",
+    "assetNames",
+    "inject",
+    "entryPoints",
+    "stdin",
+    "plugins",
+    "absWorkingDir",
+    "nodePaths",
+    // minify breaks things
+    "minify",
+];
+
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
     const svelteFilter = options?.include ?? SVELTE_FILTER;
     return {
@@ -128,6 +164,13 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
             if (options.filterWarnings == undefined) {
                 options.filterWarnings = () => true;
             }
+
+            // determine valid options for svelte ts module transformation (*.svelte.ts files)
+            const transformOptions = Object.fromEntries(
+                Object.entries(build.initialOptions).filter(
+                    ([key, val]) => !TS_MODULE_DISALLOWED_OPTIONS.includes(key),
+                ),
+            );
 
             //Store generated css code for use in fake import
             const cssCode = new Map<string, string>();
@@ -170,49 +213,13 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 //reading files
                 let originalSource = await promisify(readFile)(args.path, "utf8");
                 let filename = relative(process.cwd(), args.path);
-
                 let source = originalSource;
 
                 if (SVELTE_TYPESCRIPT_MODULE_FILTER.test(filename)) {
-                    let {
-                        banner,
-                        footer,
-                        bundle,
-                        splitting,
-                        preserveSymlinks,
-                        outfile,
-                        metafile,
-                        outdir,
-                        outbase,
-                        external,
-                        packages,
-                        alias,
-                        resolveExtensions,
-                        mainFields,
-                        conditions,
-                        write,
-                        allowOverwrite,
-                        tsconfig,
-                        outExtension,
-                        publicPath,
-                        entryNames,
-                        chunkNames,
-                        assetNames,
-                        inject,
-                        entryPoints,
-                        stdin,
-                        plugins,
-                        absWorkingDir,
-                        nodePaths,
-                        ...transformOptions
-                    } = {
-                        ...build.initialOptions,
-                    };
-
                     try {
                         const result = await build.esbuild.transform(originalSource, {
-                            ...transformOptions,
                             loader: "ts",
+                            ...transformOptions,
                         });
 
                         source = result.code;
