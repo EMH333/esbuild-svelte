@@ -7,7 +7,14 @@ import { originalPositionFor, TraceMap } from "@jridgewell/trace-mapping";
 
 import type { CompileOptions, ModuleCompileOptions, CompileResult } from "svelte/compiler";
 import type { PreprocessorGroup } from "svelte/compiler";
-import type { OnLoadResult, Plugin, PluginBuild, Location, PartialMessage } from "esbuild";
+import type {
+    OnLoadResult,
+    Plugin,
+    PluginBuild,
+    Location,
+    PartialMessage,
+    TransformOptions,
+} from "esbuild";
 
 type Warning = CompileResult["warnings"][number];
 
@@ -21,6 +28,11 @@ interface esbuildSvelteOptions {
      * Svelte compiler options for module files (*.svelte.js and *.svelte.ts)
      */
     moduleCompilerOptions?: ModuleCompileOptions;
+
+    /**
+     * esbuild transform options for ts module files (.svelte.ts)
+     */
+    esbuildTsTransformOptions?: TransformOptions;
 
     /**
      * The preprocessor(s) to run the Svelte code through before compiling
@@ -144,6 +156,9 @@ const TS_MODULE_DISALLOWED_OPTIONS = [
     "nodePaths",
     // minify breaks things
     "minify",
+    // do not need to do any format conversion
+    // output will go though esbuild again anyway
+    "format",
 ];
 
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
@@ -166,11 +181,13 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
             }
 
             // determine valid options for svelte ts module transformation (*.svelte.ts files)
-            const transformOptions = Object.fromEntries(
-                Object.entries(build.initialOptions).filter(
-                    ([key, val]) => !TS_MODULE_DISALLOWED_OPTIONS.includes(key),
-                ),
-            );
+            const transformOptions =
+                options?.esbuildTsTransformOptions ??
+                Object.fromEntries(
+                    Object.entries(build.initialOptions).filter(
+                        ([key, val]) => !TS_MODULE_DISALLOWED_OPTIONS.includes(key),
+                    ),
+                );
 
             //Store generated css code for use in fake import
             const cssCode = new Map<string, string>();
