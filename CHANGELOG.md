@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.1
+
+- Fix `*.svelte.ts` transformation issues related to minification and file formats
+- Add `esbuildTsTransformOptions` to allow esbuild configuration to be passed directly when transforming `*.svelte.ts` files
+
 ## 0.9.0 (Breaking)
 
 This will be the last pre-v1 minor release if all goes according to plan.

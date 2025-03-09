@@ -7,7 +7,14 @@ import { originalPositionFor, TraceMap } from "@jridgewell/trace-mapping";
 
 import type { CompileOptions, ModuleCompileOptions, CompileResult } from "svelte/compiler";
 import type { PreprocessorGroup } from "svelte/compiler";
-import type { OnLoadResult, Plugin, PluginBuild, Location, PartialMessage } from "esbuild";
+import type {
+    OnLoadResult,
+    Plugin,
+    PluginBuild,
+    Location,
+    PartialMessage,
+    TransformOptions,
+} from "esbuild";
 
 type Warning = CompileResult["warnings"][number];
 
@@ -21,6 +28,11 @@ interface esbuildSvelteOptions {
      * Svelte compiler options for module files (*.svelte.js and *.svelte.ts)
      */
     moduleCompilerOptions?: ModuleCompileOptions;
+
+    /**
+     * esbuild transform options for ts module files (.svelte.ts)
+     */
+    esbuildTsTransformOptions?: TransformOptions;
 
     /**
      * The preprocessor(s) to run the Svelte code through before compiling
@@ -110,6 +122,45 @@ const SVELTE_FILTER =
         : SVELTE_FILE_FILTER;
 const FAKE_CSS_FILTER = /\.esbuild-svelte-fake-css$/;
 
+// This is effectively: esbuild build options - valid transform options
+// TODO: there are better ways to do this
+const TS_MODULE_DISALLOWED_OPTIONS = [
+    "banner",
+    "footer",
+    "bundle",
+    "splitting",
+    "preserveSymlinks",
+    "outfile",
+    "metafile",
+    "outdir",
+    "outbase",
+    "external",
+    "packages",
+    "alias",
+    "resolveExtensions",
+    "mainFields",
+    "conditions",
+    "write",
+    "allowOverwrite",
+    "tsconfig",
+    "outExtension",
+    "publicPath",
+    "entryNames",
+    "chunkNames",
+    "assetNames",
+    "inject",
+    "entryPoints",
+    "stdin",
+    "plugins",
+    "absWorkingDir",
+    "nodePaths",
+    // minify breaks things
+    "minify",
+    // do not need to do any format conversion
+    // output will go though esbuild again anyway
+    "format",
+];
+
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
     const svelteFilter = options?.include ?? SVELTE_FILTER;
     return {
@@ -128,6 +179,15 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
             if (options.filterWarnings == undefined) {
                 options.filterWarnings = () => true;
             }
+
+            // determine valid options for svelte ts module transformation (*.svelte.ts files)
+            const transformOptions =
+                options?.esbuildTsTransformOptions ??
+                Object.fromEntries(
+                    Object.entries(build.initialOptions).filter(
+                        ([key, val]) => !TS_MODULE_DISALLOWED_OPTIONS.includes(key),
+                    ),
+                );
 
             //Store generated css code for use in fake import
             const cssCode = new Map<string, string>();
@@ -170,49 +230,13 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 //reading files
                 let originalSource = await promisify(readFile)(args.path, "utf8");
                 let filename = relative(process.cwd(), args.path);
-
                 let source = originalSource;
 
                 if (SVELTE_TYPESCRIPT_MODULE_FILTER.test(filename)) {
-                    let {
-                        banner,
-                        footer,
-                        bundle,
-                        splitting,
-                        preserveSymlinks,
-                        outfile,
-                        metafile,
-                        outdir,
-                        outbase,
-                        external,
-                        packages,
-                        alias,
-                        resolveExtensions,
-                        mainFields,
-                        conditions,
-                        write,
-                        allowOverwrite,
-                        tsconfig,
-                        outExtension,
-                        publicPath,
-                        entryNames,
-                        chunkNames,
-                        assetNames,
-                        inject,
-                        entryPoints,
-                        stdin,
-                        plugins,
-                        absWorkingDir,
-                        nodePaths,
-                        ...transformOptions
-                    } = {
-                        ...build.initialOptions,
-                    };
-
                     try {
                         const result = await build.esbuild.transform(originalSource, {
-                            ...transformOptions,
                             loader: "ts",
+                            ...transformOptions,
                         });
 
                         source = result.code;

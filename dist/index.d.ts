@@ -1,6 +1,6 @@
 import type { CompileOptions, ModuleCompileOptions, CompileResult } from "svelte/compiler";
 import type { PreprocessorGroup } from "svelte/compiler";
-import type { Plugin } from "esbuild";
+import type { Plugin, TransformOptions } from "esbuild";
 type Warning = CompileResult["warnings"][number];
 interface esbuildSvelteOptions {
     /**
@@ -11,6 +11,10 @@ interface esbuildSvelteOptions {
      * Svelte compiler options for module files (*.svelte.js and *.svelte.ts)
      */
     moduleCompilerOptions?: ModuleCompileOptions;
+    /**
+     * esbuild transform options for ts module files (.svelte.ts)
+     */
+    esbuildTsTransformOptions?: TransformOptions;
     /**
      * The preprocessor(s) to run the Svelte code through before compiling
      */
