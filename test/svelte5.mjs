@@ -105,7 +105,7 @@ test("Svelte module typescript files minification", async () => {
     assert.equal(results.outputFiles.length, 2, "Non-expected number of output files");
 });
 
-test("Svelte module typescript files minification", async () => {
+test("Svelte module typescript direct-options minification", async () => {
     // only run for svelte 5
     if (!VERSION.startsWith("5")) {
         return;
