@@ -3,6 +3,7 @@
 ## 0.9.2
 
 - Fix regression introduced in 0.9.1 related to `*.svelte.ts` files and the `loader` option
+- Further restrict options passed to transform `*.svelte.ts` files by default
 
 ## 0.9.1
 
