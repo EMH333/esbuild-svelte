@@ -159,6 +159,8 @@ const TS_MODULE_DISALLOWED_OPTIONS = [
     // do not need to do any format conversion
     // output will go though esbuild again anyway
     "format",
+    // loader has a different type in build vs transform
+    "loader",
 ];
 
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
@@ -235,7 +237,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 if (SVELTE_TYPESCRIPT_MODULE_FILTER.test(filename)) {
                     try {
                         const result = await build.esbuild.transform(originalSource, {
-                            loader: "ts",
+                            loader: "ts", // first so it can be overrode by esbuildTsTransformOptions
                             ...transformOptions,
                         });
 

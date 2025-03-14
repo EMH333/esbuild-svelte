@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.2
+
+- Fix regression introduced in 0.9.1 related to `*.svelte.ts` files and the `loader` option
+
 ## 0.9.1
 
 - Fix `*.svelte.ts` transformation issues related to minification and file formats
