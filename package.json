@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.15.3",
-    "esbuild": "^0.24.0",
+    "esbuild": "^0.25.3",
     "prettier": "^3.4.0",
     "rewrite-imports": "^3.0.0",
     "sass": "^1.83.0",
