@@ -1,0 +1,14 @@
+<script>
+    // your script goes here
+    let x = 5;
+</script>
+
+<style>
+    div {
+        background-color: green;
+    }
+</style>
+
+<div>
+    <h1>Hello World</h1>
+</div>
