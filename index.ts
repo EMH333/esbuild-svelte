@@ -326,14 +326,10 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                             });
                         }
 
-                        if (SVELTE_FILE_FILTER.test(filename)) {
-                            return compile(source, {
-                                ...compilerOptions,
-                                filename,
-                            });
-                        }
-
-                        throw new Error(`Cannot compile ${filename}`);
+                        return compile(source, {
+                            ...compilerOptions,
+                            filename,
+                        });
                     })();
 
                     //esbuild doesn't seem to like sourcemaps without "sourcesContent" which Svelte doesn't provide

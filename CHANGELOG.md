@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.3
+
+- Fix regression introduced in 0.9.0 relating to the `include` option ([#306](https://github.com/EMH333/esbuild-svelte/issues/306))
+
 ## 0.9.2
 
 - Fix regression introduced in 0.9.1 related to `*.svelte.ts` files and the `loader` option
