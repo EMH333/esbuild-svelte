@@ -1,8 +1,8 @@
 //original version from https://github.com/evanw/esbuild/blob/plugins/docs/plugin-examples.md
 import { preprocess, compile, VERSION } from "svelte/compiler";
 import { dirname, basename, relative } from "path";
-import { promisify } from "util";
-import { readFile, statSync } from "fs";
+import { readFileSync, statSync } from "fs";
+import { stat } from "fs/promises";
 import { originalPositionFor, TraceMap } from "@jridgewell/trace-mapping";
 
 import type { CompileOptions, ModuleCompileOptions, CompileResult } from "svelte/compiler";
@@ -64,12 +64,12 @@ interface CacheData {
     dependencies: Map<string, Date>;
 }
 
-async function convertMessage(
+function convertMessage(
     { message, start, end }: Warning,
     filename: string,
     source: string,
     sourcemap: any,
-): Promise<PartialMessage> {
+): PartialMessage {
     let location: Partial<Location> | undefined;
     if (start && end) {
         let lineText = source.split(/\r\n|\r|\n/g)[start.line - 1];
@@ -217,11 +217,10 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     //for each dependency check if the mtime is still valid
                     //if an exception is generated (file was deleted or something) then cache isn't valid
                     try {
-                        cachedFile.dependencies.forEach((time, path) => {
-                            if (statSync(path).mtime > time) {
-                                cacheValid = false;
-                            }
+                        const depChecks = [...cachedFile.dependencies].map(async ([time, path]) => {
+                            return (await stat(path)).mtime <= time;
                         });
+                        cacheValid = !(await Promise.all(depChecks)).includes(false);
                     } catch {
                         cacheValid = false;
                     }
@@ -234,7 +233,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 }
 
                 //reading files
-                let originalSource = await promisify(readFile)(args.path, "utf8");
+                let originalSource = readFileSync(args.path, "utf8");
                 let filename = relative(process.cwd(), args.path);
                 let source = originalSource;
 
@@ -249,7 +248,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     } catch (e: any) {
                         let result: OnLoadResult = {};
                         result.errors = [
-                            await convertMessage(
+                            convertMessage(
                                 e,
                                 args.path,
                                 originalSource,
@@ -310,10 +309,15 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         source = preprocessResult.code;
 
                         // if caching then we need to store the modifcation times for all dependencies
-                        if (options?.cache === true) {
-                            preprocessResult.dependencies?.forEach((entry) => {
-                                dependencyModifcationTimes.set(entry, statSync(entry).mtime);
-                            });
+                        if (options?.cache === true && preprocessResult.dependencies) {
+                            await Promise.all(
+                                preprocessResult.dependencies.map(async (entry) => {
+                                    dependencyModifcationTimes.set(
+                                        entry,
+                                        (await stat(entry)).mtime,
+                                    );
+                                }),
+                            );
                         }
                     }
 
@@ -368,16 +372,8 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                     const result: OnLoadResult = {
                         contents,
-                        warnings: await Promise.all(
-                            warnings.map(
-                                async (e) =>
-                                    await convertMessage(
-                                        e,
-                                        args.path,
-                                        source,
-                                        compilerOptions.sourcemap,
-                                    ),
-                            ),
+                        warnings: warnings.map((e) =>
+                            convertMessage(e, args.path, source, compilerOptions.sourcemap),
                         ),
                     };
 
@@ -399,12 +395,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 } catch (e: any) {
                     let result: OnLoadResult = {};
                     result.errors = [
-                        await convertMessage(
-                            e,
-                            args.path,
-                            originalSource,
-                            compilerOptions.sourcemap,
-                        ),
+                        convertMessage(e, args.path, originalSource, compilerOptions.sourcemap),
                     ];
                     // only provide if context API is supported or we are caching
                     if (build.esbuild?.context !== undefined || shouldCache(build)) {
