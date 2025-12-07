@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Do not run Svelte preprocessors against Svelte module files ([#354](https://github.com/EMH333/esbuild-svelte/issues/354))
+
 ## 0.9.3
 
 - Fix regression introduced in 0.9.0 relating to the `include` option ([#306](https://github.com/EMH333/esbuild-svelte/issues/306))

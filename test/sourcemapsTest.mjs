@@ -6,7 +6,6 @@ import { typescript } from "svelte-preprocess-esbuild";
 import { sass } from "svelte-preprocess-sass";
 import sveltePlugin from "../dist/index.mjs";
 import commonOptions from "./commonOptions.js";
-import { writeFileSync } from "fs";
 
 test("Preprocessor Sourcemap test", async () => {
     const result = await build({

@@ -46,8 +46,9 @@ interface esbuildSvelteOptions {
     cache?: boolean;
 
     /**
-     * The regex filter to use when filtering files to compile
-     * Defaults to `/\.svelte$/`
+     * The regex filter to use when filtering files to compile.
+     *
+     * Defaults to `/\.svelte(\.ts|\.js)?$/`
      */
     include?: RegExp;
 
@@ -279,8 +280,10 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                 //actually compile file
                 try {
-                    //do preprocessor stuff if it exists
-                    if (options?.preprocess) {
+                    //do preprocessor stuff if it exists and the file is not a module.
+                    // This can't test directly for `.svelte` because it is possible someone wants to process files
+                    // via the `include` option but that don't match the normal `.svelte` regex.
+                    if (options?.preprocess && !SVELTE_MODULE_FILTER.test(filename)) {
                         let preprocessResult = null;
 
                         try {

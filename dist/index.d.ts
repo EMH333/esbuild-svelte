@@ -25,8 +25,9 @@ interface esbuildSvelteOptions {
      */
     cache?: boolean;
     /**
-     * The regex filter to use when filtering files to compile
-     * Defaults to `/\.svelte$/`
+     * The regex filter to use when filtering files to compile.
+     *
+     * Defaults to `/\.svelte(\.ts|\.js)?$/`
      */
     include?: RegExp;
     /**

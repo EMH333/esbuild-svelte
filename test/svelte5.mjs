@@ -3,7 +3,7 @@ import * as assert from "uvu/assert";
 import { build } from "esbuild";
 import sveltePlugin from "../dist/index.mjs";
 import commonOptions from "./commonOptions.js";
-import { VERSION } from "svelte/compiler";
+import { VERSION, parse } from "svelte/compiler";
 
 test("Simple Svelte v5 build", async () => {
     // only run for svelte 5
@@ -144,6 +144,43 @@ test("Svelte module typescript direct-options minification", async () => {
         );
         return;
     }
+});
+
+test("Do not preprocess Svelte module files", async () => {
+    // only run for svelte 5
+    if (!VERSION.startsWith("5")) {
+        return;
+    }
+
+    const results = await build({
+        ...commonOptions,
+        entryPoints: ["./test/fixtures/svelte5/typescript-modules/entry.ts"],
+        outdir: "./example-js/dist",
+        sourcemap: true,
+        minify: true,
+        plugins: [
+            sveltePlugin({
+                compilerOptions: { dev: true },
+                preprocess: [
+                    {
+                        markup: function ({ content, filename }) {
+                            // a toy preprocessor, which expects to parse svelte component markup (not raw javascript)
+                            try {
+                                const ast = parse(content, { modern: true, filename });
+                            } catch (err) {
+                                throw new Error(`${err}\n\nExpected svelte component, not module`);
+                            }
+                        },
+                    },
+                ],
+            }),
+        ],
+        logLevel: "silent",
+    });
+
+    assert.equal(results.errors.length, 0, "Non-zero number of errors");
+    assert.equal(results.warnings.length, 0, "Non-zero number of warnings");
+    assert.equal(results.outputFiles.length, 2, "Non-expected number of output files");
 });
 
 test.run();
