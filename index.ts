@@ -71,7 +71,7 @@ async function convertMessage(
     source: string,
     sourcemap: any,
 ): Promise<PartialMessage> {
-    let location: Partial<Location> | undefined;
+    let location: Partial<Location> = {};
     if (start && end) {
         let lineText = source.split(/\r\n|\r|\n/g)[start.line - 1];
         let lineEnd = start.line === end.line ? end.column : lineText.length;
