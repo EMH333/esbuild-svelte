@@ -2,7 +2,7 @@ import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { build } from "esbuild";
 import sveltePlugin from "../dist/index.mjs";
-import commonOptions from "./commonOptions.js";
+import commonOptions from "./utils/commonOptions.js";
 import { VERSION, parse } from "svelte/compiler";
 
 test("Simple Svelte v5 build", async () => {

@@ -3,7 +3,7 @@ import * as assert from "uvu/assert";
 import { build as _build } from "esbuild";
 import { sass } from "./utils/scss-preprocess.mjs";
 import sveltePlugin from "../dist/index.mjs";
-import commonOptions from "./commonOptions.js";
+import commonOptions from "./utils/commonOptions.js";
 
 test("Fake CSS returns correct resolve directory", async () => {
     //more advanced

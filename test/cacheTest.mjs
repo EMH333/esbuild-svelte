@@ -6,7 +6,7 @@ import { sass } from "./utils/scss-preprocess.mjs";
 import sveltePlugin from "../dist/index.mjs";
 import { tmpdir } from "os";
 import { join } from "path";
-import commonOptions from "./commonOptions.js";
+import commonOptions from "./utils/commonOptions.js";
 
 //with cache enabled
 test("Basic cache", async () => {

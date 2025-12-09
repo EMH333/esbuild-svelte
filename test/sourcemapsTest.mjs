@@ -5,7 +5,7 @@ import { build } from "esbuild";
 import { typescript } from "svelte-preprocess-esbuild";
 import { sass } from "./utils/scss-preprocess.mjs";
 import sveltePlugin from "../dist/index.mjs";
-import commonOptions from "./commonOptions.js";
+import commonOptions from "./utils/commonOptions.js";
 
 test("Preprocessor Sourcemap test", async () => {
     const result = await build({
