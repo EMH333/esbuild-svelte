@@ -65,12 +65,12 @@ interface CacheData {
     dependencies: Map<string, Date>;
 }
 
-async function convertMessage(
+function convertMessage(
     { message, start, end }: Warning,
     filename: string,
     source: string,
     sourcemap: any,
-): Promise<PartialMessage> {
+): PartialMessage {
     let location: Partial<Location> = {};
     if (start && end) {
         let lineText = source.split(/\r\n|\r|\n/g)[start.line - 1];
@@ -250,7 +250,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     } catch (e: any) {
                         let result: OnLoadResult = {};
                         result.errors = [
-                            await convertMessage(
+                            convertMessage(
                                 e,
                                 args.path,
                                 originalSource,
@@ -371,16 +371,8 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                     const result: OnLoadResult = {
                         contents,
-                        warnings: await Promise.all(
-                            warnings.map(
-                                async (e) =>
-                                    await convertMessage(
-                                        e,
-                                        args.path,
-                                        source,
-                                        compilerOptions.sourcemap,
-                                    ),
-                            ),
+                        warnings: warnings.map((e) =>
+                            convertMessage(e, args.path, source, compilerOptions.sourcemap),
                         ),
                     };
 
@@ -402,12 +394,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 } catch (e: any) {
                     let result: OnLoadResult = {};
                     result.errors = [
-                        await convertMessage(
-                            e,
-                            args.path,
-                            originalSource,
-                            compilerOptions.sourcemap,
-                        ),
+                        convertMessage(e, args.path, originalSource, compilerOptions.sourcemap),
                     ];
                     // only provide if context API is supported or we are caching
                     if (build.esbuild?.context !== undefined || shouldCache(build)) {
