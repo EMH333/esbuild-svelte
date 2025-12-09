@@ -303,10 +303,9 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                             // normalize the sourcemap 'source' entrys to all match if they are the same file
                             // needed because of differing handling of file names in preprocessors
                             let fixedMap = preprocessResult.map as { sources: Array<string> };
-                            for (let index = 0; index < fixedMap?.sources.length; index++) {
-                                if (fixedMap.sources[index] == filename) {
-                                    fixedMap.sources[index] = basename(filename);
-                                }
+                            const idx = fixedMap.sources.findIndex((val) => val === filename);
+                            if (idx != -1) {
+                                fixedMap.sources[idx] = basename(filename);
                             }
                             compilerOptions.sourcemap = fixedMap;
                         }
@@ -342,12 +341,10 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                             js.map.sourcesContent = [];
                         }
 
-                        for (let index = 0; index < js.map.sources.length; index++) {
-                            const element = js.map.sources[index];
-                            if (element == basename(filename)) {
-                                js.map.sourcesContent[index] = originalSource;
-                                break;
-                            }
+                        const baseFileName = basename(filename);
+                        const idx = js.map.sources.findIndex((val) => val === baseFileName);
+                        if (idx != -1) {
+                            js.map.sourcesContent[idx] = originalSource;
                         }
                     }
 
