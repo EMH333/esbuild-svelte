@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.9.4
 
 - Do not run Svelte preprocessors against Svelte module files ([#354](https://github.com/EMH333/esbuild-svelte/issues/354))
 
