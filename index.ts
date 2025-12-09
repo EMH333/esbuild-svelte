@@ -346,7 +346,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                             const element = js.map.sources[index];
                             if (element == basename(filename)) {
                                 js.map.sourcesContent[index] = originalSource;
-                                index = Infinity; //can break out of loop
+                                break;
                             }
                         }
                     }
