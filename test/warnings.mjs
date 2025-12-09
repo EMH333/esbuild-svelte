@@ -2,7 +2,7 @@ import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { build as _build } from "esbuild";
 import { typescript } from "svelte-preprocess-esbuild";
-import { sass } from "svelte-preprocess-sass";
+import { sass } from "./utils/scss-preprocess.mjs";
 import sveltePlugin from "../dist/index.mjs";
 import commonOptions from "./commonOptions.js";
 

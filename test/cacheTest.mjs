@@ -2,7 +2,7 @@ import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { build, context } from "esbuild";
 import { mkdirSync, unlinkSync, writeFileSync } from "fs";
-import { sass } from "svelte-preprocess-sass";
+import { sass } from "./utils/scss-preprocess.mjs";
 import sveltePlugin from "../dist/index.mjs";
 import { tmpdir } from "os";
 import { join } from "path";

@@ -3,7 +3,7 @@ import * as assert from "uvu/assert";
 import { relative } from "path";
 import { build } from "esbuild";
 import { typescript } from "svelte-preprocess-esbuild";
-import { sass } from "svelte-preprocess-sass";
+import { sass } from "./utils/scss-preprocess.mjs";
 import sveltePlugin from "../dist/index.mjs";
 import commonOptions from "./commonOptions.js";
 

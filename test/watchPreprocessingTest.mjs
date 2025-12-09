@@ -4,7 +4,7 @@ import { writeFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { context } from "esbuild";
-import { sass } from "svelte-preprocess-sass";
+import { sass } from "./utils/scss-preprocess.mjs";
 import sveltePlugin from "../dist/index.mjs";
 import commonOptions from "./commonOptions.js";
 
