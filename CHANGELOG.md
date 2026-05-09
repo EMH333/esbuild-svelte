@@ -1,12 +1,16 @@
 # Changelog
 
+## 0.9.5
+
+- Remove `target` from options passed to `.svelte.ts` module transformation (fixes [#378](https://github.com/EMH333/esbuild-svelte/issues/378))
+
 ## 0.9.4
 
-- Do not run Svelte preprocessors against Svelte module files ([#354](https://github.com/EMH333/esbuild-svelte/issues/354))
+- Do not run Svelte preprocessors against Svelte module files (fixes [#354](https://github.com/EMH333/esbuild-svelte/issues/354))
 
 ## 0.9.3
 
-- Fix regression introduced in 0.9.0 relating to the `include` option ([#306](https://github.com/EMH333/esbuild-svelte/issues/306))
+- Fix regression introduced in 0.9.0 relating to the `include` option (fixes [#306](https://github.com/EMH333/esbuild-svelte/issues/306))
 
 ## 0.9.2
 

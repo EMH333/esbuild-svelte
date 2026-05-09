@@ -166,6 +166,8 @@ const TS_MODULE_DISALLOWED_OPTIONS = [
     "format",
     // loader has a different type in build vs transform
     "loader",
+    // target causes unneeded managling
+    "target",
 ];
 
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
