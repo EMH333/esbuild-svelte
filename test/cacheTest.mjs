@@ -1,7 +1,7 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { build, context } from "esbuild";
-import { mkdirSync, unlinkSync, writeFileSync } from "fs";
+import { mkdirSync, unlinkSync, writeFileSync, utimesSync } from "fs";
 import { sass } from "./utils/scss-preprocess.mjs";
 import sveltePlugin from "../dist/index.mjs";
 import { tmpdir } from "os";
@@ -41,10 +41,6 @@ test("Cache w/ rebuild", async () => {
 
 //set up a basic incremental build for use in other tests
 async function depsSetup(cacheType) {
-    if (cacheType == undefined) {
-        cacheType = true;
-    }
-
     const dirname = join(tmpdir(), "esbuild-svelte");
     mkdirSync(dirname, { recursive: true });
     writeFileSync(join(dirname, "/app.js"), 'import x from "./foo.svelte"\nconsole.log(x)');
@@ -76,7 +72,7 @@ async function depsSetup(cacheType) {
 }
 
 test("Preprocess w/ deps basic", async () => {
-    let { result, firstOut, dirname } = await depsSetup();
+    let { result, firstOut, dirname } = await depsSetup(true);
 
     // Set color to green
     writeFileSync(join(dirname, "/xyz.sass"), ".xyz\n  color: green");
@@ -88,8 +84,32 @@ test("Preprocess w/ deps basic", async () => {
     result.dispose();
 });
 
+test("Preprocess w/ undefined cache", async () => {
+    const now = new Date();
+    const lastYear = new Date(now.getFullYear() - 1, 11, 30);
+
+    let { result, firstOut, dirname } = await depsSetup(undefined);
+
+    // Set color to green
+    writeFileSync(join(dirname, "/xyz.sass"), ".xyz\n  color: green");
+    const secondOut = await result.rebuild();
+
+    // Set color to red
+    // then adjust mtime, so output should still be green if caching is active
+    writeFileSync(join(dirname, "/xyz.sass"), ".xyz\n  color: red");
+    utimesSync(join(dirname, "/xyz.sass"), lastYear, lastYear);
+
+    const thirdOut = await result.rebuild();
+
+    assert.match(firstOut.outputFiles[1].text, "red");
+    assert.match(secondOut.outputFiles[1].text, "green");
+    assert.match(thirdOut.outputFiles[1].text, "green");
+
+    result.dispose();
+});
+
 test("Preprocess w/ deps delete", async () => {
-    let { result, dirname } = await depsSetup();
+    let { result, dirname } = await depsSetup(true);
 
     // remove file
     unlinkSync(join(dirname, "/xyz.sass"));
@@ -110,7 +130,7 @@ test("Preprocess w/ deps delete", async () => {
 });
 
 test("Don't cache errors", async () => {
-    let { result, dirname } = await depsSetup();
+    let { result, dirname } = await depsSetup(true);
 
     // remove file
     unlinkSync(join(dirname, "/xyz.sass"));
