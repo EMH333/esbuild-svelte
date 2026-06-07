@@ -12,8 +12,8 @@ npm init -y || exit
 npm pkg set type="module" || exit
 
 # array of versions
-ESBUILD_VERSIONS=("0.17.19" "0.18.10" "0.19.2" "0.21.3" "0.24.0")
-SVELTE_VERSIONS=("4.2.1" "5.0.3" "5.1.3")
+ESBUILD_VERSIONS=("0.17.19" "0.18.20" "0.19.12" "0.21.5" "0.25.12" "0.28.0")
+SVELTE_VERSIONS=("4.2.1" "5.0.3" "5.1.3" "5.56.2")
 
 # loop through versions
 for ESBUILD_VERSION in "${ESBUILD_VERSIONS[@]}"
