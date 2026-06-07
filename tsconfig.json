@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES2016",
+    "target": "es2022",
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "exactOptionalPropertyTypes": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "types": ["node"]
   },
   "files": ["index.ts"]
 }
