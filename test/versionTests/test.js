@@ -15,7 +15,7 @@ build({
     entryPoints: [Number(svelteVersion.at(0)) >= 5 ? "./entry5.js" : "./entry.js"],
     mainFields: ["svelte", "browser", "module", "main"],
     conditions: ["svelte", "browser"],
-    target: "es2016",
+    target: "es2020",
     outdir: "./dist",
     format: "esm",
     logLevel: "info",
