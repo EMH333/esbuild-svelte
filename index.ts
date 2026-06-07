@@ -171,27 +171,21 @@ const TS_MODULE_DISALLOWED_OPTIONS = [
 ];
 
 export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
-    const svelteFilter = options?.include ?? SVELTE_FILTER;
+    const opts = options ?? {};
+    const svelteFilter = opts.include ?? SVELTE_FILTER;
+
     return {
         name: "esbuild-svelte",
         setup(build) {
-            if (!options) {
-                options = {};
-            }
             // see if we are incrementally building or watching for changes and enable the cache
             // also checks if it has already been defined and ignores this if it has
-            if (options.cache == undefined && shouldCache(build)) {
-                options.cache = true;
-            }
-
-            // by default all warnings are enabled
-            if (options.filterWarnings == undefined) {
-                options.filterWarnings = () => true;
+            if (opts.cache === undefined && shouldCache(build)) {
+                opts.cache = true;
             }
 
             // determine valid options for svelte ts module transformation (*.svelte.ts files)
             const transformOptions =
-                options?.esbuildTsTransformOptions ??
+                opts.esbuildTsTransformOptions ??
                 Object.fromEntries(
                     Object.entries(build.initialOptions).filter(
                         ([key, val]) => !TS_MODULE_DISALLOWED_OPTIONS.includes(key),
@@ -210,7 +204,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 // if told to use the cache, check if it contains the file,
                 // and if the modified time is not greater than the time when it was cached
                 // if so, return the cached data
-                if (options?.cache === true && fileCache.has(args.path)) {
+                if (opts.cache === true && fileCache.has(args.path)) {
                     cachedFile = fileCache.get(args.path) || {
                         dependencies: new Map(),
                         data: null,
@@ -256,7 +250,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                                 e,
                                 args.path,
                                 originalSource,
-                                options?.compilerOptions?.sourcemap,
+                                opts.compilerOptions?.sourcemap,
                             ),
                         ];
                         // only provide if context API is supported or we are caching
@@ -273,11 +267,11 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
 
                 let compilerOptions = {
                     css: "external" as "external",
-                    ...options?.compilerOptions,
+                    ...opts.compilerOptions,
                 };
 
                 let moduleCompilerOptions: ModuleCompileOptions = {
-                    ...options?.moduleCompilerOptions,
+                    ...opts.moduleCompilerOptions,
                 };
 
                 //actually compile file
@@ -285,11 +279,11 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     //do preprocessor stuff if it exists and the file is not a module.
                     // This can't test directly for `.svelte` because it is possible someone wants to process files
                     // via the `include` option but that don't match the normal `.svelte` regex.
-                    if (options?.preprocess && !SVELTE_MODULE_FILTER.test(filename)) {
+                    if (opts.preprocess && !SVELTE_MODULE_FILTER.test(filename)) {
                         let preprocessResult = null;
 
                         try {
-                            preprocessResult = await preprocess(source, options.preprocess, {
+                            preprocessResult = await preprocess(source, opts.preprocess, {
                                 filename,
                             });
                         } catch (e: any) {
@@ -314,7 +308,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         source = preprocessResult.code;
 
                         // if caching then we need to store the modifcation times for all dependencies
-                        if (options?.cache === true) {
+                        if (opts.cache === true) {
                             preprocessResult.dependencies?.forEach((entry) => {
                                 dependencyModifcationTimes.set(entry, statSync(entry).mtime);
                             });
@@ -339,7 +333,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     //esbuild doesn't seem to like sourcemaps without "sourcesContent" which Svelte doesn't provide
                     //so attempt to populate that array if we can find filename in sources
                     if (compilerOptions.sourcemap) {
-                        if (js.map.sourcesContent == undefined) {
+                        if (js.map.sourcesContent === undefined) {
                             js.map.sourcesContent = [];
                         }
 
@@ -364,8 +358,8 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         contents = contents + `\nimport "${cssPath}";`;
                     }
 
-                    if (options?.filterWarnings) {
-                        warnings = warnings.filter(options.filterWarnings);
+                    if (opts.filterWarnings) {
+                        warnings = warnings.filter(opts.filterWarnings);
                     }
 
                     const result: OnLoadResult = {
@@ -376,7 +370,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     };
 
                     // if we are told to cache, then cache
-                    if (options?.cache === true) {
+                    if (opts.cache === true) {
                         fileCache.set(args.path, {
                             data: result,
                             dependencies: dependencyModifcationTimes,
@@ -419,11 +413,8 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
             // This saves enabling caching on every build, which would be a performance hit but
             // also makes sure incremental performance is increased.
             build.onEnd(() => {
-                if (!options) {
-                    options = {};
-                }
-                if (options.cache === undefined) {
-                    options.cache = true;
+                if (opts.cache === undefined) {
+                    opts.cache = true;
                 }
             });
         },
