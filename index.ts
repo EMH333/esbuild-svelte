@@ -236,8 +236,8 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                 }
 
                 //file modification time storage
-                const dependencyModifcationTimes = new Map<string, Date>();
-                dependencyModifcationTimes.set(args.path, statSync(args.path).mtime); // add the target file
+                const dependencyModificationTimes = new Map<string, Date>();
+                dependencyModificationTimes.set(args.path, statSync(args.path).mtime); // add the target file
 
                 let compilerOptions = {
                     css: "external" as "external",
@@ -284,7 +284,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         // if caching then we need to store the modifcation times for all dependencies
                         if (opts.cache === true) {
                             preprocessResult.dependencies?.forEach((entry) => {
-                                dependencyModifcationTimes.set(entry, statSync(entry).mtime);
+                                dependencyModificationTimes.set(entry, statSync(entry).mtime);
                             });
                         }
                     }
@@ -347,12 +347,12 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     if (opts.cache === true) {
                         fileCache.set(args.path, {
                             data: result,
-                            dependencies: dependencyModifcationTimes,
+                            dependencies: dependencyModificationTimes,
                         });
                     }
 
                     // make sure to tell esbuild to watch any additional files used
-                    result.watchFiles = Array.from(dependencyModifcationTimes.keys());
+                    result.watchFiles = Array.from(dependencyModificationTimes.keys());
 
                     return result;
                 } catch (e: any) {
