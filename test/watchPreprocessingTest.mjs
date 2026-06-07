@@ -11,6 +11,12 @@ import commonOptions from "./utils/commonOptions.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+function timeout(ms, operation) {
+    return setTimeout(() => {
+        throw new Error(`${operation} timed out`);
+    }, ms);
+}
+
 test("Watch and build while preprocess of external dependency succeed and fails", async () => {
     function _createDeferred() {
         let resolve = null;
@@ -64,6 +70,7 @@ test("Watch and build while preprocess of external dependency succeed and fails"
     // start watching
     results.watch().catch((err) => {
         console.error(err);
+        throw err;
     });
 
     try {
@@ -72,7 +79,9 @@ test("Watch and build while preprocess of external dependency succeed and fails"
             `${__dirname}/fixtures/watch-preprocessing/external.scss`,
             "p { color: red; }!$%^&*()@$%^@@",
         );
+        const firstRebuildTimeout = timeout(5000, "first rebuild");
         const firstRebuildResult = await firstRebuild;
+        clearTimeout(firstRebuildTimeout);
         assert.ok(firstRebuildResult.errors.length !== 0, "First build did not fail");
 
         // write external scss with valid syntax again
@@ -80,7 +89,9 @@ test("Watch and build while preprocess of external dependency succeed and fails"
             `${__dirname}/fixtures/watch-preprocessing/external.scss`,
             "p {\n  color: red;\n}\n",
         );
+        const secondRebuildTimeout = timeout(5000, "second rebuild");
         const secondRebuildResult = await secondRebuild;
+        clearTimeout(secondRebuildTimeout);
         assert.ok(secondRebuildResult.errors.length === 0, "Second build fail");
     } finally {
         // stop watching
