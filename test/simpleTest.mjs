@@ -39,7 +39,7 @@ test("Without esbuild", async () => {
 
     build.onResolve = async function (selection, processor) {};
     build.onEnd = async function (callback) {};
-    build.initialOptions = { incremental: false, watch: false };
+    build.initialOptions = {};
     await sveltePlugin().setup(build);
 });
 

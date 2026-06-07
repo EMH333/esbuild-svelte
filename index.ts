@@ -7,14 +7,7 @@ import { originalPositionFor, TraceMap } from "@jridgewell/trace-mapping";
 
 import type { CompileOptions, ModuleCompileOptions, CompileResult } from "svelte/compiler";
 import type { PreprocessorGroup } from "svelte/compiler";
-import type {
-    OnLoadResult,
-    Plugin,
-    PluginBuild,
-    Location,
-    PartialMessage,
-    TransformOptions,
-} from "esbuild";
+import type { OnLoadResult, Plugin, Location, PartialMessage, TransformOptions } from "esbuild";
 
 type Warning = CompileResult["warnings"][number];
 
@@ -100,16 +93,6 @@ function convertMessage(
     return { text: message, location };
 }
 
-//still support old incremental option if possible, but can still be overriden by cache option
-const shouldCache = (
-    build: PluginBuild & {
-        initialOptions: {
-            incremental?: boolean;
-            watch?: boolean;
-        };
-    },
-) => build.initialOptions?.incremental || build.initialOptions?.watch;
-
 const SVELTE_VERSION = VERSION.split(".").map((v) => parseInt(v))[0];
 const SVELTE_JAVASCRIPT_MODULE_FILTER = /\.svelte\.js$/;
 const SVELTE_TYPESCRIPT_MODULE_FILTER = /\.svelte\.ts$/;
@@ -177,12 +160,6 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
     return {
         name: "esbuild-svelte",
         setup(build) {
-            // see if we are incrementally building or watching for changes and enable the cache
-            // also checks if it has already been defined and ignores this if it has
-            if (opts.cache === undefined && shouldCache(build)) {
-                opts.cache = true;
-            }
-
             // determine valid options for svelte ts module transformation (*.svelte.ts files)
             const transformOptions =
                 opts.esbuildTsTransformOptions ??
@@ -253,10 +230,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                                 opts.compilerOptions?.sourcemap,
                             ),
                         ];
-                        // only provide if context API is supported or we are caching
-                        if (build.esbuild?.context !== undefined || shouldCache(build)) {
-                            result.watchFiles = previousWatchFiles;
-                        }
+                        result.watchFiles = previousWatchFiles;
                         return result;
                     }
                 }
@@ -377,11 +351,8 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                         });
                     }
 
-                    // make sure to tell esbuild to watch any additional files used if supported
-                    // only provide if context API is supported or we are caching
-                    if (build.esbuild?.context !== undefined || shouldCache(build)) {
-                        result.watchFiles = Array.from(dependencyModifcationTimes.keys());
-                    }
+                    // make sure to tell esbuild to watch any additional files used
+                    result.watchFiles = Array.from(dependencyModifcationTimes.keys());
 
                     return result;
                 } catch (e: any) {
@@ -389,10 +360,7 @@ export default function sveltePlugin(options?: esbuildSvelteOptions): Plugin {
                     result.errors = [
                         convertMessage(e, args.path, originalSource, compilerOptions.sourcemap),
                     ];
-                    // only provide if context API is supported or we are caching
-                    if (build.esbuild?.context !== undefined || shouldCache(build)) {
-                        result.watchFiles = previousWatchFiles;
-                    }
+                    result.watchFiles = previousWatchFiles;
                     return result;
                 }
             });
