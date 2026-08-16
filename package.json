@@ -41,12 +41,12 @@
   "devDependencies": {
     "@types/node": "^18.15.3",
     "esbuild": "^0.28.0",
-    "prettier": "^3.7.0",
+    "prettier": "^3.9.6",
     "rewrite-imports": "^3.0.0",
-    "sass": "^1.94.2",
-    "svelte": "^5.33.1",
+    "sass": "^1.102.0",
+    "svelte": "^5.56.9",
     "svelte-preprocess-esbuild": "^3.0.0",
-    "typescript": "^5.5.2",
+    "typescript": "^6",
     "uvu": "^0.5.6"
   },
   "engines": {
@@ -54,5 +54,8 @@
   },
   "dependencies": {
     "@jridgewell/trace-mapping": "^0.3.19"
+  },
+  "allowScripts": {
+    "esbuild": true
   }
 }

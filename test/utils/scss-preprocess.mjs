@@ -4,14 +4,12 @@ import * as sassCompiler from "sass";
 
 export function sass() {
     return function ({ filename, content, attributes }) {
-        if (
-            !(
-                attributes.type?.includes("text/scss") ||
-                attributes.lang?.includes("scss") ||
-                attributes.type?.includes("text/sass") ||
-                attributes.lang?.includes("sass")
-            )
-        ) {
+        if (!(
+            attributes.type?.includes("text/scss") ||
+            attributes.lang?.includes("scss") ||
+            attributes.type?.includes("text/sass") ||
+            attributes.lang?.includes("sass")
+        )) {
             return null;
         }
         const { css, sourceMap, loadedUrls } = sassCompiler.compileString(content, {
